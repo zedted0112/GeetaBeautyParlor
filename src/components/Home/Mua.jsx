@@ -8,19 +8,13 @@ const Mua = () => {
       <div className="relative w-[80%] h-full mx-auto max-w-[1200px] flex md:flex-row flex-col-reverse gap-20 items-center">
         <div className="md:w-[55%] md:pt-28 md:pb-28 pb-12 lg:pl-10 flex flex-col lg:gap-12 gap-6">
           <h1 className="text-[32px] text-[#1E1E1E] leading-[36.86px] tracking-widest">
-            MEET AISHA, THE VISIONARY BEHIND GLAMOUR PALETTE
+           Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, possimus sit quibusdam, cumque praesentium dolor, commodi voluptatem soluta nihil dicta corporis ullam rerum quisquam esse? Esse veniam fugiat voluptates provident?
           </h1>
           <p className="text-[21px] leading-[33px] text-[#1E1E1E]">
-            Aisha is the driving force in the beauty industry, orchestrating
-            experiences that resonate with stories and charm. Through Glamour
-            Palette, Aisha introduces services that transcend mere beauty
-            treatments – they are moments waiting to be cherished. Each service
-            curated by Glamour Palette reflects Aisha's commitment to
-            authenticity and excellence.
+           Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi nemo maxime, accusantium provident iste officiis exercitationem, tempora in ratione dicta incidunt illo, cupiditate voluptate obcaecati aut quod! Ex, sit maiores.
           </p>
           <p className="text-[21px] leading-[33px] text-[#1E1E1E]">
-            Step into the realm of Glamour Palette, where beauty services are
-            not just routines, but pathways to exploration and intimacy.
+           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde temporibus magnam velit nihil cupiditate neque voluptate, earum atque dolore est! Deleniti doloremque voluptas obcaecati sit itaque animi consectetur sequi impedit!
           </p>
         </div>
 

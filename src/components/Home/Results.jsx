@@ -18,10 +18,7 @@ const Results = () => {
             PROVEN RESULTS
           </h1>
           <p className="text-[20px] leading-[23.04px] tracking-widest text-white text-center lg:px-44">
-            Glamour Palette thrives on a legacy of undeniable results. Beyond
-            numbers, our success is reflected in the satisfaction of our clients
-            and the flawless services we've delivered. Trust Glamour Palette:
-            where every appointment is a testament to our excellence.
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt magnam cumque ut temporibus, fugiat perspiciatis dolore? Quam voluptatibus ducimus molestias commodi suscipit atque dolore repudiandae earum sunt. Beatae, explicabo veritatis!
           </p>
           <div className="flex md:flex-row flex-col lg:gap-24 md:gap-8 gap-4">
             <div>

@@ -21,7 +21,7 @@ const BlogDetails = () => {
       <div className="w-[80%] mx-auto max-w-[1200px] h-full py-24 flex md:flex-row flex-col items-start">
         <div className="w-[15%] md:flex hidden flex-row justify-center items-center">
           <h1 className="text-[12px] text-[#495057] leading-[25px] ">
-            08.08.2024
+        25-07-2025
           </h1>
           <div className="w-[35px] h-[1px] border border-[#495057]"></div>
           <h1 className="text-[12px] text-[#495057] leading-[25px] ">
@@ -30,7 +30,7 @@ const BlogDetails = () => {
         </div>
         <div className="md:hidden">
         <h1 className="text-[12px] text-[#495057] leading-[25px] mb-5">
-            08.08.2024 - 4 minutes
+            08.08.2025 - 4 minutes
           </h1>
         </div>
         <div className="md:w-[85%] flex flex-col gap-y-8 md:px-20">
@@ -107,7 +107,7 @@ const BlogDetails = () => {
               </div>
               <div className="flex flex-col gap-1">
                 <h1 className="text-black text-[15px] leading-[17.28px] tracking-[-0.38px]">
-                  Glamour Palette
+                 Geeta Makeovers
                 </h1>
                 <h2 className="text-black text-[13px] leading-[17.28px] tracking-[-0.38px]">
                   View Profile

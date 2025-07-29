@@ -31,7 +31,7 @@ const BlogInfo = () => {
         <Header transparent={false} />
         <div className="w-[80%] mx-auto max-w-[1200px] h-full py-24 flex flex-col gap-4">
           <h1 className="md:text-[60px] text-[45px] lg:px-60 text-center text-white md:leading-[80px] tracking-[-2.01px]">
-            Glamour Palette Chronicles: <br />
+            Geeta Makeovers: <br />
             Exploring Beauty Beyond Borders
           </h1>
           <p className="text-[18px] leading-[29.37px] text-white text-center md:w-[70%] mx-auto my-8">

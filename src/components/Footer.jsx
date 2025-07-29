@@ -19,7 +19,7 @@ const Footer = () => {
       <div className="w-[80%] h-full mx-auto max-w-[1200px] md:pt-28 md:pb-16 py-12">
         <div className="flex flex-col gap-y-6">
           <h1 className="text-[#1E1E1E] md:text-[40px] text-[30px] leading-[46.08px] tracking-widest">
-            GLAMOUR PALETTE
+     Geeta Makeovers
           </h1>
           <p className="text-[#1E1E1E] text-[18px] leading-[20.74px] tracking-widest">
           Discover the essence of timeless beauty at Glamour Palette. With a commitment to excellence, we strive to create an atmosphere where every individual feels empowered and confident. Our skilled team of beauty professionals is dedicated to delivering personalized experiences tailored to your unique style and preferences.
@@ -44,10 +44,10 @@ const Footer = () => {
               BEAUTY CONSULTANTS
               </h1>
               <h2 className=" text-[#1E1E1E] uppercase text-[16px] leading-[32px] tracking-widest">
-                AISHA | +91 XXXXXX4340
+               Geeta Semwal
               </h2>
               <h2 className=" text-[#1E1E1E] uppercase text-[16px] leading-[32px] tracking-widest">
-                Aahana | +91 xxxxxx6360
+                Anshul | +91 xxxxxx6360
               </h2>
             </div>
             <div className="flex flex-col gap-2">
@@ -55,7 +55,7 @@ const Footer = () => {
                 EMAIL
               </h1>
               <h2 className=" text-[#1E1E1E] uppercase text-[16px] leading-[32px] tracking-widest">
-                info@glamourpalette.com
+               GeetaMakeovers@gmail.com
               </h2>
             </div>
           </div>
@@ -65,9 +65,9 @@ const Footer = () => {
                 ADDRESS
               </h1>
               <h2 className="uppercase text-[#1E1E1E] text-[16px] leading-[32px] tracking-widest">
-              CUNNINGHAM ROAD, VASANT NAGAR,
+         Uttarkashi
 <br />
-BANGALORE, INDIA
+Uttarkashi, INDIA
               </h2>
             </div>
             <div className="flex flex-col gap-2">

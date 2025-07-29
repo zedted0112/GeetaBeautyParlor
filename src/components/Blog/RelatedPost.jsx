@@ -34,7 +34,7 @@ const RelatedPost = () => {
               08.08.2021
             </h2>
             <h1 className="text-[18px] text-[#495057] leading-[25px]">
-            Glamour Galore: Red Carpet Beauty Breakdowns
+            Geeta Makeovers Galore: Red Carpet Beauty Breakdowns
             </h1>
             <p className="text-[12px] leading-[20px] text-[#6C757D]">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
