@@ -1,7 +1,7 @@
 import { serviceImages, productImages } from '../../utils/imageImports';
 
 const ImageContact = serviceImages.makeup.artist;
-const productImage = productImages.kit;
+const ImageContact1 = productImages.kit;
 
 import React, { useState } from "react";
 import { MdOutlineFacebook } from "react-icons/md";

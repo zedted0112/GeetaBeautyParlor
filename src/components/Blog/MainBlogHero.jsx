@@ -1,6 +1,7 @@
 import React from 'react'
 import { teamImages } from '../../utils/imageImports';
-const teamImage = teamImages.member2;import Header from "../Header";
+
+const heroImage = teamImages.member2;import Header from "../Header";
 const MainBlogHero = () => {
   return (
     <div

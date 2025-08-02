@@ -1,5 +1,6 @@
-import { serviceImages, testimonialImages, uiImages } from '../../utils/imageImports';
+import { serviceImages, testimonialImages, uiImages, backgroundImages } from '../../utils/imageImports';
 
+const infoBG = backgroundImages.footer;
 const bridalImage = serviceImages.bridal.main7;
 const card1 = testimonialImages.testimonial1;
 const card3 = testimonialImages.testimonial2;

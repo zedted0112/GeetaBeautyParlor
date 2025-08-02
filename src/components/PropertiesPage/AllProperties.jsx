@@ -3,7 +3,7 @@ import Header from "../Header";
 import DropdownList from "../About/DropdownList";
 import { estates } from "../About/estates";
 import { teamImages } from '../../utils/imageImports';
-const teamImage = teamImages.member4;import { Link } from "react-router-dom";
+const infoImage = teamImages.member4;import { Link } from "react-router-dom";
 const AllProperties = () => {
   return (
     <div

@@ -1,5 +1,5 @@
 import { productImages } from '../../utils/imageImports';
-const productImage = productImages.kit;import React, { useState } from "react";
+const infoBG = productImages.kit;import React, { useState } from "react";
 
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";

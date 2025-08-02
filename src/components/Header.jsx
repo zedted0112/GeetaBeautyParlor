@@ -140,7 +140,7 @@ const Header = ({ transparent }) => {
             </li>
 
             <NavLink to="/contacts">
-              <img src={menu} width={60} height={60} alt="" />
+              <img src={menuImage} width={60} height={60} alt="" />
             </NavLink>
           </ul>
         </div>

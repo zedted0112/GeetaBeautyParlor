@@ -1,6 +1,6 @@
 import { backgroundImages, serviceImages, productImages } from '../../utils/imageImports';
 
-const bgImage = backgroundImages.footer;
+const infoBG = backgroundImages.footer;
 const ImageContact = serviceImages.makeup.artist;
 const image1 = productImages.routine1;
 const image2 = productImages.routine2;
