@@ -13,68 +13,61 @@ const Results = () => {
       }}
     >
       <div className="w-full bg-gradient-to-b from-black/80 via-black/70 to-black/80">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-          <div className="text-center space-y-12">
+        <div className="w-full max-w-6xl mx-auto px-4 py-16">
+          <div className="text-center">
             {/* Badge */}
-            <div className="inline-block bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
-              <p className="text-white/90 text-sm font-medium tracking-wide uppercase">
+            <div className="inline-block bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 mb-6">
+              <p className="text-white/90 text-xs font-semibold uppercase tracking-wider">
                 Our Success Story
               </p>
             </div>
             
             {/* Main Heading */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight">
-              Proven
-              <span className="block text-3xl md:text-4xl lg:text-5xl font-light mt-2">
-                Results
-              </span>
-            </h1>
-            
-            {/* Description */}
-            <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-4xl mx-auto">
+            <h1 className="text-4xl lg:text-5xl font-semibold mb-3 text-white">Proven Results</h1>
+            <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
               Our commitment to excellence has earned us the trust of thousands of clients. 
               Every transformation tells a story of beauty, confidence, and satisfaction.
             </p>
             
             {/* Stats Grid */}
-            <div className="grid md:grid-cols-3 gap-8 md:gap-12 pt-12">
+            <div className="grid md:grid-cols-3 gap-8 mb-8">
               <div className="text-center group">
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-                  <div className="text-5xl md:text-6xl font-bold text-white mb-4 group-hover:text-yellow-300 transition-colors duration-300">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                  <div className="text-4xl lg:text-5xl font-semibold text-white mb-2 group-hover:text-[#a76f52] transition-colors duration-300">
                     800+
                   </div>
-                  <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
+                  <h3 className="text-lg font-semibold text-white mb-2">
                     Services Rendered
                   </h3>
-                  <p className="text-white/70 text-sm">
+                  <p className="text-sm text-white/70">
                     Professional beauty services delivered with excellence
                   </p>
                 </div>
               </div>
               
               <div className="text-center group">
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-                  <div className="text-5xl md:text-6xl font-bold text-white mb-4 group-hover:text-yellow-300 transition-colors duration-300">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                  <div className="text-4xl lg:text-5xl font-semibold text-white mb-2 group-hover:text-[#a76f52] transition-colors duration-300">
                     1500+
                   </div>
-                  <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
+                  <h3 className="text-lg font-semibold text-white mb-2">
                     Satisfied Clients
                   </h3>
-                  <p className="text-white/70 text-sm">
+                  <p className="text-sm text-white/70">
                     Happy customers who trust us with their beauty
                   </p>
                 </div>
               </div>
               
               <div className="text-center group">
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
-                  <div className="text-5xl md:text-6xl font-bold text-white mb-4 group-hover:text-yellow-300 transition-colors duration-300">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                  <div className="text-4xl lg:text-5xl font-semibold text-white mb-2 group-hover:text-[#a76f52] transition-colors duration-300">
                     97%
                   </div>
-                  <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
+                  <h3 className="text-lg font-semibold text-white mb-2">
                     Customer Satisfaction
                   </h3>
-                  <p className="text-white/70 text-sm">
+                  <p className="text-sm text-white/70">
                     Exceptional service quality and client happiness
                   </p>
                 </div>
@@ -82,11 +75,9 @@ const Results = () => {
             </div>
             
             {/* CTA Section */}
-            <div className="pt-12">
-              <button className="bg-white text-black px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/90 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                Join Our Happy Clients
-              </button>
-            </div>
+            <button className="bg-[#a76f52] hover:bg-[#b78362] text-white text-base font-semibold px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105">
+              Join Our Happy Clients →
+            </button>
           </div>
         </div>
       </div>
