@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: command === 'serve' ? '/' : '/GeethaBeautyParlor/', // Use '/' for dev, '/GeethaBeautyParlor/' for production
+  base: command === 'serve' ? '/' : '/GeetaBeautyParlor/', // Use '/' for dev, '/GeetaBeautyParlor/' for production
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
