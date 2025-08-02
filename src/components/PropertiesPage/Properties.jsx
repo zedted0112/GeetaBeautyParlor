@@ -27,7 +27,7 @@ const Properties = () => {
         <h2>loading....{id}</h2>
     ) : (
       <div>
-      
+      <Header transparent={false} />
       <Heading/>
       <Details estate={estate}/>
       <SimilarListings />
