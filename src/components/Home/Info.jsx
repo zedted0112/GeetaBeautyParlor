@@ -1,6 +1,7 @@
 import React from "react";
 import { serviceImages } from '../../utils/imageImports';
-const makeupImage = serviceImages.makeup.glamour;const Info = () => {
+
+const infoImage = serviceImages.makeup.glamour;const Info = () => {
   return (
     <div
       className="w-full relative overflow-hidden"
