@@ -4,6 +4,7 @@ import { heroImages } from '../../utils/imageImports';
 const resultsHero = heroImages.homeMain;const Results = () => {
   return (
     <div
+      id="services"
       className="w-full relative overflow-hidden"
       style={{
         backgroundImage: `url('${resultsHero}')`,

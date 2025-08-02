@@ -39,6 +39,52 @@ const Header = ({ transparent }) => {
     setIsMenuOpen(false);
   };
 
+  const scrollToServices = () => {
+    // If we're not on the homepage, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true });
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const servicesSection = document.getElementById('services');
+        if (servicesSection) {
+          servicesSection.scrollIntoView({ behavior: 'smooth' });
+          window.location.hash = '#services';
+        }
+      }, 300);
+    } else {
+      // If we're already on homepage, just scroll and update URL
+      const servicesSection = document.getElementById('services');
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth' });
+        window.location.hash = '#services';
+      }
+    }
+    setIsMenuOpen(false);
+  };
+
+  const scrollToContact = () => {
+    // If we're not on the homepage, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true });
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const contactSection = document.getElementById('contact');
+        if (contactSection) {
+          contactSection.scrollIntoView({ behavior: 'smooth' });
+          window.location.hash = '#contact';
+        }
+      }, 300);
+    } else {
+      // If we're already on homepage, just scroll and update URL
+      const contactSection = document.getElementById('contact');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+        window.location.hash = '#contact';
+      }
+    }
+    setIsMenuOpen(false);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 100) {
@@ -90,26 +136,21 @@ const Header = ({ transparent }) => {
 
         <ul className="md:flex  items-center hidden lg:gap-x-14 md:gap-x-8  gap-4 md:text-[17px] text-[15px] text-white leading-5">
           <li className="transition-all duration-700 ease-in-out  hover:scale-95 ">
-            <NavLink
-              to="/properties"
-              className={({ isActive }) => `${isActive && "font-extrabold"}`}
+            <button
+              onClick={scrollToServices}
+              className="text-white hover:font-extrabold transition-all duration-300"
             >
               SERVICES
-            </NavLink>
+            </button>
           </li>
-          <li className="transition-all duration-700 ease-in-out   hover:scale-95 ">
-              <NavLink
-                to="/blog"
-                className={({ isActive }) => `${isActive && "font-extrabold"}`}
-              >
-                BLOG
-              </NavLink>
-            </li>
-          <div>
-            <NavLink to="/contacts">
-              <img src={menuImage} width={60} height={60} alt="" />
-            </NavLink>
-          </div>
+          <li className="transition-all duration-700 ease-in-out  hover:scale-95 ">
+            <button
+              onClick={scrollToContact}
+              className="text-white hover:font-extrabold transition-all duration-300"
+            >
+              CONTACTS
+            </button>
+          </li>
         </ul>
 
         <div className="md:hidden flex justify-center items-center">
@@ -148,25 +189,21 @@ const Header = ({ transparent }) => {
               </button>
             </li>
             <li className="transition-all duration-700 ease-in-out  hover:scale-95 ">
-              <NavLink
-                to="/properties"
-                className={({ isActive }) => `${isActive && "text-underline"}`}
+              <button
+                onClick={scrollToServices}
+                className="text-white hover:text-underline transition-all duration-300"
               >
                 SERVICES
-              </NavLink>
+              </button>
             </li>
             <li className="transition-all duration-700 ease-in-out  hover:scale-95 ">
-              <NavLink
-                to="/blog"
-                className={({ isActive }) => `${isActive && "text-underline"}`}
+              <button
+                onClick={scrollToContact}
+                className="text-white hover:text-underline transition-all duration-300"
               >
-                BLOG
-              </NavLink>
+                CONTACTS
+              </button>
             </li>
-
-            <NavLink to="/contacts">
-              <img src={menuImage} width={60} height={60} alt="" />
-            </NavLink>
           </ul>
         </div>
       </div>
