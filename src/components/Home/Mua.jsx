@@ -5,46 +5,53 @@ import architect from "../../assets/mua.jpg";
 const Mua = () => {
   return (
     <div className="w-full bg-gradient-to-r from-[#f9f4f0] to-[#eaddd2]">
-      <div className="w-full max-w-6xl mx-auto px-4 py-16 flex flex-col lg:flex-row items-center gap-12">
-        {/* TEXT BLOCK */}
-        <div className="flex-1 max-w-xl">
-          <div className="inline-block bg-[#eaddd2] text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4">
-            Expert Makeup Artist
-          </div>
-          <h1 className="text-4xl lg:text-5xl font-semibold mb-3 text-[#3b2f2f]">Meet Your Beauty Expert</h1>
-          <p className="text-lg text-[#6b4f4f] mb-6">Crafting timeless elegance through artistry and care.</p>
-          <p className="text-base leading-relaxed mb-8 text-[#3b2f2f]">
-            With over 15 years in the beauty industry, our lead artist blends tradition with innovation to create personalized looks that celebrate your natural beauty. Whether it's for your big day or a special moment, each transformation is curated with luxury and love.<br/><br/>
-            From intricate Indian bridal glam to chic contemporary styles — your look will be tailored, refined, and unforgettable.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <div className="bg-[#f9f5f3] rounded-xl p-6 text-center">
-              <h4 className="text-lg font-semibold mb-2 text-[#3b2f2f]">🎨 Creative Vision</h4>
-              <p className="text-sm text-[#6b4f4f]">Bespoke makeup artistry<br />Styles that reflect you</p>
+      <div className="w-full max-w-7xl mx-auto px-6 py-20 lg:py-32">
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+          {/* TEXT BLOCK */}
+          <div className="flex-1 lg:max-w-2xl">
+            <div className="inline-block bg-[#eaddd2] text-xs font-semibold uppercase tracking-wider px-4 py-2 rounded-full mb-6">
+              Expert Makeup Artist
             </div>
-            <div className="bg-[#f9f5f3] rounded-xl p-6 text-center">
-              <h4 className="text-lg font-semibold mb-2 text-[#3b2f2f]">💎 Premium Experience</h4>
-              <p className="text-sm text-[#6b4f4f]">Handpicked luxury products<br />Techniques that last & impress</p>
+            <h1 className="text-5xl lg:text-6xl font-semibold mb-6 text-[#3b2f2f] leading-tight">Meet Your Beauty Expert</h1>
+            <p className="text-xl text-[#6b4f4f] mb-8 leading-relaxed">Crafting timeless elegance through artistry and care.</p>
+            <p className="text-lg leading-relaxed mb-10 text-[#3b2f2f]">
+              With over 15 years in the beauty industry, our lead artist blends tradition with innovation to create personalized looks that celebrate your natural beauty. Whether it's for your big day or a special moment, each transformation is curated with luxury and love.<br/><br/>
+              From intricate Indian bridal glam to chic contemporary styles — your look will be tailored, refined, and unforgettable.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+              <div className="bg-[#f9f5f3] rounded-2xl p-8 text-center">
+                <h4 className="text-xl font-semibold mb-3 text-[#3b2f2f]">🎨 Creative Vision</h4>
+                <p className="text-base text-[#6b4f4f] leading-relaxed">Bespoke makeup artistry<br />Styles that reflect you</p>
+              </div>
+              <div className="bg-[#f9f5f3] rounded-2xl p-8 text-center">
+                <h4 className="text-xl font-semibold mb-3 text-[#3b2f2f]">💎 Premium Experience</h4>
+                <p className="text-base text-[#6b4f4f] leading-relaxed">Handpicked luxury products<br />Techniques that last & impress</p>
+              </div>
             </div>
+            <button className="bg-[#a76f52] hover:bg-[#b78362] text-white text-lg font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg">
+              Book Your Consultation →
+            </button>
           </div>
-          <button className="bg-[#a76f52] hover:bg-[#b78362] text-white text-base font-semibold px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105">
-            Book Your Consultation →
-          </button>
-        </div>
 
-        {/* IMAGE BLOCK */}
-        <div className="flex-1 max-w-lg rounded-3xl overflow-hidden shadow-lg">
-          <img 
-            src={architect} 
-            alt="Beauty Expert" 
-            className="w-full h-auto object-cover transition-all duration-700 ease-in-out hover:scale-105" 
-          />
+          {/* IMAGE BLOCK */}
+          <div className="flex-1 lg:max-w-2xl">
+            <div className="relative">
+              <img 
+                src={architect} 
+                alt="Beauty Expert" 
+                className="w-full h-[600px] lg:h-[700px] object-cover rounded-3xl shadow-2xl transition-all duration-700 ease-in-out hover:scale-105" 
+              />
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-[#eaddd2]/50 rounded-full backdrop-blur-sm"></div>
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#f9f4f0]/50 rounded-full backdrop-blur-sm"></div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Bottom Decorative Section */}
       <div
-        className="w-full h-32 lg:h-40"
+        className="w-full h-40 lg:h-48"
         style={{
           backgroundImage: `url('${bgWhite}')`,
           backgroundRepeat: "no-repeat",
