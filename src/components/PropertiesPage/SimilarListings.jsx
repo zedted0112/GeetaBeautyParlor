@@ -1,9 +1,7 @@
 import React from "react";
 import SimilarListingSlider from "./SimilarListingSlider";
-import infoImage from "/woman1.jpg";
-
-
-const SimilarListings = () => {
+import { teamImages } from '../../utils/imageImports';
+const teamImage = teamImages.member4;const SimilarListings = () => {
   return (
     <div className="w-full bg-[#937D64AD]" 
    ><div className="w-full h-full">

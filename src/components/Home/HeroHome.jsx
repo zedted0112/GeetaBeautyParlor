@@ -1,6 +1,6 @@
 import React from "react";
-import heroImage from "/img3.jpg";
-import Header from "../Header";
+import { miscImages } from '../../utils/imageImports';
+const miscImage = miscImages.image1;import Header from "../Header";
 const HeroHome = () => {
   return (
     <div

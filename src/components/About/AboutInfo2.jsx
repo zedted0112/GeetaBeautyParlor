@@ -1,6 +1,8 @@
 import React from "react";
-import infoBG from "/footerBG.png";
-import propertyPeople from "/backgroundinfoabout2.jpg";
+import { backgroundImages } from '../../utils/imageImports';
+
+const bgImage = backgroundImages.footer;
+const propertyPeople = backgroundImages.aboutSecondary;
 const AboutInfo2 = () => {
   return (
     <div

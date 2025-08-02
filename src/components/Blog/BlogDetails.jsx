@@ -1,12 +1,14 @@
+import { backgroundImages, serviceImages, productImages } from '../../utils/imageImports';
+
+const bgImage = backgroundImages.footer;
+const ImageContact = serviceImages.makeup.artist;
+const image1 = productImages.routine1;
+const image2 = productImages.routine2;
+
 import React from "react";
-import image1 from "../../assets/routine (1).jpg";
-import image2 from "../../assets/routine (2).jpg";
-import profile from "../../assets/mua.jpg";
 import { MdOutlineFacebook } from "react-icons/md";
 import { RiInstagramFill } from "react-icons/ri";
 import { RiWhatsappFill } from "react-icons/ri";
-import infoBG from "/footerBG.png";
-
 const BlogDetails = () => {
   return (
     <div className="w-full bg-[#1E1E1E]" style={{

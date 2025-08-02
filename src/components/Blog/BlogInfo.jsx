@@ -1,18 +1,20 @@
-import React from "react";
-import card1 from "../../assets/card1.jpg";
-import card3 from "../../assets/card2.jpg";
-import card6 from "../../assets/card3.jpg";
-import card7 from "../../assets/card4.jpg";
-import card8 from "../../assets/card5.jpg";
-import card9 from "../../assets/card6.jpg";
-import peop1 from "../../assets/Ellipse.png";
-import peop3 from "../../assets/Ellipse (1).png";
-import peop6 from "../../assets/Ellipse (4).png";
-import peop7 from "../../assets/Ellipse (5).png";
-import peop8 from "../../assets/Ellipse (6).png";
-import peop9 from "../../assets/Ellipse (7).png";
+import { serviceImages, testimonialImages, uiImages } from '../../utils/imageImports';
 
-import infoBG from "/bg-bride7.jpg";
+const bridalImage = serviceImages.bridal.main7;
+const card1 = testimonialImages.testimonial1;
+const card3 = testimonialImages.testimonial2;
+const card6 = testimonialImages.testimonial3;
+const card7 = testimonialImages.testimonial4;
+const card8 = testimonialImages.testimonial5;
+const card9 = testimonialImages.testimonial6;
+const peop1 = uiImages.avatarDefault;
+const peop3 = uiImages.avatar1;
+const peop6 = uiImages.avatar4;
+const peop7 = uiImages.avatar5;
+const peop8 = uiImages.avatar6;
+const peop9 = uiImages.avatar7;
+
+import React from "react";
 import { Link } from "react-router-dom";
 import Header from "../Header";
 const BlogInfo = () => {

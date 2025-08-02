@@ -1,6 +1,6 @@
 import React from "react";
-import heroImageAbout from "/bg-bride2.jpg";
-import Header from "../Header";
+import { serviceImages } from '../../utils/imageImports';
+const bridalImage = serviceImages.bridal.main2;import Header from "../Header";
 const HeroAbout = () => {
   return (
         <div

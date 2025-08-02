@@ -1,6 +1,8 @@
 import React from "react";
-import bg2 from "/footerBG.png";
-import footerLogo from "/logobeauty (1).png";
+import { backgroundImages, logoImages } from '../utils/imageImports';
+
+const bg2 = backgroundImages.footer;
+const footerLogo = logoImages.primary;
 import { MdOutlineFacebook } from "react-icons/md";
 import { RiInstagramFill } from "react-icons/ri";
 import { RiWhatsappFill } from "react-icons/ri";

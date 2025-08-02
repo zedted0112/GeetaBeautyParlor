@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import ImageContact from "../../assets/mua.jpg";
-import ImageContact1 from "/kit.jpg";
+import { serviceImages, productImages } from '../../utils/imageImports';
 
+const ImageContact = serviceImages.makeup.artist;
+const productImage = productImages.kit;
+
+import React, { useState } from "react";
 import { MdOutlineFacebook } from "react-icons/md";
 import { RiInstagramFill } from "react-icons/ri";
 import { RiWhatsappFill } from "react-icons/ri";

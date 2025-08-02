@@ -1,7 +1,9 @@
 import React from "react";
-import office1 from "/off1.jpg";
-import office2 from "/off2.jpg";
-import office3 from "/off3.jpg";
+import { miscImages } from '../../utils/imageImports';
+
+const office1 = miscImages.offer1;
+const office2 = miscImages.offer2;
+const office3 = miscImages.offer3;
 const OurOffice = () => {
   return (
     <div className="w-full bg-[#937D64AD]"

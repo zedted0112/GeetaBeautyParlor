@@ -1,6 +1,9 @@
+import { backgroundImages, serviceImages } from '../../utils/imageImports';
+
+const bgImage = backgroundImages.footer;
+const bridalImage = serviceImages.bridal.main3;
+
 import React from "react";
-import infoBG from "/footerBG.png";
-import infoPeople from "/bg-bride3.png";
 const AboutInfo = () => {
   return (
     <div

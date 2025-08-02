@@ -1,19 +1,20 @@
 import React from "react";
-import infoBG from "/footerBG.png";
+import { backgroundImages, miscImages, serviceImages } from '../../utils/imageImports';
 import { estates } from "./estates";
 import DropdownList from "./DropdownList";
 import { Link } from "react-router-dom";
-import img1 from "/background6.jpg";
-import img2 from "/makeover.jpg";
-import img3 from "/background14.jpg";
-import img4 from "/background3.jpg";
-import img5 from "/spa.jpg";
-import img6 from "/service2.jpg";
-import img7 from "/wax (3).jpg";
-import img8 from "/service5.jpg";
-import img9 from "/service6.jpg";
-import img10 from "/service7.jpg";
-const FindPlace = () => {
+
+const infoBG = backgroundImages.footer;
+const img1 = backgroundImages.section5;
+const img2 = miscImages.makeover;
+const img3 = backgroundImages.section12;
+const img4 = backgroundImages.section2;
+const img5 = serviceImages.spa.main;
+const img6 = serviceImages.facial.treatment1;
+const img7 = serviceImages.waxing.main;
+const img8 = serviceImages.facial.treatment3;
+const img9 = serviceImages.facial.treatment4;
+const img10 = serviceImages.facial.treatment5;const FindPlace = () => {
   return (
     <div
       className="w-full"

@@ -1,11 +1,11 @@
-import infoBG from "/kit.jpg";
-import React, { useState } from "react";
+import { productImages } from '../../utils/imageImports';
+const productImage = productImages.kit;import React, { useState } from "react";
 
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
 
-import profile from "../../assets/mua.jpg";
-import Header from "../Header";
+import { serviceImages } from '../../utils/imageImports';
+const ImageContact = serviceImages.makeup.artist;import Header from "../Header";
 
 const Details = ({ estate }) => {
   const [name, setName] = useState("");

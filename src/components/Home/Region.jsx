@@ -1,10 +1,10 @@
 import React from "react";
-import bgwhite2 from "/BG2.png";
-import region1 from "../../assets/makeup.jpg";
-import region2 from "../../assets/background15.jpg";
-import region3 from "../../assets/bride3.jpg";
+import { heroImages, serviceImages, backgroundImages } from '../../utils/imageImports';
 
-const Region = () => {
+const heroImage = heroImages.bgSecondary;
+const region1 = serviceImages.makeup.main;
+const region2 = backgroundImages.section13;
+const region3 = serviceImages.bridal.portrait2;const Region = () => {
   return (
     <div className="w-full relative overflow-hidden">
       <div className="w-full bg-gradient-to-b from-black/80 via-black/70 to-black/80">

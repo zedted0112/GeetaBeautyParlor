@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import logo from "/logobeauty (2).png";
-import menu from "/MENU.png";
+import { logoImages } from '../utils/imageImports';
 
-import { FaBars } from "react-icons/fa";
+const logoImage = logoImages.secondary;
+const menuImage = logoImages.menu;import { FaBars } from "react-icons/fa";
 import { IoIosCloseCircle } from "react-icons/io";
 
 const Header = ({ transparent }) => {
@@ -53,7 +53,7 @@ const Header = ({ transparent }) => {
         <div className="lg:ml-[9rem]">
           <Link to="/">
             <img
-              src={logo}
+              src={logoImage}
               alt="Logo"
               className="lg:w-[80px] lg:h-[80px] md:w-[70px] md:h-[70px] w-[60px] h-[60px]  object-cover"
               width={80}
@@ -82,7 +82,7 @@ const Header = ({ transparent }) => {
             </li>
           <div>
             <NavLink to="/contacts">
-              <img src={menu} width={60} height={60} alt="" />
+              <img src={menuImage} width={60} height={60} alt="" />
             </NavLink>
           </div>
         </ul>

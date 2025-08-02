@@ -2,8 +2,8 @@ import React from "react";
 import Header from "../Header";
 import DropdownList from "../About/DropdownList";
 import { estates } from "../About/estates";
-import infoImage from "/woman1.jpg";
-import { Link } from "react-router-dom";
+import { teamImages } from '../../utils/imageImports';
+const teamImage = teamImages.member4;import { Link } from "react-router-dom";
 const AllProperties = () => {
   return (
     <div

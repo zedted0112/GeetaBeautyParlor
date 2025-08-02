@@ -1,7 +1,6 @@
 import React from "react";
-import resultsHero from "/hero-home.jpg";
-
-const Results = () => {
+import { heroImages } from '../../utils/imageImports';
+const heroImage = heroImages.homeMain;const Results = () => {
   return (
     <div
       className="w-full relative overflow-hidden"

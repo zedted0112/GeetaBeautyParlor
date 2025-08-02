@@ -1,8 +1,11 @@
+import { productImages, testimonialImages } from '../../utils/imageImports';
+
+const blog3 = productImages.lipstick;
+const blog1 = testimonialImages.card2;
+const blog2 = testimonialImages.card1;
+const blog4 = testimonialImages.card3;
+
 import React from "react";
-import blog1 from "../../assets/imgcard (2).jpg";
-import blog2 from "../../assets/imgcard (1).jpg";
-import blog3 from "../../assets/lipstic.jpg";
-import blog4 from "../../assets/imgcard (3).jpg";
 const RelatedPost = () => {
   return (
     <div className="bg-[#937D64AD] w-full">
