@@ -7,7 +7,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { serviceImages } from '../../utils/imageImports';
 const ImageContact = serviceImages.makeup.artist;import Header from "../Header";
 
-const Details = ({ estate }) => {
+const Details = ({ service }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -16,7 +16,10 @@ const Details = ({ estate }) => {
     title,
     images,
     price,
-  } = estate;
+    description,
+    duration,
+    category
+  } = service;
 
   return (
     <div
@@ -163,7 +166,7 @@ const Details = ({ estate }) => {
                 <div className="flex flex-row gap-3 items-center bg-[#efece899] mx-6 my-5 rounded-xl px-3 py-4">
                   <div>
                     <img
-                      src={profile}
+                      src={ImageContact}
                       width={40}
                       height={40}
                       alt=""
@@ -239,14 +242,11 @@ const Details = ({ estate }) => {
                     </h1>
                   </div>
                   <div className="flex flex-col px-6 py-6 gap-4 ">
-                    {estate.description.map((desc, index) => (
-                      <div key={`PAR${estate.title + index}`}>
-                        <p className="text-black text-[15px] leading-[22px] tracking-[-0.38px]">
-                          {desc}
-                        </p>
-                        <br />
-                      </div>
-                    ))}
+                    <div>
+                      <p className="text-black text-[15px] leading-[22px] tracking-[-0.38px]">
+                        {description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

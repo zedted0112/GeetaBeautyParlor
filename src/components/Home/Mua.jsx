@@ -1,9 +1,12 @@
 import React from "react";
 import { heroImages, serviceImages } from '../../utils/imageImports';
 const heroImage = heroImages.aboutMain;
-const architect = serviceImages.makeup.artist;const Mua = () => {
+const architect = serviceImages.makeup.artist;
+
+const Mua = () => {
   return (
     <div 
+      id="about"
       className="w-full relative overflow-hidden"
       style={{
         backgroundImage: `url('${heroImage}')`,

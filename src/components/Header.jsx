@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { logoImages } from '../utils/imageImports';
 
 const logoImage = logoImages.secondary;
@@ -9,9 +9,34 @@ import { IoIosCloseCircle } from "react-icons/io";
 
 const Header = ({ transparent }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const scrollToAbout = () => {
+    // If we're not on the homepage, navigate there first
+    if (location.pathname !== '/') {
+      navigate('/', { replace: true });
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const aboutSection = document.getElementById('about');
+        if (aboutSection) {
+          aboutSection.scrollIntoView({ behavior: 'smooth' });
+          window.location.hash = '#about';
+        }
+      }, 300);
+    } else {
+      // If we're already on homepage, just scroll and update URL
+      const aboutSection = document.getElementById('about');
+      if (aboutSection) {
+        aboutSection.scrollIntoView({ behavior: 'smooth' });
+        window.location.hash = '#about';
+      }
+    }
+    setIsMenuOpen(false);
   };
 
   useEffect(() => {
@@ -42,12 +67,12 @@ const Header = ({ transparent }) => {
             </NavLink>
           </li>
           <li className="transition-all duration-700 ease-in-out  hover:scale-95 ">
-            <NavLink
-              to="/about"
-              className={({ isActive }) => `${isActive && "font-extrabold"}`}
+            <button
+              onClick={scrollToAbout}
+              className="text-white hover:font-extrabold transition-all duration-300"
             >
               ABOUT
-            </NavLink>
+            </button>
           </li>
         </ul>
         <div className="lg:ml-[9rem]">
@@ -115,12 +140,12 @@ const Header = ({ transparent }) => {
               </NavLink>
             </li>
             <li className="transition-all duration-700 ease-in-out  hover:scale-95 ">
-              <NavLink
-                to="/about"
-                className={({ isActive }) => `${isActive && "text-underline"}`}
+              <button
+                onClick={scrollToAbout}
+                className="text-white hover:text-underline transition-all duration-300"
               >
                 ABOUT
-              </NavLink>
+              </button>
             </li>
             <li className="transition-all duration-700 ease-in-out  hover:scale-95 ">
               <NavLink

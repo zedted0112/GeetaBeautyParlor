@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../Header";
-import DropdownList from "../About/DropdownList";
-import { estates } from "../About/estates";
+import ServiceFilter from "./ServiceFilter";
+import { beautyServices } from "./beautyServices";
 import { teamImages } from '../../utils/imageImports';
-const infoImage = teamImages.member4;import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+const infoImage = teamImages.member4;
+
 const AllProperties = () => {
+  const [filteredServices, setFilteredServices] = useState(beautyServices);
+
+  const handleFilterChange = (category) => {
+    if (category === 'all') {
+      setFilteredServices(beautyServices);
+    } else {
+      const filtered = beautyServices.filter(service => service.category === category);
+      setFilteredServices(filtered);
+    }
+  };
+
   return (
     <div
       className="w-full"
@@ -29,23 +43,26 @@ const AllProperties = () => {
             to enhancing your natural beauty and leaving you feeling confident
             and rejuvenated.
           </h2>
-          <DropdownList />
+          <ServiceFilter onFilterChange={handleFilterChange} />
           <div className="grid lg:grid-cols-3  md:grid-cols-2 grid-cols-1 gap-x-12 gap-y-8">
-            {estates.map((est) => (
-              <Link to={`/property/${est.id}`} key={est.id}>
+            {filteredServices.map((service) => (
+              <Link to={`/property/${service.id}`} key={service.id}>
                 <div
-                  key={est.id}
+                  key={service.id}
                   className="flex flex-col shadow-2xl  transition-all duration-700 ease-in-out  hover:scale-105   rounded-[32px]"
                 >
                   <img
-                    src={est.images[0]}
-                    alt="thumbnail"
+                    src={service.images[0]}
+                    alt="service thumbnail"
                     className="w-full h-52 object-cover rounded-t-[30px] brightness-50"
                   />
-                  <h3 className="text-black text-[20px] p-8 leading-[27.65px] tracking-[-0.6px] bg-[#efece899] rounded-b-[35px]">
-                    {est.title}
-                  </h3>
-                  
+                  <div className="bg-[#efece899] rounded-b-[35px] p-8">
+                    <h3 className="text-black text-[20px] leading-[27.65px] tracking-[-0.6px] mb-2">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-700 text-sm mb-2">{service.description}</p>
+                    <p className="text-[#a76f52] font-semibold">{service.price}</p>
+                  </div>
                 </div>
               </Link>
             ))}
