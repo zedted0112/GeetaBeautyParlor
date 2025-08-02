@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { heroImages } from '../../utils/imageImports';
 import Header from "../Header";
 
 const heroImage = heroImages.homeMain;
 const HeroHome = () => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.src = heroImage;
+  }, [heroImage]);
+
   return (
     <div
     className="w-full min-h-screen relative overflow-hidden"
     style={{
-      backgroundImage: `url('${heroImage}')`,
+      backgroundImage: imageLoaded ? `url('${heroImage}')` : 'none',
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       backgroundPosition: "center 25%",
+      transition: 'opacity 0.5s ease-in-out',
+      opacity: imageLoaded ? 1 : 0.8,
     }}
     >
       <div className="w-full min-h-screen bg-gradient-to-b from-black/60 via-black/40 to-black/70">
@@ -41,10 +51,26 @@ const HeroHome = () => {
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-              <button className="bg-white text-black px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/90 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button 
+                className="bg-white text-black px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                onClick={() => {
+                  const contactSection = document.getElementById('contact');
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
                 Book Appointment
               </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-black transition-all duration-300 transform hover:scale-105">
+              <button 
+                className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-black transition-all duration-300 transform hover:scale-105"
+                onClick={() => {
+                  const servicesSection = document.getElementById('services');
+                  if (servicesSection) {
+                    servicesSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
                 Explore Services
               </button>
             </div>
