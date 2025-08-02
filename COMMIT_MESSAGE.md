@@ -1,1 +1,0 @@
-finished initial static setup
