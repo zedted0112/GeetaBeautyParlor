@@ -6,26 +6,18 @@ import region3 from "../../assets/bride3.jpg";
 
 const Region = () => {
   return (
-    <div
-      className="w-full relative overflow-hidden"
-      style={{
-        backgroundImage: `url('${bgwhite2}')`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="w-full bg-white/95 backdrop-blur-sm">
+    <div className="w-full relative overflow-hidden">
+      <div className="w-full bg-gradient-to-b from-black/80 via-black/70 to-black/80">
         <div className="w-full max-w-7xl mx-auto px-6 py-20 lg:py-32">
           <div className="text-center">
             {/* Badge */}
-            <div className="inline-block bg-[#eaddd2] text-sm font-semibold uppercase tracking-wider px-4 py-2 rounded-full mb-8">
+            <div className="inline-block bg-white/20 backdrop-blur-sm text-sm font-semibold uppercase tracking-wider px-4 py-2 rounded-full mb-8 text-white">
               Our Service Categories
             </div>
             
             {/* Main Heading */}
-            <h1 className="text-5xl lg:text-6xl font-semibold mb-6 text-[#3b2f2f] leading-tight">Styled by Expertise</h1>
-            <p className="text-xl text-[#6b4f4f] mb-12 max-w-3xl mx-auto leading-relaxed">
+            <h1 className="text-5xl lg:text-6xl font-semibold mb-6 text-white leading-tight">Styled by Expertise</h1>
+            <p className="text-xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
               Discover our specialized beauty services designed to enhance your natural beauty 
               and create stunning transformations for every occasion.
             </p>
