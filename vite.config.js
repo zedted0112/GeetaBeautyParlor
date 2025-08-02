@@ -2,9 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: '/GeethaBeautyParlor/', // For GitHub Pages deployment
+  base: command === 'serve' ? '/' : '/GeethaBeautyParlor/', // Use '/' for dev, '/GeethaBeautyParlor/' for production
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -42,4 +42,4 @@ export default defineConfig({
     port: 5173,
     open: true,
   },
-})
+}))
