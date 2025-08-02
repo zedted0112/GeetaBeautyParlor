@@ -4,38 +4,85 @@ import architect from "../../assets/mua.jpg";
 
 const Mua = () => {
   return (
-    <div className="w-full bg-[#937D64AD] ">
-      <div className="relative w-[80%] h-full mx-auto max-w-[1200px] flex md:flex-row flex-col-reverse gap-20 items-center">
-        <div className="md:w-[55%] md:pt-28 md:pb-28 pb-12 lg:pl-10 flex flex-col lg:gap-12 gap-6">
-          <h1 className="text-[32px] text-[#1E1E1E] leading-[36.86px] tracking-widest">
-           Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, possimus sit quibusdam, cumque praesentium dolor, commodi voluptatem soluta nihil dicta corporis ullam rerum quisquam esse? Esse veniam fugiat voluptates provident?
-          </h1>
-          <p className="text-[21px] leading-[33px] text-[#1E1E1E]">
-           Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi nemo maxime, accusantium provident iste officiis exercitationem, tempora in ratione dicta incidunt illo, cupiditate voluptate obcaecati aut quod! Ex, sit maiores.
-          </p>
-          <p className="text-[21px] leading-[33px] text-[#1E1E1E]">
-           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde temporibus magnam velit nihil cupiditate neque voluptate, earum atque dolore est! Deleniti doloremque voluptas obcaecati sit itaque animi consectetur sequi impedit!
-          </p>
-        </div>
+    <div className="w-full bg-gradient-to-br from-[#937D64] via-[#A08B73] to-[#8B7355]">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Content Section */}
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 border border-white/30">
+              <p className="text-white/90 text-sm font-medium tracking-wide uppercase">
+                Expert Makeup Artist
+              </p>
+            </div>
+            
+            {/* Main Heading */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight">
+              Meet Your
+              <span className="block text-3xl md:text-4xl lg:text-5xl font-light mt-2">
+                Beauty Expert
+              </span>
+            </h1>
+            
+            {/* Description */}
+            <div className="space-y-6 text-lg md:text-xl text-white/90 leading-relaxed">
+              <p>
+                With over 15 years of experience in the beauty industry, our lead makeup artist brings 
+                expertise, creativity, and passion to every transformation. Specializing in bridal makeup, 
+                special occasions, and everyday glamour.
+              </p>
+              <p>
+                From traditional Indian bridal looks to modern contemporary styles, we create 
+                personalized beauty experiences that enhance your natural features and boost your confidence.
+              </p>
+            </div>
+            
+            {/* Features */}
+            <div className="grid grid-cols-2 gap-6 pt-6">
+              <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
+                <div className="text-2xl mb-2">🎨</div>
+                <h3 className="font-semibold text-white">Creative Design</h3>
+                <p className="text-sm text-white/80">Unique looks for every occasion</p>
+              </div>
+              <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
+                <div className="text-2xl mb-2">✨</div>
+                <h3 className="font-semibold text-white">Premium Quality</h3>
+                <p className="text-sm text-white/80">Luxury products & techniques</p>
+              </div>
+            </div>
+            
+            {/* CTA Button */}
+            <div className="pt-6">
+              <button className="bg-white text-[#937D64] px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/90 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                Book Consultation
+              </button>
+            </div>
+          </div>
 
-        <div className="md:w-[45%] md:absolute md:right-0 lg:pl-20 md:pl-4 pl-0 flex items-center" style={{ top: '0px' }}>
-          <img
-            src={architect}
-            width={445}
-            height={651}
-            className="w-[440px] h-[651px] object-cover transition-all duration-700 ease-in-out hover:scale-95 rounded-[200px]"
-            alt="Architect"
-          />
+          {/* Image Section */}
+          <div className="relative">
+            <div className="relative z-10">
+              <img
+                src={architect}
+                alt="Professional Makeup Artist"
+                className="w-full h-[600px] object-cover rounded-3xl shadow-2xl transition-all duration-700 ease-in-out hover:scale-105"
+              />
+            </div>
+            {/* Decorative Elements */}
+            <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/20 rounded-full backdrop-blur-sm"></div>
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/10 rounded-full backdrop-blur-sm"></div>
+          </div>
         </div>
       </div>
 
+      {/* Bottom Decorative Section */}
       <div
-        className="w-full lg:block hidden h-60"
+        className="w-full h-32 lg:h-40"
         style={{
           backgroundImage: `url('${bgWhite}')`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
-          objectFit: "cover",
+          backgroundPosition: "center",
         }}
       ></div>
     </div>
