@@ -10,15 +10,23 @@
     font-weight: 400;
     font-style: normal;
     scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    padding-top: 80px; /* Account for fixed header */
+    overflow-x: hidden;
+    background: #000; /* Ensure no white background */
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
-  }
-  
-  body {
-    overflow-x: hidden;
-    padding-top: 80px; /* Account for fixed header */
   }
   
   /* Smooth scrolling for all elements */

@@ -19,18 +19,18 @@ const HeroHome = () => {
       backgroundImage: imageLoaded ? `url('${heroImage}')` : 'none',
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
-      backgroundPosition: "center 25%",
+      backgroundPosition: "center center",
       transition: 'opacity 0.5s ease-in-out',
       opacity: imageLoaded ? 1 : 0.8,
     }}
     >
       <div className="w-full min-h-screen bg-gradient-to-b from-black/60 via-black/40 to-black/70">
         <Header transparent={true} />
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col justify-center">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
+        <div className="w-full min-h-screen flex flex-col justify-center">
+          <div className="w-full text-center space-y-8">
             {/* Tagline */}
-            <div className="inline-block bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
-              <p className="text-white/90 text-sm font-medium tracking-wide uppercase">
+            <div className="inline-block bg-black/30 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
+              <p className="text-white text-sm font-medium tracking-wide uppercase">
                 Where Beauty Finds Its True Expression
               </p>
             </div>
@@ -44,7 +44,7 @@ const HeroHome = () => {
             </h1>
             
             {/* Description */}
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto font-light">
+            <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto font-light px-4">
               Artistry That Reflects Your True Beauty. From bridal elegance to personal glam, 
               Geeta Makeovers brings out the best in you with a touch of artistry and years of expertise.
             </p>
