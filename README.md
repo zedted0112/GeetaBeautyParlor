@@ -60,7 +60,7 @@ npm run build
 
 The website is automatically deployed to GitHub Pages when you push to the `master` branch.
 
-**Live URL**: https://zedted0112.github.io/GeethaBeautyParlor/
+**Live URL**: https://zedted0112.github.io/GeetaBeautyParlor/#/
 
 ### Manual Deployment
 
