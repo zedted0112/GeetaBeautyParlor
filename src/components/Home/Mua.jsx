@@ -7,7 +7,7 @@ const Mua = () => {
   return (
     <div 
       id="about"
-      className="w-full relative overflow-hidden"
+      className="w-full relative overflow-hidden scroll-target"
       style={{
         backgroundImage: `url('${heroImage}')`,
         backgroundRepeat: "no-repeat",

@@ -11,7 +11,7 @@ const Contact = () => {
   return (
     <div
       id="contact"
-      className="w-full"
+      className="w-full scroll-target"
       style={{
         backgroundImage: `url('${bg2}')`,
         backgroundRepeat: "no-repeat",
