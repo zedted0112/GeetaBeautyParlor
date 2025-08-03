@@ -275,7 +275,7 @@ const HeroHome = () => {
         {/* Tagline */}
         <div className="inline-block bg-black/40 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20 mb-8 mt-24">
           <p className="text-white text-sm font-medium tracking-wide uppercase">
-            Where Beauty Finds Its True Expression
+            "Beauty is not in the face; beauty is a light in the heart" - Kahlil Gibran
           </p>
         </div>
 

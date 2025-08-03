@@ -25,7 +25,7 @@ const Contact = () => {
             Geeta Makeovers
           </h1>
           <p className="text-gray-200 text-[18px] leading-[20.74px] tracking-widest">
-            Discover the essence of timeless beauty at Glamour Palette. With a commitment to excellence, we strive to create an atmosphere where every individual feels empowered and confident. Our skilled team of beauty professionals is dedicated to delivering personalized experiences tailored to your unique style and preferences.
+            Discover the essence of timeless beauty at Geetha Makeovers. With a commitment to excellence, we strive to create an atmosphere where every individual feels empowered and confident. Our skilled team of beauty professionals is dedicated to delivering personalized experiences tailored to your unique style and preferences.
           </p>
           <p className="text-gray-200 text-[18px] leading-[20.74px] tracking-widest">
             Whether it's a glamorous makeover, a rejuvenating skincare session, or a stunning bridal look, we're here to make your beauty dreams a reality. Step into our sanctuary of elegance and let us unveil the true radiance within you.
