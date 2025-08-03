@@ -77,7 +77,7 @@ const Header = ({ transparent }) => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-black/20 backdrop-blur-md shadow-lg border-b border-white/10`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-black/30 backdrop-blur-lg shadow-xl border-b border-white/20`}
     >
       <div className="flex justify-between items-center w-[80%] max-w-[1200px] py-4 mx-auto">
         {/* Desktop Navigation Left */}
