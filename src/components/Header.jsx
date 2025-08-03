@@ -77,23 +77,17 @@ const Header = ({ transparent }) => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        transparent && !isScrolled 
-          ? 'bg-transparent' 
-          : 'bg-black/20 backdrop-blur-md shadow-lg border-b border-white/10'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-black/20 backdrop-blur-md shadow-lg border-b border-white/10`}
     >
       <div className="flex justify-between items-center w-[80%] max-w-[1200px] py-4 mx-auto">
         {/* Desktop Navigation Left */}
         <ul className="md:flex items-center hidden lg:gap-x-14 md:gap-x-8 gap-4 md:text-[17px] text-[15px] leading-5">
-          <li className="transition-all duration-300 ease-in-out hover:scale-95">
+                    <li className="nav-item transition-all duration-300 ease-in-out hover:scale-95">
             <NavLink
               to="/"
-                             className={({ isActive }) => 
-                 `${isActive ? "font-extrabold" : ""} ${
-                   transparent && !isScrolled ? "text-white" : "text-white"
-                 } hover:text-[#a76f52] transition-colors duration-300`
-               }
+              className={({ isActive }) => 
+                `${isActive ? "font-extrabold" : ""} text-white hover:text-[#a76f52] transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`
+              }
             >
               HOME
             </NavLink>
@@ -101,9 +95,7 @@ const Header = ({ transparent }) => {
           <li className="transition-all duration-300 ease-in-out hover:scale-95">
             <button
               onClick={scrollToAbout}
-              className={`${
-                transparent && !isScrolled ? "text-white" : "text-white"
-              } hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
+              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`}
             >
               ABOUT
             </button>
@@ -116,7 +108,7 @@ const Header = ({ transparent }) => {
             <img
               src={logoImage}
               alt="Logo"
-              className="lg:w-[80px] lg:h-[80px] md:w-[70px] md:h-[70px] w-[60px] h-[60px] object-cover transition-transform duration-300 hover:scale-105"
+              className="logo-hover lg:w-[80px] lg:h-[80px] md:w-[70px] md:h-[70px] w-[60px] h-[60px] object-cover transition-all duration-300 hover:scale-110 hover:rotate-6 hover:drop-shadow-xl"
               width={80}
               height={80}
               loading="lazy"
@@ -126,22 +118,18 @@ const Header = ({ transparent }) => {
 
         {/* Desktop Navigation Right */}
         <ul className="md:flex items-center hidden lg:gap-x-14 md:gap-x-8 gap-4 md:text-[17px] text-[15px] leading-5">
-          <li className="transition-all duration-300 ease-in-out hover:scale-95">
+          <li className="nav-item transition-all duration-300 ease-in-out hover:scale-95">
             <button
               onClick={scrollToServices}
-              className={`${
-                transparent && !isScrolled ? "text-white" : "text-white"
-              } hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
+              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`}
             >
               SERVICES
             </button>
           </li>
-          <li className="transition-all duration-300 ease-in-out hover:scale-95">
+          <li className="nav-item transition-all duration-300 ease-in-out hover:scale-95">
             <button
               onClick={scrollToContact}
-              className={`${
-                transparent && !isScrolled ? "text-white" : "text-white"
-              } hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
+              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`}
             >
               CONTACTS
             </button>
@@ -152,11 +140,7 @@ const Header = ({ transparent }) => {
         <div className="md:hidden flex justify-center items-center">
           <button
             onClick={toggleMenu}
-            className={`p-2 rounded-lg transition-colors duration-200 ${
-              transparent && !isScrolled 
-                ? "text-white hover:bg-white/20" 
-                : "text-white hover:bg-white/20"
-            }`}
+            className={`p-2 rounded-lg transition-all duration-300 text-white hover:bg-white/20 hover:scale-110 hover:rotate-3 hover:drop-shadow-lg`}
             aria-label="Toggle menu"
           >
             {isMenuOpen ? (
@@ -181,10 +165,10 @@ const Header = ({ transparent }) => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                `mobile-menu-item block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
                   isActive
-                    ? 'bg-[#a76f52] text-white'
-                    : 'text-white hover:bg-white/20'
+                    ? 'bg-[#a76f52] text-white scale-105'
+                    : 'text-white hover:bg-white/20 hover:scale-105 hover:translate-x-2'
                 }`
               }
               onClick={() => setIsMenuOpen(false)}
@@ -194,21 +178,21 @@ const Header = ({ transparent }) => {
             
             <button
               onClick={scrollToAbout}
-              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-200"
+              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:translate-x-2"
             >
               ABOUT
             </button>
             
             <button
               onClick={scrollToServices}
-              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-200"
+              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:translate-x-2"
             >
               SERVICES
             </button>
             
             <button
               onClick={scrollToContact}
-              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-200"
+              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:translate-x-2"
             >
               CONTACTS
             </button>

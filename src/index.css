@@ -61,6 +61,63 @@
     scroll-margin-top: 80px; /* Account for fixed header */
   }
   
+  /* Cool navigation animations */
+  .nav-item {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #a76f52, #b78362);
+    transition: width 0.3s ease;
+  }
+  
+  .nav-item:hover::before {
+    width: 100%;
+  }
+  
+  .nav-item:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 4px 8px rgba(167, 111, 82, 0.3);
+  }
+  
+  /* Logo animation */
+  .logo-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .logo-hover:hover {
+    filter: drop-shadow(0 8px 16px rgba(167, 111, 82, 0.4));
+  }
+  
+  /* Mobile menu animations */
+  .mobile-menu-item {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mobile-menu-item::before {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .mobile-menu-item:hover::before {
+    left: 100%;
+  }
+  
   /* Mobile-first improvements */
   .mobile-container {
     max-width: 100%;
