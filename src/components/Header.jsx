@@ -80,7 +80,7 @@ const Header = ({ transparent }) => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         transparent && !isScrolled 
           ? 'bg-transparent' 
-          : 'bg-white/95 backdrop-blur-md shadow-lg'
+          : 'bg-black/20 backdrop-blur-md shadow-lg border-b border-white/10'
       }`}
     >
       <div className="flex justify-between items-center w-[80%] max-w-[1200px] py-4 mx-auto">
@@ -89,11 +89,11 @@ const Header = ({ transparent }) => {
           <li className="transition-all duration-300 ease-in-out hover:scale-95">
             <NavLink
               to="/"
-              className={({ isActive }) => 
-                `${isActive ? "font-extrabold" : ""} ${
-                  transparent && !isScrolled ? "text-white" : "text-gray-800"
-                } hover:text-[#a76f52] transition-colors duration-300`
-              }
+                             className={({ isActive }) => 
+                 `${isActive ? "font-extrabold" : ""} ${
+                   transparent && !isScrolled ? "text-white" : "text-white"
+                 } hover:text-[#a76f52] transition-colors duration-300`
+               }
             >
               HOME
             </NavLink>
@@ -102,7 +102,7 @@ const Header = ({ transparent }) => {
             <button
               onClick={scrollToAbout}
               className={`${
-                transparent && !isScrolled ? "text-white" : "text-gray-800"
+                transparent && !isScrolled ? "text-white" : "text-white"
               } hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
             >
               ABOUT
@@ -130,7 +130,7 @@ const Header = ({ transparent }) => {
             <button
               onClick={scrollToServices}
               className={`${
-                transparent && !isScrolled ? "text-white" : "text-gray-800"
+                transparent && !isScrolled ? "text-white" : "text-white"
               } hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
             >
               SERVICES
@@ -140,7 +140,7 @@ const Header = ({ transparent }) => {
             <button
               onClick={scrollToContact}
               className={`${
-                transparent && !isScrolled ? "text-white" : "text-gray-800"
+                transparent && !isScrolled ? "text-white" : "text-white"
               } hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
             >
               CONTACTS
@@ -155,7 +155,7 @@ const Header = ({ transparent }) => {
             className={`p-2 rounded-lg transition-colors duration-200 ${
               transparent && !isScrolled 
                 ? "text-white hover:bg-white/20" 
-                : "text-gray-800 hover:bg-gray-100"
+                : "text-white hover:bg-white/20"
             }`}
             aria-label="Toggle menu"
           >
@@ -176,7 +176,7 @@ const Header = ({ transparent }) => {
             : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
-        <nav className="bg-white/95 backdrop-blur-md shadow-lg border-t border-gray-200">
+        <nav className="bg-black/20 backdrop-blur-md shadow-lg border-t border-white/10">
           <div className="px-4 py-4 space-y-2">
             <NavLink
               to="/"
@@ -184,7 +184,7 @@ const Header = ({ transparent }) => {
                 `block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive
                     ? 'bg-[#a76f52] text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    : 'text-white hover:bg-white/20'
                 }`
               }
               onClick={() => setIsMenuOpen(false)}
@@ -194,21 +194,21 @@ const Header = ({ transparent }) => {
             
             <button
               onClick={scrollToAbout}
-              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-all duration-200"
+              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-200"
             >
               ABOUT
             </button>
             
             <button
               onClick={scrollToServices}
-              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-all duration-200"
+              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-200"
             >
               SERVICES
             </button>
             
             <button
               onClick={scrollToContact}
-              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-all duration-200"
+              className="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-200"
             >
               CONTACTS
             </button>
