@@ -7,8 +7,16 @@ const HeroHome = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
+    console.log('Hero image URL:', heroImage);
     const img = new Image();
-    img.onload = () => setImageLoaded(true);
+    img.onload = () => {
+      console.log('Hero image loaded successfully');
+      setImageLoaded(true);
+    };
+    img.onerror = () => {
+      console.error('Failed to load hero image:', heroImage);
+      setImageLoaded(true); // Set to true even on error to show fallback
+    };
     img.src = heroImage;
   }, [heroImage]);
 
@@ -16,7 +24,7 @@ const HeroHome = () => {
     <div
     className="w-full min-h-screen relative overflow-hidden"
     style={{
-      backgroundImage: imageLoaded ? `url('${heroImage}')` : 'none',
+      backgroundImage: `url('${heroImage}')`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       backgroundPosition: "center center",
@@ -24,12 +32,12 @@ const HeroHome = () => {
       opacity: imageLoaded ? 1 : 0.8,
     }}
     >
-      <div className="w-full min-h-screen bg-gradient-to-b from-black/60 via-black/40 to-black/70">
+      <div className="w-full min-h-screen bg-gradient-to-b from-black/40 via-black/30 to-black/50">
         <Header transparent={true} />
         <div className="w-full min-h-screen flex flex-col justify-center">
           <div className="w-full text-center space-y-8">
             {/* Tagline */}
-            <div className="inline-block bg-black/30 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
+            <div className="inline-block bg-black/40 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20">
               <p className="text-white text-sm font-medium tracking-wide uppercase">
                 Where Beauty Finds Its True Expression
               </p>
