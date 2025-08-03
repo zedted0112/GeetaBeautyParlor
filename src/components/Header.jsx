@@ -82,20 +82,20 @@ const Header = ({ transparent }) => {
       <div className="flex justify-between items-center w-[80%] max-w-[1200px] py-4 mx-auto">
         {/* Desktop Navigation Left */}
         <ul className="md:flex items-center hidden lg:gap-x-14 md:gap-x-8 gap-4 md:text-[17px] text-[15px] leading-5">
-                    <li className="nav-item transition-all duration-300 ease-in-out hover:scale-95">
+                              <li className="nav-item">
             <NavLink
               to="/"
               className={({ isActive }) => 
-                `${isActive ? "font-extrabold" : ""} text-white hover:text-[#a76f52] transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`
+                `${isActive ? "font-extrabold" : ""} text-white hover:text-[#a76f52] transition-all duration-300`
               }
             >
               HOME
             </NavLink>
           </li>
-          <li className="transition-all duration-300 ease-in-out hover:scale-95">
+          <li className="nav-item">
             <button
               onClick={scrollToAbout}
-              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`}
+              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
             >
               ABOUT
             </button>
@@ -118,18 +118,18 @@ const Header = ({ transparent }) => {
 
         {/* Desktop Navigation Right */}
         <ul className="md:flex items-center hidden lg:gap-x-14 md:gap-x-8 gap-4 md:text-[17px] text-[15px] leading-5">
-          <li className="nav-item transition-all duration-300 ease-in-out hover:scale-95">
+          <li className="nav-item">
             <button
               onClick={scrollToServices}
-              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`}
+              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
             >
               SERVICES
             </button>
           </li>
-          <li className="nav-item transition-all duration-300 ease-in-out hover:scale-95">
+          <li className="nav-item">
             <button
               onClick={scrollToContact}
-              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300 hover:scale-105 hover:drop-shadow-lg`}
+              className={`text-white hover:text-[#a76f52] hover:font-extrabold transition-all duration-300`}
             >
               CONTACTS
             </button>
@@ -167,8 +167,8 @@ const Header = ({ transparent }) => {
               className={({ isActive }) =>
                 `mobile-menu-item block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
                   isActive
-                    ? 'bg-[#a76f52] text-white scale-105'
-                    : 'text-white hover:bg-white/20 hover:scale-105 hover:translate-x-2'
+                    ? 'bg-[#a76f52] text-white'
+                    : 'text-white hover:bg-white/20'
                 }`
               }
               onClick={() => setIsMenuOpen(false)}
@@ -178,21 +178,21 @@ const Header = ({ transparent }) => {
             
             <button
               onClick={scrollToAbout}
-              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:translate-x-2"
+              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300"
             >
               ABOUT
             </button>
             
             <button
               onClick={scrollToServices}
-              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:translate-x-2"
+              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300"
             >
               SERVICES
             </button>
             
             <button
               onClick={scrollToContact}
-              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:translate-x-2"
+              className="mobile-menu-item block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white hover:bg-white/20 transition-all duration-300"
             >
               CONTACTS
             </button>

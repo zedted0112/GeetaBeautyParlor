@@ -65,6 +65,7 @@
   .nav-item {
     position: relative;
     transition: all 0.3s ease;
+    transform: translateZ(0); /* Force hardware acceleration */
   }
   
   .nav-item::before {
