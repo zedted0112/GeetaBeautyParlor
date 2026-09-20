@@ -39,6 +39,7 @@ export default defineConfig(({ command }) => ({
     include: ['react', 'react-dom', 'react-router-dom'],
   },
   server: {
+    host: true,
     port: 5173,
     open: true,
   },

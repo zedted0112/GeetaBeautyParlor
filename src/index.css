@@ -445,51 +445,44 @@
     border-width: 2px;
   }
 
-  .service-deck {
+  .service-carousel {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    padding-top: 0.35rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .service-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .service-tab {
     position: relative;
-    width: min(84vw, 22rem);
-    height: calc(min(84vw, 22rem) * 5 / 4 + 7.25rem);
-    margin-inline: auto;
-    perspective: 1200px;
-    touch-action: pan-y;
-  }
-
-  .service-deck-card {
-    position: absolute;
-    inset: 0 0 1.35rem;
-    transform-origin: 50% 88%;
+    transform: scale(calc(0.92 + 0.08 * var(--pop, 0)));
+    transform-origin: center center;
     will-change: transform;
-    touch-action: none;
-    user-select: none;
+  }
+
+  .service-tab > *:not(.service-tab-veil) {
+    opacity: calc(0.45 + 0.55 * var(--pop, 0));
+  }
+
+  .service-tab-veil {
     pointer-events: none;
-  }
-
-  .service-deck-card.is-front {
-    pointer-events: auto;
-  }
-
-  .service-glass {
-    border: 1px solid rgba(255, 255, 255, 0.32);
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    border-radius: inherit;
     background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.16) 0%,
-      rgba(20, 17, 15, 0.42) 48%,
-      rgba(12, 10, 9, 0.55) 100%
+      160deg,
+      rgba(255, 255, 255, 0.26) 0%,
+      rgba(20, 17, 15, 0.42) 100%
     );
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.38),
-      inset 0 -18px 28px rgba(255, 255, 255, 0.04),
-      0 22px 44px rgba(0, 0, 0, 0.38);
-    backdrop-filter: blur(22px) saturate(170%);
-    -webkit-backdrop-filter: blur(22px) saturate(170%);
-  }
-
-  .service-glass-copy {
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.08) 0%,
-      rgba(20, 17, 15, 0.28) 100%
-    );
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    opacity: calc(0.82 * (1 - var(--pop, 0)));
   }
 
   .service-photo {
@@ -560,7 +553,7 @@
     aspect-ratio: 3 / 4;
   }
 
-  .service-deck .service-photo {
+  .service-carousel .service-photo {
     aspect-ratio: 4 / 5;
   }
 }
@@ -580,5 +573,17 @@
   .dock-icon {
     transition: none;
     transform: none !important;
+  }
+
+  .service-tab {
+    transform: none;
+  }
+
+  .service-tab > *:not(.service-tab-veil) {
+    opacity: 1;
+  }
+
+  .service-tab-veil {
+    display: none;
   }
 }
