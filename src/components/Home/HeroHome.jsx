@@ -68,16 +68,16 @@ const HeroHome = () => {
         </>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(92%,1100px)] flex-col items-center justify-center px-1 pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))] text-center text-white sm:px-4 sm:pb-20 sm:pt-28">
-        <p className="section-badge-light mb-4 text-[10px] sm:mb-6 sm:text-xs">{brand.locationShort} · 15 years of craft</p>
-        <h1 className="font-display text-[2.35rem] font-semibold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(92%,1100px)] flex-col items-center justify-center px-1 pb-24 pt-[calc(5rem+env(safe-area-inset-top))] text-center text-white sm:px-4 sm:pb-20 sm:pt-28">
+        <p className="section-badge-light mb-3 text-[10px] sm:mb-6 sm:text-xs">{brand.locationShort} · 15 years of craft</p>
+        <h1 className="font-display text-[1.85rem] font-semibold leading-[1.12] tracking-tight sm:text-6xl lg:text-7xl">
           {brand.name}
         </h1>
-        <p className="mt-4 max-w-2xl text-[15px] font-light leading-relaxed text-white/90 sm:mt-5 sm:text-xl">
+        <p className="mt-3 max-w-2xl text-[13px] font-light leading-relaxed text-white/90 sm:mt-5 sm:text-xl">
           {brand.description}
         </p>
 
-        <div className="mt-7 flex w-full max-w-sm flex-col items-stretch gap-3 sm:mt-8 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
+        <div className="mt-5 flex w-full max-w-xs flex-col items-stretch gap-2.5 sm:mt-8 sm:max-w-none sm:flex-row sm:items-center sm:justify-center sm:gap-3">
           <button type="button" className="btn-primary w-full sm:w-auto" onClick={() => openBooking('an appointment')}>
             Book on WhatsApp
           </button>
@@ -86,13 +86,13 @@ const HeroHome = () => {
           </button>
         </div>
 
-        <div className="mt-10 grid w-full max-w-md grid-cols-3 gap-2 text-white/80 sm:mt-14 sm:flex sm:max-w-none sm:items-center sm:justify-center sm:gap-10">
+        <div className="mt-7 grid w-full max-w-sm grid-cols-3 gap-1.5 text-white/80 sm:mt-14 sm:flex sm:max-w-none sm:items-center sm:justify-center sm:gap-10">
           {stats.map((item, i) => (
             <div key={item.label} className="flex items-center sm:gap-10">
               {i > 0 && <div className="mr-6 hidden h-10 w-px bg-white/25 sm:block" />}
               <div>
-                <p className="font-display text-xl text-white sm:text-3xl">{item.value}</p>
-                <p className="mt-0.5 text-[10px] uppercase leading-tight tracking-wider sm:text-xs">{item.label}</p>
+                <p className="font-display text-lg text-white sm:text-3xl">{item.value}</p>
+                <p className="mt-0.5 text-[9px] uppercase leading-tight tracking-wider sm:text-xs">{item.label}</p>
               </div>
             </div>
           ))}

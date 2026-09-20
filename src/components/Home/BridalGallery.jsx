@@ -82,11 +82,11 @@ const BridalGallery = ({ open, onClose }) => {
       aria-labelledby="bridal-gallery-title"
     >
       <div
-        className="relative flex h-[100dvh] w-full flex-col overflow-hidden border-white/10 bg-[#14110f] shadow-2xl sm:h-[min(94vh,920px)] sm:w-[min(96vw,1280px)] sm:rounded-3xl sm:border lg:flex-row"
+        className="relative flex h-auto max-h-[100dvh] w-full flex-col overflow-hidden border-white/10 bg-[#14110f] shadow-2xl sm:h-[min(94vh,920px)] sm:w-[min(96vw,1280px)] sm:rounded-3xl sm:border lg:flex-row"
         onClick={(event) => event.stopPropagation()}
       >
         <div
-          className="relative flex min-h-0 max-h-[58dvh] flex-1 items-center justify-center bg-black pt-[env(safe-area-inset-top)] lg:max-h-none"
+          className="relative flex h-[min(62dvh,28rem)] shrink-0 items-center justify-center bg-black pt-[env(safe-area-inset-top)] sm:h-auto sm:min-h-0 sm:flex-1"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
@@ -124,18 +124,21 @@ const BridalGallery = ({ open, onClose }) => {
         </div>
 
         <aside className="flex w-full shrink-0 flex-col border-t border-white/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
-          <div className="mb-2 flex items-start justify-between gap-3 sm:mb-3 lg:mb-4">
+          <div className="mb-2 flex items-center justify-between gap-3 sm:mb-3 sm:items-start lg:mb-4">
             <div>
               <div className="hidden sm:block">
                 <p className="section-badge">Bride shoots</p>
               </div>
-              <h3 id="bridal-gallery-title" className="font-display text-lg text-ivory sm:mt-3 sm:text-3xl">
+              <h3 id="bridal-gallery-title" className="font-display text-base text-ivory sm:mt-3 sm:text-3xl">
                 Bridal looks
               </h3>
               <p className="mt-2 hidden text-sm text-ivory/65 lg:block">
                 Every shoot sits in the same frame, so the full look always fits.
               </p>
             </div>
+            <p className="shrink-0 text-sm text-ivory/50 sm:hidden">
+              {active + 1} / {bridalPhotos.length}
+            </p>
             <button
               type="button"
               onClick={onClose}
@@ -152,7 +155,7 @@ const BridalGallery = ({ open, onClose }) => {
                 key={src}
                 type="button"
                 onClick={() => setActive(index)}
-                className={`photo-thumb h-14 w-11 shrink-0 lg:h-auto lg:w-auto ${index === active ? 'border-brand-400' : 'border-transparent'}`}
+                className={`photo-thumb h-12 w-9 shrink-0 sm:h-14 sm:w-11 lg:h-auto lg:w-auto ${index === active ? 'border-brand-400' : 'border-transparent'}`}
                 aria-label={`Show bridal photo ${index + 1}`}
               >
                 <img src={src} alt="" className="h-full w-full object-cover object-[center_20%]" />
@@ -161,12 +164,12 @@ const BridalGallery = ({ open, onClose }) => {
           </div>
 
           <div className="mt-3 flex items-center justify-between gap-3 sm:mt-5">
-            <p className="shrink-0 text-sm text-ivory/50">
+            <p className="hidden shrink-0 text-sm text-ivory/50 sm:block">
               {active + 1} / {bridalPhotos.length}
             </p>
             <button
               type="button"
-              className="btn-primary min-h-10 px-4 py-2 text-xs sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
+              className="btn-primary w-full min-h-10 px-4 py-2 text-xs sm:w-auto sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
               onClick={() => {
                 onClose()
                 openBooking('Bridal Makeup')

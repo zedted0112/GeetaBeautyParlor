@@ -4,90 +4,85 @@ import { RiInstagramFill, RiWhatsappFill } from 'react-icons/ri'
 import { logoImages } from '../../utils/imageImports'
 import { brand, contact, mailUrl, telUrl, whatsappUrl } from '../../data/content'
 
-const cards = [
+const actions = [
+  { label: 'FB', name: 'Facebook', icon: MdOutlineFacebook, soon: true },
+  { label: 'IG', name: 'Instagram', icon: RiInstagramFill, soon: true },
   {
-    label: 'Call',
-    value: contact.phoneDisplay,
-    href: telUrl,
-    icon: IoCall,
-  },
-  {
-    label: 'WhatsApp',
-    value: contact.phoneDisplay,
-    href: whatsappUrl(),
+    label: 'WA',
+    name: 'WhatsApp',
     icon: RiWhatsappFill,
+    href: whatsappUrl(),
     external: true,
-    accent: 'hover:border-[#25D366] hover:text-[#25D366]',
+    accent: 'hover:text-[#25D366]',
   },
-  {
-    label: 'Email',
-    value: contact.email,
-    href: mailUrl,
-    icon: IoMail,
-  },
+  { label: 'Call', name: 'Call', icon: IoCall, href: telUrl },
+  { label: 'Email', name: 'Email', icon: IoMail, href: mailUrl },
   {
     label: 'Visit',
-    value: contact.address,
-    href: contact.mapsUrl,
+    name: 'Visit',
     icon: IoLocationSharp,
+    href: contact.mapsUrl,
     external: true,
   },
 ]
 
 const Contact = () => (
   <section id="contact" className="scroll-target bg-ink text-white">
-    <div className="mx-auto w-[min(92%,1200px)] py-14 lg:py-24">
-      <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-xl">
+    <div className="mx-auto w-[min(92%,760px)] py-9 sm:py-14 lg:py-24">
+      <article className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-panel shadow-card sm:rounded-[2rem]">
+        <div className="px-5 pb-6 pt-6 sm:px-8 sm:pb-8 sm:pt-8">
+          <p className="section-badge">{brand.locationShort}</p>
           <img
             src={logoImages.wordmark}
             alt={brand.name}
-            className="mb-5 h-16 w-auto object-contain sm:mb-6 sm:h-24"
+            className="mt-4 h-12 w-auto object-contain sm:mt-5 sm:h-16"
           />
           <h2 className="sr-only">{brand.name}</h2>
-          <p className="mt-4 text-base leading-relaxed text-white/70 sm:text-lg">
-            {brand.owner} and {brand.assistant} — beauty consultants in {brand.location}.
-            Walk in, call, or send a WhatsApp. We will take it from there.
+          <p className="mt-3 text-sm leading-relaxed text-white/70 sm:mt-4 sm:text-base">
+            {brand.owner} and {brand.assistant} — walk in, call, or send a WhatsApp. We will take it from there.
           </p>
         </div>
-        <div className="flex gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/50" title="Facebook coming soon">
-            <MdOutlineFacebook className="h-5 w-5" />
-          </span>
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/50" title="Instagram coming soon">
-            <RiInstagramFill className="h-5 w-5" />
-          </span>
-          <a
-            href={whatsappUrl()}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="WhatsApp"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition hover:border-[#25D366] hover:text-[#25D366]"
-          >
-            <RiWhatsappFill className="h-5 w-5" />
-          </a>
-        </div>
-      </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-4 lg:grid-cols-4">
-        {cards.map((card) => {
-          const Icon = card.icon
-          return (
-            <a
-              key={card.label}
-              href={card.href}
-              target={card.external ? '_blank' : undefined}
-              rel={card.external ? 'noreferrer' : undefined}
-              title={card.value}
-              aria-label={`${card.label}: ${card.value}`}
-              className={`flex min-h-[7.5rem] flex-col items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-6 text-ivory/90 transition hover:border-brand-400 hover:bg-white/10 sm:px-4 sm:py-8 ${card.accent || ''}`}
-            >
-              <Icon className="h-8 w-8" />
-              <span className="text-xs uppercase tracking-[0.16em] text-ivory/60">{card.label}</span>
-            </a>
-          )
-        })}
-      </div>
+        <div className="grid grid-cols-6 border-t border-white/10 bg-black/25">
+          {actions.map((item) => {
+            const Icon = item.icon
+            const className = `flex flex-col items-center justify-center gap-1.5 py-4 text-white/85 transition sm:py-5 ${
+              item.soon ? 'cursor-default text-white/35' : `hover:bg-white/5 ${item.accent || 'hover:text-brand-300'}`
+            }`
+
+            const inner = (
+              <>
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-white/45 sm:text-[10px]">
+                  <span className="sm:hidden">{item.label}</span>
+                  <span className="hidden sm:inline">{item.name}</span>
+                </span>
+              </>
+            )
+
+            if (item.soon) {
+              return (
+                <span key={item.name} title={`${item.name} coming soon`} className={className}>
+                  {inner}
+                </span>
+              )
+            }
+
+            return (
+              <a
+                key={item.name}
+                href={item.href}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noreferrer' : undefined}
+                aria-label={item.name}
+                className={className}
+              >
+                {inner}
+              </a>
+            )
+          })}
+        </div>
+      </article>
     </div>
   </section>
 )

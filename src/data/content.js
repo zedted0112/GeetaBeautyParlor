@@ -84,13 +84,11 @@ export const services = [
 export const about = {
   badge: 'Meet Geeta Semwal',
   heading: 'Beauty, made personal in Uttarkashi',
-  body: [
-    'Geeta has spent 15 years learning faces the way a good artist learns light — patiently, and in person. At Geeta Makeovers, nothing is off a chart. Your skin, your jewellery, your mountain wedding, your everyday confidence: the look is built around you.',
-    'From intricate Indian bridal glam to a quiet party look, every appointment is curated with luxury products, practised hands, and the kind of care that only a hometown studio can give.',
-  ],
-  highlights: [
-    { title: 'Bridal first', text: 'Looks that last from dawn rituals to late-night pheras.' },
-    { title: 'Your features, not a filter', text: 'Makeup that belongs on your skin, in real light.' },
+  quotes: [
+    'Your skin, your jewellery, your mountain wedding, your everyday confidence — the look is built around you.',
+    'The kind of care that only a hometown studio can give.',
+    'Fifteen years learning faces the way a good artist learns light — patiently, and in person.',
+    'Nothing is off a chart. The look is built around you.',
   ],
 }
 
