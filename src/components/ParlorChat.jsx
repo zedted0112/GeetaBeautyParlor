@@ -216,7 +216,7 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
 
   return (
     <div
-      className={`fixed inset-0 z-[75] flex items-center justify-center bg-black/60 p-4 pb-[calc(5.8rem+env(safe-area-inset-bottom))] backdrop-blur-md sm:pb-4 ${
+      className={`fixed inset-0 z-[75] flex items-center justify-center bg-black/60 p-4 pt-[calc(5rem+env(safe-area-inset-top))] pb-[calc(6.8rem+env(safe-area-inset-bottom))] backdrop-blur-md sm:p-6 ${
         galleryOpen ? 'pointer-events-none invisible' : ''
       }`}
       onClick={onClose}

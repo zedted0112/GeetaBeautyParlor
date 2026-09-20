@@ -54,7 +54,7 @@ const HeroHome = () => {
         </>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(92%,1100px)] flex-col items-center px-1 pb-[calc(4.4rem+env(safe-area-inset-bottom))] pt-[calc(5.5rem+env(safe-area-inset-top))] text-center text-white sm:px-4 sm:pb-16 sm:pt-32">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(92%,1100px)] flex-col items-center px-1 pb-[calc(5.4rem+env(safe-area-inset-bottom))] pt-[calc(5.5rem+env(safe-area-inset-top))] text-center text-white sm:px-4 sm:pb-16 sm:pt-32">
         <div>
           <h1 className="hero-wordmark">
             <span className="hero-wordmark-name">Geeta</span>

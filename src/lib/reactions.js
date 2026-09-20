@@ -69,6 +69,18 @@ export const subscribeTallies = (photoIds, visitorId, onChange) => {
   }
 }
 
+export const loadReactionVisitors = async () => {
+  const { data, error } = await supabase.from('reaction_votes').select('visitor_id, updated_at')
+  if (error) throw error
+  const latest = {}
+  ;(data || []).forEach((row) => {
+    if (!row.visitor_id) return
+    const time = row.updated_at ? new Date(row.updated_at).getTime() : 0
+    latest[row.visitor_id] = Math.max(latest[row.visitor_id] || 0, Number.isFinite(time) ? time : 0)
+  })
+  return latest
+}
+
 export const loadVisitorVotes = async (visitorId) => {
   if (!visitorId) return []
   const { data, error } = await supabase
@@ -80,16 +92,13 @@ export const loadVisitorVotes = async (visitorId) => {
   return data || []
 }
 
-export const loadReactionFeed = async ({ excludeVisitorId = '' } = {}) => {
-  const { data: votes, error } = await supabase
-    .from('reaction_votes')
-    .select('photo_id, visitor_id, kind, updated_at')
-    .order('updated_at', { ascending: false })
-    .limit(80)
-  if (error) throw error
-  const rows = (votes || []).filter((row) => row.visitor_id && row.visitor_id !== excludeVisitorId)
-  if (!rows.length) return []
+const stampVote = (value) => {
+  const time = value ? new Date(value).getTime() : 0
+  return Number.isFinite(time) ? time : 0
+}
 
+const hydrateReactionRows = async (rows) => {
+  if (!rows.length) return []
   const ids = [...new Set(rows.map((row) => row.visitor_id))]
   const { data: profiles } = await supabase.from('parlor_profiles').select('visitor_id, name, avatar').in('visitor_id', ids)
   const byId = Object.fromEntries((profiles || []).map((row) => [row.visitor_id, row]))
@@ -105,12 +114,52 @@ export const loadReactionFeed = async ({ excludeVisitorId = '' } = {}) => {
   }))
 }
 
+export const loadReactionFeed = async ({ excludeVisitorId = '' } = {}) => {
+  const { data: votes, error } = await supabase
+    .from('reaction_votes')
+    .select('photo_id, visitor_id, kind, updated_at')
+    .order('updated_at', { ascending: false })
+    .limit(80)
+  if (error) throw error
+  const rows = (votes || []).filter((row) => row.visitor_id && row.visitor_id !== excludeVisitorId)
+  return hydrateReactionRows(rows)
+}
+
+export const loadLikedReactionFeed = async (visitorId) => {
+  if (!visitorId) return []
+  const { data: mine, error: mineError } = await supabase
+    .from('reaction_votes')
+    .select('photo_id, updated_at')
+    .eq('visitor_id', visitorId)
+  if (mineError) throw mineError
+  if (!mine?.length) return []
+
+  const sinceByPhoto = Object.fromEntries(mine.map((row) => [row.photo_id, stampVote(row.updated_at)]))
+  const photoIds = mine.map((row) => row.photo_id)
+
+  const { data: votes, error } = await supabase
+    .from('reaction_votes')
+    .select('photo_id, visitor_id, kind, updated_at')
+    .in('photo_id', photoIds)
+    .order('updated_at', { ascending: false })
+    .limit(200)
+  if (error) throw error
+
+  const rows = (votes || []).filter((row) => {
+    if (!row.visitor_id || row.visitor_id === visitorId) return false
+    return stampVote(row.updated_at) > (sinceByPhoto[row.photo_id] || 0)
+  })
+
+  return hydrateReactionRows(rows)
+}
+
 export const subscribeReactionFeed = (onChange, options = {}) => {
+  const load = options.load || (() => loadReactionFeed(options))
   const channel = supabase
     .channel(`reaction-feed-${Date.now()}`)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'reaction_votes' }, async () => {
       try {
-        onChange(await loadReactionFeed(options))
+        onChange(await load())
       } catch {
         // keep the last good feed if a refresh fails
       }

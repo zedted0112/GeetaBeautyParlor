@@ -51,7 +51,6 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   const tally = tallies[photo.id] || emptyTally()
 
   const openSend = async () => {
-    if (lookSent[photo.id] === true) return
     if (!(await ensureProfile())) return
     const next = readLocalProfile()
     if (!next || isAdminProfile(next, getVisitorId() || visitorId)) return
@@ -289,7 +288,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
               className="btn-secondary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
               onClick={openSend}
             >
-              {lookSent[photo.id] === true ? 'Sent' : 'Send To Studio'}
+              {lookSent[photo.id] === true ? 'Add note' : 'Send To Studio'}
             </button>
             <button
               type="button"

@@ -4,7 +4,7 @@ import { contact } from '../data/content'
 import { formatStudioDate, nowMs } from '../lib/clock'
 import { holdImages } from '../lib/mediaCache'
 import { GEETA_ADMIN_ID } from '../lib/profile'
-import { REACTION_EMOJI, loadReactionFeed, subscribeReactionFeed } from '../lib/reactions'
+import { REACTION_EMOJI, loadLikedReactionFeed, loadReactionFeed, subscribeReactionFeed } from '../lib/reactions'
 import { bridalPhotos } from './Home/BridalGallery'
 import ParlorAvatar from './ParlorAvatar'
 
@@ -61,9 +61,12 @@ const ParlorBell = ({ admin, visitorId, inbox = [], onOpenThread, onOpenLook }) 
   }, [visitorId])
 
   useEffect(() => {
-    if (!admin) return undefined
+    if (!visitorId) return undefined
     let alive = true
-    loadReactionFeed({ excludeVisitorId: GEETA_ADMIN_ID })
+    const load = admin
+      ? () => loadReactionFeed({ excludeVisitorId: GEETA_ADMIN_ID })
+      : () => loadLikedReactionFeed(visitorId)
+    load()
       .then((rows) => {
         if (alive) setReactions(rows)
         holdImages(rows.map((row) => mediaFor(row.photoId).src).filter(Boolean))
@@ -74,12 +77,12 @@ const ParlorBell = ({ admin, visitorId, inbox = [], onOpenThread, onOpenLook }) 
     const stop = subscribeReactionFeed((rows) => {
       if (alive) setReactions(rows)
       holdImages(rows.map((row) => mediaFor(row.photoId).src).filter(Boolean))
-    }, { excludeVisitorId: GEETA_ADMIN_ID })
+    }, { load })
     return () => {
       alive = false
       stop()
     }
-  }, [admin])
+  }, [admin, visitorId])
 
   useEffect(() => {
     if (!open) return undefined
@@ -116,7 +119,13 @@ const ParlorBell = ({ admin, visitorId, inbox = [], onOpenThread, onOpenLook }) 
       .sort((a, b) => stamp(b.at) - stamp(a.at))
   }, [admin, inbox, visitorId])
 
-  const items = admin ? reactions : clientNotes
+  const items = useMemo(() => {
+    if (admin) return reactions
+    return [
+      ...clientNotes,
+      ...reactions.map((item) => ({ ...item, type: 'reaction' })),
+    ].sort((a, b) => stamp(b.at) - stamp(a.at))
+  }, [admin, clientNotes, reactions])
   const unread = items.filter((item) => stamp(item.at) > seen).length
 
   const toggle = () => {
@@ -153,66 +162,63 @@ const ParlorBell = ({ admin, visitorId, inbox = [], onOpenThread, onOpenLook }) 
             {admin ? 'Reactions' : 'Updates'}
           </p>
           <ul className="max-h-[22rem] overflow-y-auto">
-            {admin
-              ? reactions.length
-                ? reactions.map((item) => {
-                    const media = mediaFor(item.photoId)
-                    return (
-                      <li key={item.id}>
-                        <button
-                          type="button"
-                          className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left hover:bg-white/5"
-                          onClick={(event) => {
-                            setOpen(false)
-                            onOpenLook?.(event.currentTarget, media.gallery, item.photoId)
-                          }}
-                        >
-                          <ParlorAvatar id={item.avatar} size="sm" />
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-[13px] text-ivory">
-                              <span className="font-medium">{item.name}</span>
-                              <span className="text-ivory/70"> reacted {REACTION_EMOJI[item.kind] || ''}</span>
-                            </span>
-                            <span className="block text-[11px] text-ivory/45">
-                              {media.label} · {ago(item.at)}
-                            </span>
-                          </span>
-                          {media.src ? (
-                            <img src={media.src} alt="" className="h-10 w-8 shrink-0 rounded-md object-cover" />
-                          ) : null}
-                        </button>
-                      </li>
-                    )
-                  })
-                : (
-                  <li className="px-3 py-4 text-[13px] text-ivory/50">No reactions yet.</li>
-                )
-              : clientNotes.length
-                ? clientNotes.map((item) => (
+            {items.length ? (
+              items.map((item) => {
+                if (item.type === 'reaction' || admin) {
+                  const media = mediaFor(item.photoId)
+                  return (
                     <li key={item.id}>
                       <button
                         type="button"
                         className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left hover:bg-white/5"
-                        onClick={() => {
+                        onClick={(event) => {
                           setOpen(false)
-                          onOpenThread?.(item.row)
+                          onOpenLook?.(event.currentTarget, media.gallery, item.photoId)
                         }}
                       >
                         <ParlorAvatar id={item.avatar} size="sm" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[13px] text-ivory">
                             <span className="font-medium">{item.name}</span>
-                            <span className="text-ivory/70"> replied</span>
+                            <span className="text-ivory/70"> reacted {REACTION_EMOJI[item.kind] || ''}</span>
                           </span>
-                          <span className="block truncate text-[12px] text-ivory/60">{item.body}</span>
-                          <span className="block text-[11px] text-ivory/45">{ago(item.at)}</span>
+                          <span className="block text-[11px] text-ivory/45">
+                            {media.label} · {ago(item.at)}
+                          </span>
                         </span>
+                        {media.src ? (
+                          <img src={media.src} alt="" className="h-10 w-8 shrink-0 rounded-md object-cover" />
+                        ) : null}
                       </button>
                     </li>
-                  ))
-                : (
-                  <li className="px-3 py-4 text-[13px] text-ivory/50">No updates yet.</li>
-                )}
+                  )
+                }
+                return (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left hover:bg-white/5"
+                      onClick={() => {
+                        setOpen(false)
+                        onOpenThread?.(item.row)
+                      }}
+                    >
+                      <ParlorAvatar id={item.avatar} size="sm" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[13px] text-ivory">
+                          <span className="font-medium">{item.name}</span>
+                          <span className="text-ivory/70"> replied</span>
+                        </span>
+                        <span className="block truncate text-[12px] text-ivory/60">{item.body}</span>
+                        <span className="block text-[11px] text-ivory/45">{ago(item.at)}</span>
+                      </span>
+                    </button>
+                  </li>
+                )
+              })
+            ) : (
+              <li className="px-3 py-4 text-[13px] text-ivory/50">{admin ? 'No reactions yet.' : 'No updates yet.'}</li>
+            )}
           </ul>
         </div>
       ) : null}

@@ -125,6 +125,24 @@ export const saveParlorProfile = async (visitorId, draft) => {
   return profile
 }
 
+export const loadParlorClients = async () => {
+  const { data, error } = await supabase
+    .from('parlor_profiles')
+    .select('visitor_id, name, avatar, role, created_at, updated_at')
+    .order('name', { ascending: true })
+  if (error) throw new Error(error.message)
+  return (data || []).filter((row) => row.visitor_id && row.visitor_id !== GEETA_ADMIN_ID && row.role !== 'admin')
+}
+
+export const touchParlorPresence = async (visitorId) => {
+  if (!visitorId || visitorId === 'anon' || visitorId === GEETA_ADMIN_ID) return
+  const { error } = await supabase
+    .from('parlor_profiles')
+    .update({ updated_at: new Date().toISOString() })
+    .eq('visitor_id', visitorId)
+  if (error) throw new Error(error.message)
+}
+
 export const loginParlorProfile = async (name, pin) => {
   if (!isProfileName(name)) throw new Error('Enter your parlor name')
   if (!isParlorPin(pin)) throw new Error('PIN must be 4 digits')

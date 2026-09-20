@@ -6,6 +6,7 @@ import {
   loginParlorProfile,
   readLocalProfile,
   saveParlorProfile,
+  touchParlorPresence,
 } from '../lib/profile'
 import { adoptVisits } from '../lib/visits'
 import { seedGeetaAdmin } from '../lib/messages'
@@ -23,6 +24,23 @@ export const ParlorProvider = ({ children }) => {
   useEffect(() => {
     seedGeetaAdmin().catch(() => {})
   }, [])
+
+  useEffect(() => {
+    if (!visitorId || !profile || isAdminProfile(profile, visitorId)) return undefined
+    const beat = () => {
+      touchParlorPresence(visitorId).catch(() => {})
+    }
+    beat()
+    const timer = window.setInterval(beat, 40000)
+    const onVis = () => {
+      if (document.visibilityState === 'visible') beat()
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVis)
+    }
+  }, [visitorId, profile])
 
   useEffect(() => {
     const local = readLocalProfile()

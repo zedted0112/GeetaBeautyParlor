@@ -77,10 +77,10 @@ const Dock = () => {
   }
 
   return (
-    <div className="pointer-events-none fixed bottom-[max(0.7rem,env(safe-area-inset-bottom))] left-1/2 z-[70] -translate-x-1/2 md:hidden">
+    <div className="pointer-events-none fixed bottom-[max(1.6rem,calc(env(safe-area-inset-bottom)+1.1rem))] left-1/2 z-[70] -translate-x-1/2 md:hidden">
       <nav
         aria-label="Quick"
-        className="dock-glass pointer-events-auto flex items-center gap-1.5 rounded-full px-3 sm:gap-2 sm:px-4"
+        className="dock-glass pointer-events-auto flex min-w-[20.5rem] items-center justify-between gap-3 rounded-full px-5 sm:min-w-[22.5rem] sm:gap-4 sm:px-6"
         onMouseMove={(event) => {
           if (bounce !== null) return
           setMouseX(event.clientX)
@@ -115,7 +115,7 @@ const Dock = () => {
           return (
             <span key={item.id} className="flex items-center">
               {item.id === 'book' ? (
-                <span className="mx-1 hidden h-5 w-px bg-white/25 sm:mx-1.5 sm:block" />
+                <span className="mx-1.5 hidden h-5 w-px bg-white/25 sm:mx-2 sm:block" />
               ) : null}
               <button
                 ref={(node) => {

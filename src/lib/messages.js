@@ -80,6 +80,26 @@ export const isLiveChatThread = (row) => {
 export const isLookThread = (row) =>
   (row?.kind === 'look' && row?.ref_id !== '__chat__') || row?.kind === 'reel'
 
+const activityStamp = (row) => {
+  const last = row?.lastReply?.created_at || row?.created_at || ''
+  const time = last ? new Date(last).getTime() : 0
+  return Number.isFinite(time) ? time : 0
+}
+
+export const lookThreadKey = (row) =>
+  `${row?.from_visitor_id || ''}|${row?.kind || ''}|${row?.ref_id || ''}`
+
+export const dedupeLookThreads = (rows) => {
+  const best = new Map()
+  ;(rows || []).forEach((row) => {
+    if (!isLookThread(row)) return
+    const key = lookThreadKey(row)
+    const prev = best.get(key)
+    if (!prev || activityStamp(row) >= activityStamp(prev)) best.set(key, row)
+  })
+  return [...best.values()]
+}
+
 export const isBookThread = (row) => row?.kind === 'book'
 
 const withLastReply = (roots, replies) => {
@@ -219,6 +239,26 @@ export const sendToGeeta = async (payload) => {
   const name = String(payload.name || '').trim()
   if (name.length < 2) throw new Error('Join the parlor first')
   if (String(payload.visitorId || '') === GEETA_ADMIN_ID) throw new Error('This desk receives client notes')
+  const note = String(payload.body || '').trim().slice(0, 280)
+  const isPost = payload.kind === 'look' || payload.kind === 'reel'
+  if (isPost && payload.visitorId && payload.visitorId !== 'anon') {
+    const existing = (await loadMyThreads(payload.visitorId, { fresh: true }))
+      .filter((row) => row.kind === payload.kind && row.ref_id === (payload.refId || ''))
+      .sort((a, b) => activityStamp(b) - activityStamp(a))[0]
+    if (existing) {
+      if (!note) return existing
+      const reply = await replyOnThread({
+        parentId: existing.id,
+        visitorId: payload.visitorId,
+        name,
+        avatar: payload.avatar,
+        body: note,
+        refId: existing.ref_id,
+      })
+      const welcome = await maybeAutoWelcome(existing, payload.visitorId, name).catch(() => null)
+      return { ...existing, lastReply: welcome || reply }
+    }
+  }
   const saved = await insertRow({
     id: makeId(),
     from_visitor_id: payload.visitorId || 'anon',
@@ -229,7 +269,7 @@ export const sendToGeeta = async (payload) => {
     visit_on: payload.date || null,
     visit_time: payload.time || '',
     service: String(payload.service || '').slice(0, 80),
-    body: String(payload.body || '').trim().slice(0, 280),
+    body: note,
     parent_id: null,
     status: payload.kind === 'book' ? 'pending' : '',
   })
@@ -320,6 +360,34 @@ export const loadThread = async (root, { fresh = false } = {}) => {
     if (!schemaError(error)) return rememberThread(root.id, [root])
   }
   return rememberThread(root.id, [root])
+}
+
+export const ensureClientChat = async ({ clientId, clientName, clientAvatar }) => {
+  const who = String(clientName || '').trim()
+  if (who.length < 2) throw new Error('Missing client')
+  if (!clientId || clientId === 'anon' || clientId === GEETA_ADMIN_ID) throw new Error('Missing client')
+
+  const existing = (await loadGeetaInbox({ fresh: true })).find(
+    (row) => row.from_visitor_id === clientId && isChatThread(row)
+  )
+  if (existing) return existing
+
+  const row = {
+    id: makeId(),
+    from_visitor_id: clientId,
+    from_name: who.slice(0, 24),
+    from_avatar: clientAvatar || 'lotus',
+    kind: 'chat',
+    ref_id: '',
+    body: '',
+    parent_id: null,
+    status: '',
+  }
+  try {
+    return await insertRow(row)
+  } catch {
+    return insertRow({ ...row, kind: 'look', ref_id: '__chat__' })
+  }
 }
 
 export const sendChatToGeeta = async ({ visitorId, name, avatar, body }) => {

@@ -77,7 +77,7 @@ const ParlorSignup = () => {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 pt-[calc(5rem+env(safe-area-inset-top))] pb-[calc(6.8rem+env(safe-area-inset-bottom))] backdrop-blur-md sm:p-6"
       onClick={closeSignup}
       role="dialog"
       aria-modal="true"
