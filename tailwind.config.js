@@ -25,6 +25,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Playfair Display', 'Georgia', 'serif'],
+        script: ['Cormorant Garamond', 'Georgia', 'serif'],
       },
       boxShadow: {
         card: '0 20px 50px -24px rgba(26, 20, 18, 0.45)',

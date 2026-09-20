@@ -8,6 +8,8 @@ export const heroImages = {
   aboutMain: new URL('../assets/images/hero/hero-about-main.jpg', import.meta.url).href,
   bgPrimary: new URL('../assets/images/hero/hero-bg-primary.png', import.meta.url).href,
   bgSecondary: new URL('../assets/images/hero/hero-bg-secondary.png', import.meta.url).href,
+  brideBgTop1: new URL('../assets/images/hero/bride-bg-top-1.jpg', import.meta.url).href,
+  brideBgTop3: new URL('../assets/images/hero/bride-bg-top-3.jpg', import.meta.url).href,
 };
 
 // Background Images
