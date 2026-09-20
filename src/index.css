@@ -423,11 +423,14 @@
   }
 
   .photo-frame {
-    aspect-ratio: 4 / 5;
-    height: 100%;
-    width: 100%;
+    position: absolute;
+    inset: 0;
+    height: auto;
+    width: auto;
     max-width: 100%;
     max-height: 100%;
+    margin: auto;
+    aspect-ratio: 4 / 5;
     background: #0a0908;
   }
 
@@ -443,6 +446,44 @@
     overflow: hidden;
     border-radius: 0.75rem;
     border-width: 2px;
+  }
+
+  .gallery-react {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(20, 17, 15, 0.55) 100%
+    );
+  }
+
+  .gallery-react-btn {
+    display: flex;
+    min-height: 2.5rem;
+    flex: 1 1 0;
+    max-width: 6.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: #f4ece4;
+    transition:
+      transform 0.18s cubic-bezier(0.34, 1.4, 0.64, 1),
+      background 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  .gallery-react-btn:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .gallery-react-btn.is-on {
+    border-color: rgba(192, 141, 112, 0.7);
+    background: rgba(167, 111, 82, 0.22);
+    transform: scale(1.06);
   }
 
   .service-carousel {

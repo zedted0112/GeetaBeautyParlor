@@ -18,35 +18,92 @@ const orderedServices = [
   ...services.filter((service) => service.id !== 'bridal'),
 ]
 
-const updatePop = (track) => {
+const SNAP = 0.16
+
+const readTargets = (track) => {
   const center = track.scrollLeft + track.clientWidth / 2
   let best = 0
   let bestDist = Infinity
-  ;[...track.children].forEach((card, index) => {
+  const targets = [...track.children].map((card, index) => {
     const mid = card.offsetLeft + card.offsetWidth / 2
     const dist = Math.abs(mid - center)
     const t = Math.max(0, 1 - dist / card.offsetWidth)
-    const pop = t * t * (3 - 2 * t)
-    card.style.setProperty('--pop', pop.toFixed(3))
     if (dist < bestDist) {
       bestDist = dist
       best = index
     }
+    return t * t * (3 - 2 * t)
   })
-  return best
+  return { targets, best }
+}
+
+const applyPops = (track, values) => {
+  ;[...track.children].forEach((card, index) => {
+    card.style.setProperty('--pop', values[index].toFixed(3))
+  })
 }
 
 const Services = () => {
   const [bridalOpen, setBridalOpen] = useState(false)
   const [active, setActive] = useState(0)
   const trackRef = useRef(null)
+  const popsRef = useRef([])
+  const draggingRef = useRef(false)
+  const rafRef = useRef(0)
   const { openBooking } = useBooking()
 
   useEffect(() => {
     const track = trackRef.current
     if (!track) return undefined
-    setActive(updatePop(track))
-    return undefined
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const tick = () => {
+      rafRef.current = 0
+      const { targets, best } = readTargets(track)
+      if (!popsRef.current.length) popsRef.current = targets.slice()
+      const snap = reduce || draggingRef.current ? 1 : SNAP
+      let moving = false
+      const next = targets.map((target, index) => {
+        const current = popsRef.current[index] ?? target
+        const value = current + (target - current) * snap
+        if (Math.abs(value - target) > 0.008) moving = true
+        return Math.abs(value - target) < 0.008 ? target : value
+      })
+      popsRef.current = next
+      applyPops(track, next)
+      setActive((prev) => (prev === best ? prev : best))
+      if (moving) rafRef.current = window.requestAnimationFrame(tick)
+    }
+
+    const kick = () => {
+      if (!rafRef.current) rafRef.current = window.requestAnimationFrame(tick)
+    }
+
+    const onPointerDown = () => {
+      draggingRef.current = true
+    }
+    const onPointerUp = () => {
+      draggingRef.current = false
+      kick()
+    }
+
+    tick()
+    track.addEventListener('pointerdown', onPointerDown)
+    track.addEventListener('pointerup', onPointerUp)
+    track.addEventListener('pointercancel', onPointerUp)
+    track.addEventListener('touchstart', onPointerDown, { passive: true })
+    track.addEventListener('touchend', onPointerUp, { passive: true })
+    track.addEventListener('scroll', kick, { passive: true })
+    return () => {
+      window.cancelAnimationFrame(rafRef.current)
+      track.removeEventListener('pointerdown', onPointerDown)
+      track.removeEventListener('pointerup', onPointerUp)
+      track.removeEventListener('pointercancel', onPointerUp)
+      track.removeEventListener('touchstart', onPointerDown)
+      track.removeEventListener('touchend', onPointerUp)
+      track.removeEventListener('scroll', kick)
+    }
   }, [])
 
   const renderCard = (service, pop = false) => {
@@ -112,10 +169,6 @@ const Services = () => {
           <div
             ref={trackRef}
             className="service-carousel flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1"
-            onScroll={(event) => {
-              const next = updatePop(event.currentTarget)
-              setActive((prev) => (prev === next ? prev : next))
-            }}
           >
             {orderedServices.map((service) => renderCard(service, true))}
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { serviceImages } from '../../utils/imageImports'
 import { useBooking } from '../../context/BookingContext'
+import GalleryReactions, { emptyTallies } from './GalleryReactions'
 
 export const bridalPhotos = [
   serviceImages.bridal.studio7,
@@ -30,8 +31,26 @@ export const bridalPhotos = [
 
 const BridalGallery = ({ open, onClose }) => {
   const [active, setActive] = useState(0)
+  const [tallies, setTallies] = useState(() => emptyTallies(bridalPhotos.length))
   const { openBooking } = useBooking()
   const touchX = useRef(null)
+
+  const react = (kind) => {
+    setTallies((prev) => {
+      const next = [...prev]
+      const row = { ...next[active] }
+      if (row.picked === kind) {
+        row[kind] -= 1
+        row.picked = null
+      } else {
+        if (row.picked) row[row.picked] -= 1
+        row[kind] += 1
+        row.picked = kind
+      }
+      next[active] = row
+      return next
+    })
+  }
 
   useEffect(() => {
     if (!open) return undefined
@@ -75,55 +94,58 @@ const BridalGallery = ({ open, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end justify-center bg-black/85 p-0 backdrop-blur-sm sm:items-center sm:p-3 lg:p-6"
+      className="fixed inset-0 z-[80] flex items-stretch justify-center bg-black/90 p-0 backdrop-blur-sm sm:items-center sm:p-3 lg:p-6"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="bridal-gallery-title"
     >
       <div
-        className="relative flex h-auto max-h-[100dvh] w-full flex-col overflow-hidden border-white/10 bg-[#14110f] shadow-2xl sm:h-[min(94vh,920px)] sm:w-[min(96vw,1280px)] sm:rounded-3xl sm:border lg:flex-row"
+        className="relative flex h-[100dvh] w-full flex-col overflow-hidden border-white/10 bg-[#14110f] shadow-2xl sm:h-[min(94vh,920px)] sm:w-[min(96vw,1280px)] sm:rounded-3xl sm:border lg:flex-row"
         onClick={(event) => event.stopPropagation()}
       >
-        <div
-          className="relative flex h-[min(62dvh,28rem)] shrink-0 items-center justify-center bg-black pt-[env(safe-area-inset-top)] sm:h-auto sm:min-h-0 sm:flex-1"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          <div className="photo-frame">
-            <img
-              src={bridalPhotos[active]}
-              alt={`Bridal look ${active + 1}`}
-              className="h-full w-full object-contain object-center"
-            />
+        <div className="relative flex min-h-0 flex-1 flex-col bg-black pt-[env(safe-area-inset-top)]">
+          <div
+            className="relative min-h-0 flex-1"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <div className="photo-frame">
+              <img
+                src={bridalPhotos[active]}
+                alt={`Bridal look ${active + 1}`}
+                className="h-full w-full object-contain object-center"
+              />
+            </div>
+            <button
+              type="button"
+              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/55 px-3 py-2 text-white sm:left-5"
+              aria-label="Previous photo"
+              onClick={goPrev}
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/55 px-3 py-2 text-white sm:right-5"
+              aria-label="Next photo"
+              onClick={goNext}
+            >
+              →
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] rounded-full bg-black/55 p-1 text-white lg:hidden"
+              aria-label="Close gallery"
+            >
+              <IoIosCloseCircle className="h-8 w-8" />
+            </button>
           </div>
-          <button
-            type="button"
-            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/55 px-3 py-2 text-white sm:left-5"
-            aria-label="Previous photo"
-            onClick={goPrev}
-          >
-            ←
-          </button>
-          <button
-            type="button"
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/55 px-3 py-2 text-white sm:right-5"
-            aria-label="Next photo"
-            onClick={goNext}
-          >
-            →
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] rounded-full bg-black/55 p-1 text-white lg:hidden"
-            aria-label="Close gallery"
-          >
-            <IoIosCloseCircle className="h-8 w-8" />
-          </button>
+          <GalleryReactions tally={tallies[active]} onReact={react} />
         </div>
 
-        <aside className="flex w-full shrink-0 flex-col border-t border-white/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
+        <aside className="flex w-full shrink-0 flex-col border-t border-white/10 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 sm:p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
           <div className="mb-2 flex items-center justify-between gap-3 sm:mb-3 sm:items-start lg:mb-4">
             <div>
               <div className="hidden sm:block">
@@ -149,13 +171,13 @@ const BridalGallery = ({ open, onClose }) => {
             </button>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-3 lg:overflow-y-auto">
+          <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-3 lg:overflow-y-auto">
             {bridalPhotos.map((src, index) => (
               <button
                 key={src}
                 type="button"
                 onClick={() => setActive(index)}
-                className={`photo-thumb h-12 w-9 shrink-0 sm:h-14 sm:w-11 lg:h-auto lg:w-auto ${index === active ? 'border-brand-400' : 'border-transparent'}`}
+                className={`photo-thumb h-[5.25rem] w-16 shrink-0 sm:h-16 sm:w-12 lg:h-auto lg:w-auto ${index === active ? 'border-brand-400' : 'border-transparent'}`}
                 aria-label={`Show bridal photo ${index + 1}`}
               >
                 <img src={src} alt="" className="h-full w-full object-cover object-[center_20%]" />
