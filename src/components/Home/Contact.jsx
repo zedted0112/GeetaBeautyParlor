@@ -1,99 +1,95 @@
-import React from "react";
-import { backgroundImages, logoImages } from '../../utils/imageImports';
+import { IoCall, IoMail, IoLocationSharp } from 'react-icons/io5'
+import { MdOutlineFacebook } from 'react-icons/md'
+import { RiInstagramFill, RiWhatsappFill } from 'react-icons/ri'
+import { logoImages } from '../../utils/imageImports'
+import { brand, contact, mailUrl, telUrl, whatsappUrl } from '../../data/content'
 
-const bg2 = backgroundImages.footer;
-const footerLogo = logoImages.primary;
-import { MdOutlineFacebook } from "react-icons/md";
-import { RiInstagramFill } from "react-icons/ri";
-import { RiWhatsappFill } from "react-icons/ri";
+const cards = [
+  {
+    label: 'Call',
+    value: contact.phoneDisplay,
+    href: telUrl,
+    icon: IoCall,
+  },
+  {
+    label: 'WhatsApp',
+    value: contact.phoneDisplay,
+    href: whatsappUrl(),
+    icon: RiWhatsappFill,
+    external: true,
+    accent: 'hover:border-[#25D366] hover:text-[#25D366]',
+  },
+  {
+    label: 'Email',
+    value: contact.email,
+    href: mailUrl,
+    icon: IoMail,
+  },
+  {
+    label: 'Visit',
+    value: contact.address,
+    href: contact.mapsUrl,
+    icon: IoLocationSharp,
+    external: true,
+  },
+]
 
-const Contact = () => {
-  return (
-    <div
-      id="contact"
-      className="w-full scroll-target"
-      style={{
-        backgroundImage: `url('${bg2}')`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        objectFit: "cover",
-      }}
-    >
-      <div className="w-[80%] h-full mx-auto max-w-[1200px] md:pt-28 md:pb-16 py-12">
-        <div className="flex flex-col gap-y-6">
-          <h1 className="text-white md:text-[40px] text-[30px] leading-[46.08px] tracking-widest">
-            Geeta Makeovers
-          </h1>
-          <p className="text-gray-200 text-[18px] leading-[20.74px] tracking-widest">
-            Discover the essence of timeless beauty at Geetha Makeovers. With a commitment to excellence, we strive to create an atmosphere where every individual feels empowered and confident. Our skilled team of beauty professionals is dedicated to delivering personalized experiences tailored to your unique style and preferences.
-          </p>
-          <p className="text-gray-200 text-[18px] leading-[20.74px] tracking-widest">
-            Whether it's a glamorous makeover, a rejuvenating skincare session, or a stunning bridal look, we're here to make your beauty dreams a reality. Step into our sanctuary of elegance and let us unveil the true radiance within you.
+const Contact = () => (
+  <section id="contact" className="scroll-target bg-ink text-white">
+    <div className="mx-auto w-[min(92%,1200px)] py-20 lg:py-24">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-xl">
+          <img
+            src={logoImages.wordmark}
+            alt={brand.name}
+            className="mb-6 h-20 w-auto object-contain sm:h-24"
+          />
+          <h2 className="sr-only">{brand.name}</h2>
+          <p className="mt-4 text-lg leading-relaxed text-white/70">
+            {brand.owner} and {brand.assistant} — beauty consultants in {brand.location}.
+            Walk in, call, or send a WhatsApp. We will take it from there.
           </p>
         </div>
-        <div className="flex md:flex-row flex-col lg:gap-28 gap-8 md:py-16 py-12">
-          <div>
-            <img
-              src={footerLogo}
-              width={150}
-              height={150}
-              className="md:w-[150px] md:h-[150px] w-[100px] h-[100px]"
-              alt=""
-            />
-          </div>
-          <div className="flex flex-col gap-y-8">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-white md:text-[24px] text-[20px] leading-[27.65px] tracking-widest">
-                BEAUTY CONSULTANTS
-              </h1>
-              <h2 className="text-gray-300 uppercase text-[16px] leading-[32px] tracking-widest">
-                Geeta Semwal
-              </h2>
-              <h2 className="text-gray-300 uppercase text-[16px] leading-[32px] tracking-widest">
-                Anshul | +91 xxxxxx6360
-              </h2>
-            </div>
-            <div className="flex flex-col gap-2">
-              <h1 className="text-white md:text-[24px] text-[20px] leading-[27.65px] tracking-widest">
-                EMAIL
-              </h1>
-              <h2 className="text-gray-300 uppercase text-[16px] leading-[32px] tracking-widest">
-                GeetaMakeovers@gmail.com
-              </h2>
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-8">
-            <div className="flex flex-col gap-2">
-              <h1 className="text-white md:text-[24px] text-[20px] leading-[27.65px] tracking-widest">
-                ADDRESS
-              </h1>
-              <h2 className="uppercase text-gray-300 text-[16px] leading-[32px] tracking-widest">
-                Uttarkashi
-                <br />
-                Uttarkashi, INDIA
-              </h2>
-            </div>
-            <div className="flex flex-col gap-2">
-              <h1 className="text-white md:text-[24px] text-[20px] leading-[27.65px] tracking-widest pb-2">
-                SOCIALS
-              </h1>
-              <div className="flex flex-row gap-2">
-                <div className="w-[30px] h-[30px] border border-gray-300 py-1 rounded-full">
-                  <MdOutlineFacebook className="w-[20px] h-[19px] mx-auto text-gray-300" />
-                </div>
-                <div className="w-[30px] h-[30px] border border-gray-300 py-1 rounded-full">
-                  <RiInstagramFill className="w-[20px] h-[19px] mx-auto text-gray-300" />
-                </div>
-                <div className="w-[30px] h-[30px] border border-gray-300 py-1 rounded-full">
-                  <RiWhatsappFill className="w-[20px] h-[19px] mx-auto text-gray-300" />
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="flex gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/50" title="Facebook coming soon">
+            <MdOutlineFacebook className="h-5 w-5" />
+          </span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white/50" title="Instagram coming soon">
+            <RiInstagramFill className="h-5 w-5" />
+          </span>
+          <a
+            href={whatsappUrl()}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="WhatsApp"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition hover:border-[#25D366] hover:text-[#25D366]"
+          >
+            <RiWhatsappFill className="h-5 w-5" />
+          </a>
         </div>
       </div>
-    </div>
-  );
-};
 
-export default Contact; 
+      <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {cards.map((card) => {
+          const Icon = card.icon
+          return (
+            <a
+              key={card.label}
+              href={card.href}
+              target={card.external ? '_blank' : undefined}
+              rel={card.external ? 'noreferrer' : undefined}
+              title={card.value}
+              aria-label={`${card.label}: ${card.value}`}
+              className={`flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-8 text-ivory/90 transition hover:border-brand-400 hover:bg-white/10 ${card.accent || ''}`}
+            >
+              <Icon className="h-8 w-8" />
+              <span className="text-xs uppercase tracking-[0.16em] text-ivory/60">{card.label}</span>
+            </a>
+          )
+        })}
+      </div>
+    </div>
+  </section>
+)
+
+export default Contact

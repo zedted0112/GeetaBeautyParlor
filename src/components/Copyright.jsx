@@ -1,18 +1,14 @@
-import React from 'react'
+import { brand } from '../data/content'
 
-const Copyright = () => {
-  return (
-    <div className='bg-[#1E1E1E] w-full'>
-        <div className="w-[80%] h-full  mx-auto max-w-[1200px] flex md:flex-row  flex-col text-center justify-between md:py-8 py-3 ">
-          <h1 className="md:text-[16px] text-[11px] text-[#fff] tracking-widest leading-[18.43px]">
-            Website by <span className="border-b-2 border-[#fff] pb-2">HimalayanCoder</span>
-          </h1>
-          <h1 className="md:text-[16px] text-[11px] text-[#fff] tracking-widest leading-[18.43px] md:mt-0 mt-5">
-            © Copyright 2025 DevForge | Privacy Policy
-          </h1>
-        </div>
+const Copyright = () => (
+  <footer className="bg-[#14100e] text-white/60">
+    <div className="mx-auto flex w-[min(92%,1200px)] flex-col items-center justify-between gap-3 py-6 text-center text-xs tracking-wider sm:flex-row sm:text-left">
+      <p>
+        Website by <span className="text-white">HimalayanCoder</span>
+      </p>
+      <p>© {new Date().getFullYear()} {brand.name}</p>
     </div>
-  )
-}
+  </footer>
+)
 
 export default Copyright

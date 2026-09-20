@@ -1,13 +1,15 @@
-import Copyright from './components/Copyright';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom'
+import Header from './components/Header'
+import Copyright from './components/Copyright'
+import WhatsAppButton from './components/WhatsAppButton'
 
-const Layout = () => {
-  return (
-    <>
-        <Outlet />
-       <Copyright/>
-    </>
-  )
-}
+const Layout = () => (
+  <>
+    <Header />
+    <Outlet />
+    <Copyright />
+    <WhatsAppButton />
+  </>
+)
 
-export default Layout;
+export default Layout

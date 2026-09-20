@@ -122,6 +122,7 @@ export const logoImages = {
   primary: new URL('../assets/images/logos/logo-primary.png', import.meta.url).href,
   secondary: new URL('../assets/images/logos/logo-secondary.png', import.meta.url).href,
   menu: new URL('../assets/images/logos/logo-menu.png', import.meta.url).href,
+  wordmark: new URL('../assets/images/logos/logo-wordmark.png', import.meta.url).href,
 };
 
 // UI Elements
