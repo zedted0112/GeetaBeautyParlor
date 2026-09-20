@@ -445,13 +445,51 @@
     border-width: 2px;
   }
 
-  .service-carousel {
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+  .service-deck {
+    position: relative;
+    width: min(84vw, 22rem);
+    height: calc(min(84vw, 22rem) * 5 / 4 + 7.25rem);
+    margin-inline: auto;
+    perspective: 1200px;
+    touch-action: pan-y;
   }
 
-  .service-carousel::-webkit-scrollbar {
-    display: none;
+  .service-deck-card {
+    position: absolute;
+    inset: 0 0 1.35rem;
+    transform-origin: 50% 88%;
+    will-change: transform;
+    touch-action: none;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .service-deck-card.is-front {
+    pointer-events: auto;
+  }
+
+  .service-glass {
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(20, 17, 15, 0.42) 48%,
+      rgba(12, 10, 9, 0.55) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.38),
+      inset 0 -18px 28px rgba(255, 255, 255, 0.04),
+      0 22px 44px rgba(0, 0, 0, 0.38);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+  }
+
+  .service-glass-copy {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(20, 17, 15, 0.28) 100%
+    );
   }
 
   .service-photo {
@@ -522,7 +560,7 @@
     aspect-ratio: 3 / 4;
   }
 
-  .service-carousel .service-photo {
+  .service-deck .service-photo {
     aspect-ratio: 4 / 5;
   }
 }
