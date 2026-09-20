@@ -2,15 +2,19 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaBars } from 'react-icons/fa'
 import { IoIosCloseCircle } from 'react-icons/io'
+import { IoPerson } from 'react-icons/io5'
 import { logoImages } from '../utils/imageImports'
 import { brand, navItems } from '../data/content'
 import { scrollToId } from '../utils/scroll'
 import { useBooking } from '../context/BookingContext'
+import { useParlor } from '../context/ParlorContext'
+import ParlorAvatar from './ParlorAvatar'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeId, setActiveId] = useState('home')
   const { openBooking } = useBooking()
+  const { profile, openLogin } = useParlor()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -90,6 +94,24 @@ const Header = () => {
             type="button"
             onClick={() => {
               setIsMenuOpen(false)
+              openLogin()
+            }}
+            className="inline-flex h-10 min-w-10 items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2 text-ivory transition hover:border-white/30 hover:bg-white/10 sm:px-3"
+            aria-label={profile ? `${profile.name}, parlor self` : 'Login'}
+          >
+            {profile ? (
+              <ParlorAvatar id={profile.avatar} size="sm" className="h-7 w-7 text-sm" />
+            ) : (
+              <IoPerson className="h-5 w-5" />
+            )}
+            <span className="hidden max-w-[5.5rem] truncate text-[11px] font-semibold uppercase tracking-wide sm:inline">
+              {profile ? profile.name : 'Login'}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setIsMenuOpen(false)
               openBooking('an appointment')
             }}
             className="inline-flex min-h-10 items-center rounded-full bg-brand-500 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-white transition hover:bg-brand-400 sm:px-5 sm:py-2.5 sm:text-xs"
@@ -110,7 +132,7 @@ const Header = () => {
 
       <div
         className={`overflow-hidden bg-[#14110f] transition-all duration-300 md:hidden ${
-          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          isMenuOpen ? 'max-h-[28rem] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
         <nav className="flex flex-col gap-1 px-6 pb-6 pt-2" aria-label="Mobile">
@@ -124,6 +146,17 @@ const Header = () => {
               {item.label}
             </button>
           ))}
+          <button
+            type="button"
+            className="mt-1 flex min-h-11 items-center gap-3 text-left text-base font-medium text-ivory"
+            onClick={() => {
+              setIsMenuOpen(false)
+              openLogin()
+            }}
+          >
+            {profile ? <ParlorAvatar id={profile.avatar} size="sm" /> : <IoPerson className="h-5 w-5" />}
+            {profile ? profile.name : 'Login'}
+          </button>
           <button
             type="button"
             className="btn-primary mt-2 w-full"

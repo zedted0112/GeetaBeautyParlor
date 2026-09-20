@@ -1,29 +1,34 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
-import { contact } from '../../data/content'
-import { serviceImages } from '../../utils/imageImports'
+import { IoVolumeHigh, IoVolumeMute } from 'react-icons/io5'
+import { contact, shareLookUrl } from '../../data/content'
 import { useBooking } from '../../context/BookingContext'
-import { emptyTally, emptyTallies, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
-import { getVisitorId } from '../../lib/visitor'
+import { useParlor } from '../../context/ParlorContext'
+import { emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
 import GalleryReactions from './GalleryReactions'
 
 const reels = contact.instagramReels
-const thumb = serviceImages.makeup.main
 const reelIds = reels.map((item) => item.id)
 
 const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
   const { openBooking } = useBooking()
   const [active, setActive] = useState(0)
   const [ready, setReady] = useState(false)
+  const [muted, setMuted] = useState(true)
   const [tallies, setTallies] = useState(() => emptyTallies(reelIds))
-  const touchX = useRef(null)
+  const [presence, setPresence] = useState([])
+  const swipe = useRef(null)
+  const didSwipe = useRef(false)
   const videoRefs = useRef([])
-  const visitorId = useMemo(() => getVisitorId(), [])
+  const { ensureProfile, visitorId } = useParlor()
   const reel = reels[active]
   const landscape = reel?.layout === 'landscape'
+  const reelIdRef = useRef(reel.id)
+  reelIdRef.current = reel.id
   const tally = tallies[reel.id] || emptyTally()
 
   const react = async (kind) => {
+    if (!(await ensureProfile())) return
     const current = tallies[reel.id] || emptyTally()
     const previous = current.picked
     setTallies((prev) => {
@@ -62,6 +67,7 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
       if (event.key === 'Escape') onClose()
       if (event.key === 'ArrowRight') setActive((index) => (index + 1) % reels.length)
       if (event.key === 'ArrowLeft') setActive((index) => (index - 1 + reels.length) % reels.length)
+      if (event.key === 'm' || event.key === 'M') setMuted((value) => !value)
     }
 
     document.body.style.overflow = 'hidden'
@@ -82,7 +88,13 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
       })
       .catch(() => {})
     const stop = subscribeTallies(reelIds, visitorId, (next) => {
-      if (alive) setTallies(next)
+      if (!alive) return
+      setTallies(next)
+      loadPresence(reelIdRef.current, visitorId)
+        .then((rows) => {
+          if (alive) setPresence(rows)
+        })
+        .catch(() => {})
     })
     return () => {
       alive = false
@@ -91,12 +103,40 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
   }, [open, visitorId])
 
   useEffect(() => {
+    if (!open) return undefined
+    let alive = true
+    loadPresence(reel.id, visitorId)
+      .then((rows) => {
+        if (alive) setPresence(rows)
+      })
+      .catch(() => {
+        if (alive) setPresence([])
+      })
+    return () => {
+      alive = false
+    }
+  }, [open, reel.id, visitorId, tally.picked])
+
+  useEffect(() => {
+    videoRefs.current.forEach((el) => {
+      if (el) el.muted = muted
+    })
+  }, [muted])
+
+  useEffect(() => {
     if (!open || !ready) return
     videoRefs.current.forEach((el, index) => {
       if (!el) return
       if (index === active) {
+        if (el.ended) el.currentTime = 0
         const play = el.play()
-        if (play) play.catch(() => {})
+        if (play) {
+          play.catch(() => {
+            el.muted = true
+            setMuted(true)
+            el.play().catch(() => {})
+          })
+        }
       } else {
         el.pause()
       }
@@ -105,19 +145,42 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
 
   const goPrev = () => setActive((index) => (index - 1 + reels.length) % reels.length)
   const goNext = () => setActive((index) => (index + 1) % reels.length)
+  const toggleMute = () => setMuted((value) => !value)
 
-  const onTouchStart = (event) => {
-    touchX.current = event.changedTouches[0].clientX
+  const startSwipe = (x, y) => {
+    didSwipe.current = false
+    swipe.current = { x, y }
   }
 
-  const onTouchEnd = (event) => {
-    if (touchX.current == null) return
-    const delta = event.changedTouches[0].clientX - touchX.current
-    if (Math.abs(delta) > 40) {
-      if (delta < 0) goNext()
-      else goPrev()
+  const endSwipe = (x, y) => {
+    if (!swipe.current) return
+    const dx = x - swipe.current.x
+    const dy = y - swipe.current.y
+    swipe.current = null
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return
+    didSwipe.current = true
+    if (dx < 0) goNext()
+    else goPrev()
+  }
+
+  const onReelTap = () => {
+    if (didSwipe.current) {
+      didSwipe.current = false
+      return
     }
-    touchX.current = null
+    toggleMute()
+  }
+
+  const onReelEnded = (index) => {
+    const el = videoRefs.current[index]
+    if (reels.length < 2) {
+      if (el) {
+        el.currentTime = 0
+        el.play().catch(() => {})
+      }
+      return
+    }
+    goNext()
   }
 
   if (!open) return null
@@ -159,9 +222,15 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
                             poster={item.poster}
                             className={`absolute inset-0 ${layer}`}
                             controls
+                            muted={muted}
                             playsInline
                             preload="metadata"
                             controlsList="nodownload"
+                            onEnded={() => onReelEnded(index)}
+                            onVolumeChange={(event) => {
+                              const next = event.currentTarget.muted
+                              setMuted((current) => (current === next ? current : next))
+                            }}
                           />
                         )
                       }
@@ -178,18 +247,26 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
                     })
                   : null}
               </div>
+              <div
+                className="absolute inset-x-0 top-0 bottom-16 z-[12] touch-none"
+                aria-label="Tap to mute or unmute, swipe to change reel"
+                onPointerDown={(event) => {
+                  if (event.button !== 0) return
+                  startSwipe(event.clientX, event.clientY)
+                  try {
+                    event.currentTarget.setPointerCapture(event.pointerId)
+                  } catch {
+                    // some browsers reject capture on synthetic events
+                  }
+                }}
+                onPointerUp={(event) => endSwipe(event.clientX, event.clientY)}
+                onPointerCancel={() => {
+                  swipe.current = null
+                }}
+                onClick={onReelTap}
+              />
               {reels.length > 1 ? (
                 <>
-                  <div
-                    className="absolute inset-y-0 left-0 z-10 w-8"
-                    onTouchStart={onTouchStart}
-                    onTouchEnd={onTouchEnd}
-                  />
-                  <div
-                    className="absolute inset-y-0 right-0 z-10 w-8"
-                    onTouchStart={onTouchStart}
-                    onTouchEnd={onTouchEnd}
-                  />
                   <button
                     type="button"
                     className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/55 px-3 py-2 text-white sm:left-5"
@@ -210,6 +287,14 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
               ) : null}
               <button
                 type="button"
+                onClick={toggleMute}
+                className="absolute left-3 top-[max(0.75rem,env(safe-area-inset-top))] z-20 rounded-full bg-black/55 p-2 text-white"
+                aria-label={muted ? 'Unmute reel' : 'Mute reel'}
+              >
+                {muted ? <IoVolumeMute className="h-6 w-6" /> : <IoVolumeHigh className="h-6 w-6" />}
+              </button>
+              <button
+                type="button"
                 onClick={onClose}
                 className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] z-20 rounded-full bg-black/55 p-1 text-white lg:hidden"
                 aria-label="Close behind the scenes"
@@ -217,7 +302,7 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
                 <IoIosCloseCircle className="h-8 w-8" />
               </button>
             </div>
-            <GalleryReactions tally={tally} onReact={react} />
+            <GalleryReactions tally={tally} onReact={react} presence={presence} />
           </div>
 
           <aside className="flex w-full shrink-0 flex-col border-t border-white/10 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 sm:p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
@@ -262,7 +347,7 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
                     aria-current={index === active ? 'true' : undefined}
                   >
                     <img
-                      src={item.poster || thumb}
+                      src={item.poster}
                       alt=""
                       className="h-full w-full object-cover object-[center_20%]"
                     />
@@ -271,9 +356,9 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
               </div>
             ) : null}
 
-            <div className="mt-3 flex items-center justify-between gap-3 sm:mt-5">
+            <div className="mt-3 flex items-center gap-2 sm:mt-5">
               {reels.length > 1 ? (
-                <p className="hidden shrink-0 text-sm text-ivory/50 sm:block">
+                <p className="hidden shrink-0 text-sm text-ivory/50 sm:mr-auto sm:block">
                   {active + 1} / {reels.length}
                 </p>
               ) : null}
@@ -289,7 +374,14 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
               ) : null}
               <button
                 type="button"
-                className="btn-primary w-full min-h-10 px-4 py-2 text-xs sm:w-auto sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
+                className="btn-secondary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
+                onClick={() => window.open(shareLookUrl('reel'), '_blank', 'noopener,noreferrer')}
+              >
+                Share look
+              </button>
+              <button
+                type="button"
+                className="btn-primary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
                 onClick={() => {
                   onClose()
                   openBooking('an appointment')

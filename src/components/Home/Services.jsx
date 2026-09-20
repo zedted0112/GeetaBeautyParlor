@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { serviceImages } from '../../utils/imageImports'
-import { services } from '../../data/content'
+import { contact, services } from '../../data/content'
 import { useBooking } from '../../context/BookingContext'
 import { useGallery } from '../../context/GalleryContext'
 
 const images = {
   bridal: serviceImages.bridal.studio1,
-  makeup: serviceImages.makeup.main,
+  bts: contact.instagramReels[0]?.poster,
   hair: serviceImages.hair.main,
   facial: serviceImages.facial.main,
   spa: serviceImages.spa.main,

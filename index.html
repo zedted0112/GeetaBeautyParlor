@@ -19,6 +19,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script>
       window.goatcounter = { no_onload: true }
+      if (/\bdesktop=1\b/.test(location.search) || localStorage.getItem('gbp-desktop') === '1') {
+        document.documentElement.classList.add('allow-desktop')
+      }
     </script>
     <script data-goatcounter="https://geetamakeovers.goatcounter.com/count"
             async src="//gc.zgo.at/count.js"></script>

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
+import { shareLookUrl } from '../../data/content'
 import { serviceImages } from '../../utils/imageImports'
 import { useBooking } from '../../context/BookingContext'
-import { emptyTally, emptyTallies, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
-import { getVisitorId } from '../../lib/visitor'
+import { useParlor } from '../../context/ParlorContext'
+import { emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
 import GalleryReactions from './GalleryReactions'
 
 export const bridalPhotos = [
@@ -35,13 +36,17 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
   const photoIds = useMemo(() => bridalPhotos.map((photo) => photo.id), [])
   const [active, setActive] = useState(0)
   const [tallies, setTallies] = useState(() => emptyTallies(photoIds))
+  const [presence, setPresence] = useState([])
   const { openBooking } = useBooking()
+  const { ensureProfile, visitorId } = useParlor()
   const touchX = useRef(null)
-  const visitorId = useMemo(() => getVisitorId(), [])
   const photo = bridalPhotos[active]
+  const photoIdRef = useRef(photo.id)
+  photoIdRef.current = photo.id
   const tally = tallies[photo.id] || emptyTally()
 
   const react = async (kind) => {
+    if (!(await ensureProfile())) return
     const current = tallies[photo.id] || emptyTally()
     const previous = current.picked
     setTallies((prev) => {
@@ -75,13 +80,33 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
       })
       .catch(() => {})
     const stop = subscribeTallies(photoIds, visitorId, (next) => {
-      if (alive) setTallies(next)
+      if (!alive) return
+      setTallies(next)
+      loadPresence(photoIdRef.current, visitorId)
+        .then((rows) => {
+          if (alive) setPresence(rows)
+        })
+        .catch(() => {})
     })
     return () => {
       alive = false
       stop()
     }
   }, [photoIds, visitorId])
+
+  useEffect(() => {
+    let alive = true
+    loadPresence(photo.id, visitorId)
+      .then((rows) => {
+        if (alive) setPresence(rows)
+      })
+      .catch(() => {
+        if (alive) setPresence([])
+      })
+    return () => {
+      alive = false
+    }
+  }, [photo.id, visitorId, tally.picked])
 
   useEffect(() => {
     if (!open) return undefined
@@ -180,7 +205,7 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
               <IoIosCloseCircle className="h-8 w-8" />
             </button>
           </div>
-          <GalleryReactions tally={tally} onReact={react} />
+          <GalleryReactions tally={tally} onReact={react} presence={presence} />
         </div>
 
         <aside className="flex w-full shrink-0 flex-col border-t border-white/10 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 sm:p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
@@ -223,13 +248,20 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
             ))}
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-3 sm:mt-5">
-            <p className="hidden shrink-0 text-sm text-ivory/50 sm:block">
+          <div className="mt-3 flex items-center gap-2 sm:mt-5">
+            <p className="hidden shrink-0 text-sm text-ivory/50 sm:mr-auto sm:block">
               {active + 1} / {bridalPhotos.length}
             </p>
             <button
               type="button"
-              className="btn-primary w-full min-h-10 px-4 py-2 text-xs sm:w-auto sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
+              className="btn-secondary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
+              onClick={() => window.open(shareLookUrl('look'), '_blank', 'noopener,noreferrer')}
+            >
+              Share look
+            </button>
+            <button
+              type="button"
+              className="btn-primary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
               onClick={() => {
                 onClose()
                 openBooking('Bridal Makeup')

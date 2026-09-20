@@ -1,0 +1,123 @@
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { getVisitorId } from '../lib/visitor'
+import {
+  clearLocalProfile,
+  loginParlorProfile,
+  readLocalProfile,
+  saveParlorProfile,
+} from '../lib/profile'
+
+const ParlorContext = createContext(null)
+
+export const ParlorProvider = ({ children }) => {
+  const [visitorId, setVisitorIdState] = useState(() => getVisitorId())
+  const [profile, setProfile] = useState(() => readLocalProfile())
+  const [signupOpen, setSignupOpen] = useState(false)
+  const [startMode, setStartMode] = useState('join')
+  const pending = useRef(null)
+
+  useEffect(() => {
+    const local = readLocalProfile()
+    if (!local) return undefined
+    saveParlorProfile(visitorId, local).catch(() => {})
+    return undefined
+  }, [visitorId])
+
+  const resolvePending = (ok) => {
+    pending.current?.(ok)
+    pending.current = null
+  }
+
+  const ensureProfile = useCallback(
+    () =>
+      new Promise((resolve) => {
+        if (readLocalProfile()) {
+          resolve(true)
+          return
+        }
+        pending.current = resolve
+        setStartMode('join')
+        setSignupOpen(true)
+      }),
+    []
+  )
+
+  const openProfile = useCallback(() => {
+    setStartMode(readLocalProfile() ? 'edit' : 'join')
+    setSignupOpen(true)
+  }, [])
+
+  const openLogin = useCallback(() => {
+    setStartMode(readLocalProfile() ? 'edit' : 'return')
+    setSignupOpen(true)
+  }, [])
+
+  const closeSignup = useCallback(() => {
+    setSignupOpen(false)
+    resolvePending(false)
+  }, [])
+
+  const submitProfile = useCallback(
+    async (draft) => {
+      const next = await saveParlorProfile(visitorId, draft)
+      setProfile(next)
+      setSignupOpen(false)
+      resolvePending(true)
+      return next
+    },
+    [visitorId]
+  )
+
+  const loginProfile = useCallback(async (name, pin) => {
+    const next = await loginParlorProfile(name, pin)
+    setVisitorIdState(next.visitorId)
+    setProfile(next.profile)
+    setSignupOpen(false)
+    resolvePending(true)
+    return next.profile
+  }, [])
+
+  const switchProfile = useCallback(() => {
+    clearLocalProfile()
+    setProfile(null)
+  }, [])
+
+  const value = useMemo(
+    () => ({
+      visitorId,
+      profile,
+      signupOpen,
+      startMode,
+      ensureProfile,
+      openProfile,
+      openLogin,
+      closeSignup,
+      submitProfile,
+      loginProfile,
+      switchProfile,
+    }),
+    [
+      visitorId,
+      profile,
+      signupOpen,
+      startMode,
+      ensureProfile,
+      openProfile,
+      openLogin,
+      closeSignup,
+      submitProfile,
+      loginProfile,
+      switchProfile,
+    ]
+  )
+
+  return <ParlorContext.Provider value={value}>{children}</ParlorContext.Provider>
+}
+
+export const useParlor = () => {
+  const context = useContext(ParlorContext)
+  if (!context) {
+    throw new Error('useParlor must be used within ParlorProvider')
+  }
+  return context
+}

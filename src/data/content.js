@@ -32,6 +32,12 @@ export const contact = {
       poster: new URL('../assets/videos/behind-the-scenes-3.jpg', import.meta.url).href,
     },
     {
+      id: 'behind-the-scenes-4',
+      type: 'video',
+      src: new URL('../assets/videos/behind-the-scenes-4.mp4', import.meta.url).href,
+      poster: new URL('../assets/videos/behind-the-scenes-4.jpg', import.meta.url).href,
+    },
+    {
       id: 'behind-the-scenes',
       type: 'video',
       src: new URL('../assets/videos/behind-the-scenes.mp4', import.meta.url).href,
@@ -45,8 +51,18 @@ export const whatsapp = {
   defaultText: 'Hi Geeta, I want to book an appointment at Geeta Makeovers.',
 }
 
+export const siteUrl = 'https://zedted0112.github.io/GeetaBeautyParlor/'
+
 export const whatsappUrl = (text = whatsapp.defaultText) =>
   `https://wa.me/${whatsapp.number}?text=${encodeURIComponent(text)}`
+
+export const shareLookUrl = (kind = 'look') => {
+  const line =
+    kind === 'reel'
+      ? `Loved this studio reel at ${brand.name}. Can we book a look like this?`
+      : `Loved this look at ${brand.name}. Can we book something like this?`
+  return whatsappUrl(`${line}\n${siteUrl}`)
+}
 
 export const telUrl = `tel:${contact.phoneTel}`
 export const mailUrl = `mailto:${contact.email}`
@@ -75,7 +91,7 @@ export const services = [
     id: 'bts',
     name: 'Behind the Scenes',
     blurb: 'A look inside the studio — how a bridal look comes together.',
-    image: 'makeup',
+    image: 'bts',
   },
   {
     id: 'hair',

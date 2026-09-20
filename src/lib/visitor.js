@@ -12,3 +12,8 @@ export const getVisitorId = () => {
     return 'anon'
   }
 }
+
+export const setVisitorId = (id) => {
+  if (!id) return
+  window.localStorage.setItem(KEY, id)
+}

@@ -5,8 +5,11 @@ import BookingModal from './components/BookingModal'
 import BridalGallery from './components/Home/BridalGallery'
 import BehindTheScenes from './components/Home/BehindTheScenes'
 import GoatCounter from './components/GoatCounter'
+import MobileGate from './components/MobileGate'
+import ParlorSignup from './components/ParlorSignup'
 import { BookingProvider } from './context/BookingContext'
 import { GalleryProvider, useGallery } from './context/GalleryContext'
+import { ParlorProvider } from './context/ParlorContext'
 
 const Shell = () => {
   const { open, kind, phase, origin, closeGallery } = useGallery()
@@ -14,10 +17,12 @@ const Shell = () => {
   return (
     <>
       <GoatCounter />
+      <MobileGate />
       <Header />
       <Outlet />
       <Dock />
       <BookingModal />
+      <ParlorSignup />
       {kind === 'bts' ? (
         <BehindTheScenes open={open} phase={phase} origin={origin} onClose={closeGallery} />
       ) : (
@@ -30,7 +35,9 @@ const Shell = () => {
 const Layout = () => (
   <BookingProvider>
     <GalleryProvider>
-      <Shell />
+      <ParlorProvider>
+        <Shell />
+      </ParlorProvider>
     </GalleryProvider>
   </BookingProvider>
 )

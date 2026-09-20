@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { IoCalendar, IoHeart, IoSparkles } from 'react-icons/io5'
-import { RiInstagramFill } from 'react-icons/ri'
-import { contact, navItems } from '../data/content'
+import { RiClapperboardFill } from 'react-icons/ri'
+import { navItems } from '../data/content'
 import { logoImages } from '../utils/imageImports'
 import { scrollToId } from '../utils/scroll'
 import { useBooking } from '../context/BookingContext'
@@ -11,7 +11,7 @@ const TIPS = {
   home: 'The studio',
   about: 'Meet Geeta',
   services: 'Bridal looks',
-  instagram: 'See the looks',
+  reels: 'Behind the scenes',
   book: 'Pick a date',
 }
 
@@ -30,7 +30,7 @@ const Dock = () => {
 
   const items = [
     ...navItems.filter((item) => item.id !== 'contact'),
-    { id: 'instagram', label: 'Instagram', href: contact.instagramUrl },
+    { id: 'reels', label: 'Reels' },
     { id: 'book', label: 'Book' },
   ].map((item, index) => ({ ...item, index }))
 
@@ -98,11 +98,11 @@ const Dock = () => {
           const isHome = item.id === 'home'
           const isAbout = item.id === 'about'
           const isServices = item.id === 'services'
-          const isIg = item.id === 'instagram'
+          const isReels = item.id === 'reels'
           const isBook = item.id === 'book'
           const Icon = isBook ? IoCalendar : ICONS[item.id]
           const { scale, y } = metricsFor(item.index)
-          const isActive = !isBook && !isIg && activeId === item.id
+          const isActive = !isBook && !isReels && activeId === item.id
           const motion = {
             '--dock-scale': scale,
             '--dock-y': `${y}px`,
@@ -128,8 +128,8 @@ const Dock = () => {
                   setMouseX(null)
                   bounceIcon(item.index)
                   if (isBook) openBooking('an appointment')
+                  else if (isReels) openGallery(itemRefs.current[item.index], 'bts')
                   else if (isServices) openGallery(itemRefs.current[item.index])
-                  else if (item.href) window.open(item.href, '_blank', 'noopener,noreferrer')
                   else scrollToId(item.id)
                 }}
               >
@@ -157,12 +157,12 @@ const Dock = () => {
                     }`}
                     style={motion}
                   />
-                ) : isIg ? (
+                ) : isReels ? (
                   <span
                     className={`dock-icon dock-ig ${bounce === item.index ? 'is-bounce' : ''}`}
                     style={motion}
                   >
-                    <RiInstagramFill className="h-3.5 w-3.5" />
+                    <RiClapperboardFill className="h-3.5 w-3.5" />
                   </span>
                 ) : (
                   <Icon

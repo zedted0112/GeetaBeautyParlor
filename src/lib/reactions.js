@@ -1,6 +1,14 @@
 import { supabase } from './supabase'
+import { readLocalProfile } from './profile'
 
 export const REACTION_KINDS = ['fire', 'heart', 'wow', 'eyes']
+
+export const REACTION_EMOJI = {
+  fire: '🔥',
+  heart: '❤️',
+  wow: '😮',
+  eyes: '😍',
+}
 
 export const emptyTally = (picked = null) => ({
   fire: 0,
@@ -59,4 +67,37 @@ export const subscribeTallies = (photoIds, visitorId, onChange) => {
   return () => {
     supabase.removeChannel(channel)
   }
+}
+
+export const loadPresence = async (photoId, visitorId) => {
+  const { data: votes, error } = await supabase
+    .from('reaction_votes')
+    .select('visitor_id, kind, updated_at')
+    .eq('photo_id', photoId)
+    .order('updated_at', { ascending: false })
+    .limit(8)
+  if (error) throw error
+  if (!votes?.length) return []
+
+  const ids = [...new Set(votes.map((row) => row.visitor_id))]
+  const { data: profiles } = await supabase
+    .from('parlor_profiles')
+    .select('visitor_id, name, avatar, role')
+    .in('visitor_id', ids)
+
+  const byId = Object.fromEntries((profiles || []).map((row) => [row.visitor_id, row]))
+  const local = readLocalProfile()
+
+  return votes.map((row) => {
+    const isYou = row.visitor_id === visitorId
+    const saved = byId[row.visitor_id]
+    const name = isYou ? local?.name || saved?.name || 'You' : saved?.name || 'Someone'
+    return {
+      visitorId: row.visitor_id,
+      kind: row.kind,
+      name: isYou ? 'You' : name,
+      avatar: isYou ? local?.avatar || saved?.avatar : saved?.avatar,
+      isYou,
+    }
+  })
 }
