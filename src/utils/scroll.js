@@ -22,3 +22,12 @@ export function scrollToHash() {
   if (!SECTION_IDS.has(hash)) return
   setTimeout(() => scrollToId(hash), 80)
 }
+
+export function goToSection(id, navigate, pathname) {
+  if (pathname && pathname !== '/') {
+    navigate('/')
+    window.setTimeout(() => scrollToId(id), 80)
+    return
+  }
+  scrollToId(id)
+}

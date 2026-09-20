@@ -1,4 +1,5 @@
 import { REACTION_EMOJI } from '../../lib/reactions'
+import { useNavigate } from 'react-router-dom'
 import { useParlor } from '../../context/ParlorContext'
 import ParlorAvatar from '../ParlorAvatar'
 
@@ -12,7 +13,8 @@ const KINDS = [
 const lineFor = (row) => `${row.name} ${REACTION_EMOJI[row.kind] || ''} this look`
 
 const GalleryReactions = ({ tally, onReact, presence = [] }) => {
-  const { profile, openProfile } = useParlor()
+  const { profile } = useParlor()
+  const navigate = useNavigate()
   const lines = presence.slice(0, 2)
 
   return (
@@ -20,7 +22,7 @@ const GalleryReactions = ({ tally, onReact, presence = [] }) => {
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-ivory/40">Parlor reactions</p>
         {profile ? (
-          <button type="button" className="parlor-you" onClick={openProfile} aria-label="Edit parlor profile">
+          <button type="button" className="parlor-you" onClick={() => navigate('/me')} aria-label="Open parlor space">
             <ParlorAvatar id={profile.avatar} size="sm" />
             <span className="max-w-[7rem] truncate text-[11px] text-ivory/70">{profile.name}</span>
           </button>

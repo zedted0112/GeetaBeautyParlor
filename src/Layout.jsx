@@ -12,7 +12,7 @@ import { GalleryProvider, useGallery } from './context/GalleryContext'
 import { ParlorProvider } from './context/ParlorContext'
 
 const Shell = () => {
-  const { open, kind, phase, origin, closeGallery } = useGallery()
+  const { open, kind, phase, origin, startId, closeGallery } = useGallery()
 
   return (
     <>
@@ -24,9 +24,9 @@ const Shell = () => {
       <BookingModal />
       <ParlorSignup />
       {kind === 'bts' ? (
-        <BehindTheScenes open={open} phase={phase} origin={origin} onClose={closeGallery} />
+        <BehindTheScenes open={open} phase={phase} origin={origin} startId={startId} onClose={closeGallery} />
       ) : (
-        <BridalGallery open={open} phase={phase} origin={origin} onClose={closeGallery} />
+        <BridalGallery open={open} phase={phase} origin={origin} startId={startId} onClose={closeGallery} />
       )}
     </>
   )

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaBars } from 'react-icons/fa'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { IoPerson } from 'react-icons/io5'
 import { logoImages } from '../utils/imageImports'
 import { brand, navItems } from '../data/content'
-import { scrollToId } from '../utils/scroll'
+import { goToSection } from '../utils/scroll'
 import { useBooking } from '../context/BookingContext'
 import { useParlor } from '../context/ParlorContext'
 import ParlorAvatar from './ParlorAvatar'
@@ -15,6 +15,8 @@ const Header = () => {
   const [activeId, setActiveId] = useState('home')
   const { openBooking } = useBooking()
   const { profile, openLogin } = useParlor()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -43,8 +45,14 @@ const Header = () => {
   }, [isMenuOpen])
 
   const goTo = (id) => {
-    scrollToId(id)
+    goToSection(id, navigate, location.pathname)
     setIsMenuOpen(false)
+  }
+
+  const openAccount = () => {
+    setIsMenuOpen(false)
+    if (profile) navigate('/me')
+    else openLogin()
   }
 
   return (
@@ -92,10 +100,7 @@ const Header = () => {
         <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
-            onClick={() => {
-              setIsMenuOpen(false)
-              openLogin()
-            }}
+            onClick={openAccount}
             className="inline-flex h-10 min-w-10 items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2 text-ivory transition hover:border-white/30 hover:bg-white/10 sm:px-3"
             aria-label={profile ? `${profile.name}, parlor self` : 'Login'}
           >
@@ -149,10 +154,7 @@ const Header = () => {
           <button
             type="button"
             className="mt-1 flex min-h-11 items-center gap-3 text-left text-base font-medium text-ivory"
-            onClick={() => {
-              setIsMenuOpen(false)
-              openLogin()
-            }}
+            onClick={openAccount}
           >
             {profile ? <ParlorAvatar id={profile.avatar} size="sm" /> : <IoPerson className="h-5 w-5" />}
             {profile ? profile.name : 'Login'}

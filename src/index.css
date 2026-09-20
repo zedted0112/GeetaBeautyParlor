@@ -685,6 +685,44 @@
     font-size: 15px;
   }
 
+  .parlor-looks {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+  }
+
+  .parlor-reels {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .parlor-look {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1b1714;
+  }
+
+  .parlor-look img {
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .parlor-reels .parlor-look img {
+    aspect-ratio: 9 / 14;
+  }
+
+  .parlor-look span {
+    position: absolute;
+    right: 0.28rem;
+    bottom: 0.28rem;
+    font-size: 0.75rem;
+    line-height: 1;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+  }
+
   .service-carousel {
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;

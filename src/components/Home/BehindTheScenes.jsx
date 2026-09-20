@@ -10,7 +10,7 @@ import GalleryReactions from './GalleryReactions'
 const reels = contact.instagramReels
 const reelIds = reels.map((item) => item.id)
 
-const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
+const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }) => {
   const { openBooking } = useBooking()
   const [active, setActive] = useState(0)
   const [ready, setReady] = useState(false)
@@ -60,7 +60,8 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
       videoRefs.current.forEach((el) => el?.pause())
       return undefined
     }
-    setActive(0)
+    const index = startId ? reels.findIndex((item) => item.id === startId) : 0
+    setActive(index >= 0 ? index : 0)
     const show = window.setTimeout(() => setReady(true), 80)
 
     const onKey = (event) => {
@@ -77,7 +78,7 @@ const BehindTheScenes = ({ open, phase = 'in', origin, onClose }) => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKey)
     }
-  }, [open, onClose])
+  }, [open, onClose, startId])
 
   useEffect(() => {
     if (!open) return undefined

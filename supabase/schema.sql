@@ -149,3 +149,31 @@ $$;
 
 grant execute on function public.parlor_set_pin(text, text) to anon, authenticated;
 grant execute on function public.parlor_login(text, text) to anon, authenticated;
+
+create table if not exists public.parlor_visits (
+  id uuid primary key,
+  visitor_id text not null,
+  service text not null,
+  visit_on date not null,
+  note text not null default '',
+  created_at timestamptz not null default now()
+);
+
+create index if not exists parlor_visits_visitor_idx on public.parlor_visits (visitor_id);
+
+alter table public.parlor_visits enable row level security;
+
+drop policy if exists "public read parlor visits" on public.parlor_visits;
+drop policy if exists "public insert parlor visits" on public.parlor_visits;
+
+create policy "public read parlor visits"
+  on public.parlor_visits for select
+  to anon, authenticated
+  using (true);
+
+create policy "public insert parlor visits"
+  on public.parlor_visits for insert
+  to anon, authenticated
+  with check (char_length(trim(service)) between 1 and 80);
+
+grant select, insert on public.parlor_visits to anon, authenticated;

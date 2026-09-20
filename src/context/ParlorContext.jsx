@@ -6,6 +6,7 @@ import {
   readLocalProfile,
   saveParlorProfile,
 } from '../lib/profile'
+import { adoptVisits } from '../lib/visits'
 
 const ParlorContext = createContext(null)
 
@@ -14,6 +15,7 @@ export const ParlorProvider = ({ children }) => {
   const [profile, setProfile] = useState(() => readLocalProfile())
   const [signupOpen, setSignupOpen] = useState(false)
   const [startMode, setStartMode] = useState('join')
+  const [goToSpace, setGoToSpace] = useState(false)
   const pending = useRef(null)
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export const ParlorProvider = ({ children }) => {
           return
         }
         pending.current = resolve
+        setGoToSpace(false)
         setStartMode('join')
         setSignupOpen(true)
       }),
@@ -43,11 +46,13 @@ export const ParlorProvider = ({ children }) => {
   )
 
   const openProfile = useCallback(() => {
+    setGoToSpace(false)
     setStartMode(readLocalProfile() ? 'edit' : 'join')
     setSignupOpen(true)
   }, [])
 
   const openLogin = useCallback(() => {
+    setGoToSpace(true)
     setStartMode(readLocalProfile() ? 'edit' : 'return')
     setSignupOpen(true)
   }, [])
@@ -69,7 +74,9 @@ export const ParlorProvider = ({ children }) => {
   )
 
   const loginProfile = useCallback(async (name, pin) => {
+    const previousId = getVisitorId()
     const next = await loginParlorProfile(name, pin)
+    await adoptVisits(previousId, next.visitorId)
     setVisitorIdState(next.visitorId)
     setProfile(next.profile)
     setSignupOpen(false)
@@ -88,6 +95,7 @@ export const ParlorProvider = ({ children }) => {
       profile,
       signupOpen,
       startMode,
+      goToSpace,
       ensureProfile,
       openProfile,
       openLogin,
@@ -101,6 +109,7 @@ export const ParlorProvider = ({ children }) => {
       profile,
       signupOpen,
       startMode,
+      goToSpace,
       ensureProfile,
       openProfile,
       openLogin,

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { IoCalendar, IoHeart, IoSparkles } from 'react-icons/io5'
 import { RiClapperboardFill } from 'react-icons/ri'
 import { navItems } from '../data/content'
 import { logoImages } from '../utils/imageImports'
-import { scrollToId } from '../utils/scroll'
+import { goToSection } from '../utils/scroll'
 import { useBooking } from '../context/BookingContext'
 import { useGallery } from '../context/GalleryContext'
 
@@ -27,6 +28,8 @@ const Dock = () => {
   const itemRefs = useRef([])
   const { open, openBooking } = useBooking()
   const { openGallery } = useGallery()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const items = [
     ...navItems.filter((item) => item.id !== 'contact'),
@@ -130,7 +133,7 @@ const Dock = () => {
                   if (isBook) openBooking('an appointment')
                   else if (isReels) openGallery(itemRefs.current[item.index], 'bts')
                   else if (isServices) openGallery(itemRefs.current[item.index])
-                  else scrollToId(item.id)
+                  else goToSection(item.id, navigate, location.pathname)
                 }}
               >
                 <span className="dock-tip">{TIPS[item.id] || item.label}</span>

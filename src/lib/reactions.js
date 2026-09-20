@@ -69,6 +69,17 @@ export const subscribeTallies = (photoIds, visitorId, onChange) => {
   }
 }
 
+export const loadVisitorVotes = async (visitorId) => {
+  if (!visitorId) return []
+  const { data, error } = await supabase
+    .from('reaction_votes')
+    .select('photo_id, kind, updated_at')
+    .eq('visitor_id', visitorId)
+    .order('updated_at', { ascending: false })
+  if (error) throw error
+  return data || []
+}
+
 export const loadPresence = async (photoId, visitorId) => {
   const { data: votes, error } = await supabase
     .from('reaction_votes')

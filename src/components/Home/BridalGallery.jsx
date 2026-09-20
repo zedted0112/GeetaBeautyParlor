@@ -32,7 +32,7 @@ export const bridalPhotos = [
   { id: 'main-3', src: serviceImages.bridal.main3 },
 ]
 
-const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
+const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) => {
   const photoIds = useMemo(() => bridalPhotos.map((photo) => photo.id), [])
   const [active, setActive] = useState(0)
   const [tallies, setTallies] = useState(() => emptyTallies(photoIds))
@@ -110,6 +110,8 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
 
   useEffect(() => {
     if (!open) return undefined
+    const index = startId ? bridalPhotos.findIndex((item) => item.id === startId) : 0
+    setActive(index >= 0 ? index : 0)
 
     const onKey = (event) => {
       if (event.key === 'Escape') onClose()
@@ -127,7 +129,7 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKey)
     }
-  }, [open, onClose])
+  }, [open, onClose, startId])
 
   const goPrev = () => setActive((index) => (index - 1 + bridalPhotos.length) % bridalPhotos.length)
   const goNext = () => setActive((index) => (index + 1) % bridalPhotos.length)

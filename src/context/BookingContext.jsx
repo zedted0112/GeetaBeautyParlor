@@ -5,8 +5,16 @@ const BookingContext = createContext(null)
 export const BookingProvider = ({ children }) => {
   const [open, setOpen] = useState(false)
   const [service, setService] = useState('Consultation')
+  const [intent, setIntent] = useState('book')
 
   const openBooking = useCallback((nextService = 'Consultation') => {
+    setIntent('book')
+    setService(nextService)
+    setOpen(true)
+  }, [])
+
+  const openPlan = useCallback((nextService = 'a visit') => {
+    setIntent('plan')
     setService(nextService)
     setOpen(true)
   }, [])
@@ -14,8 +22,8 @@ export const BookingProvider = ({ children }) => {
   const closeBooking = useCallback(() => setOpen(false), [])
 
   const value = useMemo(
-    () => ({ open, service, openBooking, closeBooking }),
-    [open, service, openBooking, closeBooking]
+    () => ({ open, service, intent, openBooking, openPlan, closeBooking }),
+    [open, service, intent, openBooking, openPlan, closeBooking]
   )
 
   return <BookingContext.Provider value={value}>{children}</BookingContext.Provider>

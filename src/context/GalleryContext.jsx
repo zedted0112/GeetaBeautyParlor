@@ -24,11 +24,13 @@ export const GalleryProvider = ({ children }) => {
   const [kind, setKind] = useState('bridal')
   const [phase, setPhase] = useState('idle')
   const [origin, setOrigin] = useState(null)
+  const [startId, setStartId] = useState(null)
   const closeTimer = useRef(null)
 
-  const openGallery = useCallback((from, nextKind = 'bridal') => {
+  const openGallery = useCallback((from, nextKind = 'bridal', nextStartId = null) => {
     if (closeTimer.current) window.clearTimeout(closeTimer.current)
     setKind(nextKind)
+    setStartId(nextStartId)
     setOrigin(originFrom(from))
     setPhase('in')
     setOpen(true)
@@ -42,14 +44,15 @@ export const GalleryProvider = ({ children }) => {
       () => {
         setOpen(false)
         setPhase('idle')
+        setStartId(null)
       },
       reduced ? 0 : 580
     )
   }, [])
 
   const value = useMemo(
-    () => ({ open, kind, phase, origin, openGallery, closeGallery }),
-    [open, kind, phase, origin, openGallery, closeGallery]
+    () => ({ open, kind, phase, origin, startId, openGallery, closeGallery }),
+    [open, kind, phase, origin, startId, openGallery, closeGallery]
   )
   return <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>
 }

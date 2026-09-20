@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { useParlor } from '../context/ParlorContext'
 import { PARLOR_AVATARS, PARLOR_ROLES, hasParlorPin, isParlorPin, isProfileName } from '../lib/profile'
 import ParlorAvatar from './ParlorAvatar'
 
 const ParlorSignup = () => {
-  const { profile, signupOpen, startMode, closeSignup, submitProfile, loginProfile, switchProfile } = useParlor()
+  const { profile, signupOpen, startMode, goToSpace, closeSignup, submitProfile, loginProfile, switchProfile } = useParlor()
+  const navigate = useNavigate()
   const [mode, setMode] = useState('join')
   const [name, setName] = useState('')
   const [avatar, setAvatar] = useState(PARLOR_AVATARS[0].id)
@@ -52,6 +54,7 @@ const ParlorSignup = () => {
     try {
       if (returning) await loginProfile(name, pin)
       else await submitProfile({ name, avatar, role, pin: pin || undefined })
+      if (goToSpace) navigate('/me')
     } catch (err) {
       setError(err.message || 'Could not save. Try again.')
       setBusy(false)
