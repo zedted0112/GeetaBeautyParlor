@@ -16,6 +16,7 @@ export const contact = {
   email: 'GeetaMakeovers@gmail.com',
   address: 'Uttarkashi, Uttarakhand, India',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Uttarkashi+Uttarakhand',
+  instagramUrl: 'https://www.instagram.com/geeta__beauty__parlour/',
 }
 
 export const whatsapp = {

@@ -1,14 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
-import { IoCalendar, IoCall, IoHeart, IoSparkles } from 'react-icons/io5'
-import { navItems } from '../data/content'
+import { IoCalendar, IoHeart, IoSparkles } from 'react-icons/io5'
+import { RiInstagramFill } from 'react-icons/ri'
+import { contact, navItems } from '../data/content'
 import { logoImages } from '../utils/imageImports'
 import { scrollToId } from '../utils/scroll'
 import { useBooking } from '../context/BookingContext'
 
+const TIPS = {
+  home: 'The studio',
+  about: 'Meet Geeta',
+  services: 'Bridal & glam',
+  instagram: 'See the looks',
+  book: 'Pick a date',
+}
+
 const ICONS = {
   about: IoHeart,
   services: IoSparkles,
-  contact: IoCall,
 }
 
 const Dock = () => {
@@ -19,9 +27,10 @@ const Dock = () => {
   const { open, openBooking } = useBooking()
 
   const items = [
-    ...navItems.map((item, index) => ({ ...item, index })),
-    { id: 'book', label: 'Book', index: navItems.length },
-  ]
+    ...navItems.filter((item) => item.id !== 'contact'),
+    { id: 'instagram', label: 'Instagram', href: contact.instagramUrl },
+    { id: 'book', label: 'Book' },
+  ].map((item, index) => ({ ...item, index }))
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -44,7 +53,7 @@ const Dock = () => {
   if (open) return null
 
   const metricsFor = (index) => {
-    if (mouseX === null) return { scale: 1, y: 0 }
+    if (bounce !== null || mouseX === null) return { scale: 1, y: 0 }
     const el = itemRefs.current[index]
     if (!el) return { scale: 1, y: 0 }
     const rect = el.getBoundingClientRect()
@@ -67,18 +76,31 @@ const Dock = () => {
       <nav
         aria-label="Quick"
         className="dock-glass pointer-events-auto flex items-center gap-1.5 rounded-full px-3 sm:gap-2 sm:px-4"
-        onMouseMove={(event) => setMouseX(event.clientX)}
+        onMouseMove={(event) => {
+          if (bounce !== null) return
+          setMouseX(event.clientX)
+        }}
         onMouseLeave={() => setMouseX(null)}
-        onPointerDown={(event) => setMouseX(event.clientX)}
-        onPointerUp={() => window.setTimeout(() => setMouseX(null), 320)}
-        onPointerCancel={() => setMouseX(null)}
       >
+        <svg aria-hidden="true" className="pointer-events-none absolute h-0 w-0">
+          <defs>
+            <linearGradient id="dockSparkleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fff4b0" />
+              <stop offset="35%" stopColor="#ffb347" />
+              <stop offset="70%" stopColor="#ff7eb3" />
+              <stop offset="100%" stopColor="#c08d70" />
+            </linearGradient>
+          </defs>
+        </svg>
         {items.map((item) => {
           const isHome = item.id === 'home'
+          const isAbout = item.id === 'about'
+          const isServices = item.id === 'services'
+          const isIg = item.id === 'instagram'
           const isBook = item.id === 'book'
           const Icon = isBook ? IoCalendar : ICONS[item.id]
           const { scale, y } = metricsFor(item.index)
-          const isActive = !isBook && activeId === item.id
+          const isActive = !isBook && !isIg && activeId === item.id
           const motion = {
             '--dock-scale': scale,
             '--dock-y': `${y}px`,
@@ -101,14 +123,14 @@ const Dock = () => {
                   isBook ? 'text-brand-300' : ''
                 }`}
                 onClick={() => {
+                  setMouseX(null)
                   bounceIcon(item.index)
                   if (isBook) openBooking('an appointment')
+                  else if (item.href) window.open(item.href, '_blank', 'noopener,noreferrer')
                   else scrollToId(item.id)
                 }}
               >
-                <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-black/50 px-2 py-0.5 text-[10px] text-white opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover/dock:opacity-100">
-                  {item.label}
-                </span>
+                <span className="dock-tip">{TIPS[item.id] || item.label}</span>
                 {isHome ? (
                   <img
                     src={logoImages.primary}
@@ -118,6 +140,27 @@ const Dock = () => {
                     }`}
                     style={motion}
                   />
+                ) : isAbout ? (
+                  <IoHeart
+                    className={`dock-icon dock-heart h-5 w-5 sm:h-[22px] sm:w-[22px] ${
+                      bounce === item.index ? 'is-bounce' : ''
+                    }`}
+                    style={motion}
+                  />
+                ) : isServices ? (
+                  <IoSparkles
+                    className={`dock-icon dock-sparkle h-5 w-5 drop-shadow-sm sm:h-[22px] sm:w-[22px] ${
+                      bounce === item.index ? 'is-bounce' : ''
+                    }`}
+                    style={motion}
+                  />
+                ) : isIg ? (
+                  <span
+                    className={`dock-icon dock-ig ${bounce === item.index ? 'is-bounce' : ''}`}
+                    style={motion}
+                  >
+                    <RiInstagramFill className="h-3.5 w-3.5" />
+                  </span>
                 ) : (
                   <Icon
                     className={`dock-icon h-5 w-5 drop-shadow-sm sm:h-[22px] sm:w-[22px] ${

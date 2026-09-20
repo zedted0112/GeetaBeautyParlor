@@ -4,7 +4,6 @@ import HeroHome from './HeroHome'
 import About from './About'
 import Services from './Services'
 import Cta from './Cta'
-import Contact from './Contact'
 
 const Home = () => {
   useEffect(() => {
@@ -17,7 +16,6 @@ const Home = () => {
       <About />
       <Services />
       <Cta />
-      <Contact />
     </main>
   )
 }

@@ -36,19 +36,6 @@ const HeroHome = () => {
 
       {slides.length > 1 && (
         <>
-          <div className="absolute bottom-[5.5rem] left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-8">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setIndex(i)}
-                className={`h-2.5 w-2.5 rounded-full border border-white transition ${
-                  i === index ? 'bg-white' : 'bg-transparent hover:bg-white/50'
-                }`}
-                aria-label={`Go to image ${i + 1}`}
-              />
-            ))}
-          </div>
           <button
             type="button"
             className="absolute left-4 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-ink/40 p-3 text-white backdrop-blur-sm md:block"

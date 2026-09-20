@@ -123,13 +123,88 @@
     color: rgba(244, 236, 228, 0.92);
   }
 
-  .dock-item:hover,
-  .dock-item[aria-current='page'] {
-    color: #fff;
+  .dock-tip {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 12px);
+    z-index: 2;
+    transform: translateX(-50%) translateY(8px) scale(0.88);
+    opacity: 0;
+    padding: 0.38rem 0.85rem 0.42rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(20, 17, 15, 0.72) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      0 10px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.82rem;
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: #f4ece4;
+    white-space: nowrap;
+    transition:
+      opacity 0.22s ease,
+      transform 0.28s cubic-bezier(0.34, 1.45, 0.64, 1);
   }
 
-  .dock-logo {
-    filter: brightness(0) invert(1);
+  .dock-tip::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    background: inherit;
+    border-right: 1px solid rgba(255, 255, 255, 0.18);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .dock-item:hover .dock-tip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  .dock-ig {
+    display: flex;
+    height: 1.55rem;
+    width: 1.55rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.42rem;
+    color: #fff;
+    background: radial-gradient(
+      circle at 30% 107%,
+      #fdf497 0%,
+      #fdf497 5%,
+      #fd5949 45%,
+      #d6249f 60%,
+      #285aeb 90%
+    );
+  }
+
+  .dock-heart {
+    color: #6b1528;
+    filter: drop-shadow(0 1px 2px rgba(80, 10, 22, 0.45));
+  }
+
+  .dock-sparkle {
+    color: #ffb347;
+    filter: drop-shadow(0 0 5px rgba(255, 140, 90, 0.5));
+  }
+
+  .dock-sparkle path {
+    fill: url(#dockSparkleGrad);
   }
 
   .dock-icon {
