@@ -63,12 +63,13 @@ const HeroHome = () => {
         </div>
 
         <div className="mt-auto flex w-full flex-col items-center">
-          <div className="flex w-full max-w-xs flex-col items-stretch gap-2.5 sm:max-w-none sm:flex-row sm:items-center sm:justify-center sm:gap-3">
-            <button type="button" className="btn-primary w-full sm:w-auto" onClick={() => openBooking('an appointment')}>
-              Book on WhatsApp
+          <div className="hero-cta" role="group" aria-label="Quick actions">
+            <button type="button" aria-label="Book on WhatsApp" onClick={() => openBooking('an appointment')}>
+              Book
             </button>
-            <button type="button" className="btn-secondary w-full sm:w-auto" onClick={() => scrollToId('services')}>
-              Explore services
+            <span className="hero-cta-rule" aria-hidden="true" />
+            <button type="button" aria-label="Explore services" onClick={() => scrollToId('services')}>
+              Explore
             </button>
           </div>
 

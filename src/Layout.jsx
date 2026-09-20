@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom'
 import Header from './components/Header'
-import Copyright from './components/Copyright'
 import Dock from './components/Dock'
 import BookingModal from './components/BookingModal'
 import BridalGallery from './components/Home/BridalGallery'
@@ -14,7 +13,6 @@ const Shell = () => {
     <>
       <Header />
       <Outlet />
-      <Copyright />
       <Dock />
       <BookingModal />
       <BridalGallery open={open} phase={phase} origin={origin} onClose={closeGallery} />

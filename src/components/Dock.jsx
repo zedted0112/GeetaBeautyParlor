@@ -74,7 +74,7 @@ const Dock = () => {
   }
 
   return (
-    <div className="pointer-events-none fixed bottom-[max(0.7rem,env(safe-area-inset-bottom))] left-1/2 z-[70] -translate-x-1/2">
+    <div className="pointer-events-none fixed bottom-[max(0.7rem,env(safe-area-inset-bottom))] left-1/2 z-[70] -translate-x-1/2 md:hidden">
       <nav
         aria-label="Quick"
         className="dock-glass pointer-events-auto flex items-center gap-1.5 rounded-full px-3 sm:gap-2 sm:px-4"

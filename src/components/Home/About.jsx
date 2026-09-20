@@ -61,7 +61,7 @@ const About = () => {
         <button
           type="button"
           onClick={() => openBooking('a consultation')}
-          className="btn-primary mt-5 w-full sm:mt-7 sm:w-auto"
+          className="btn-primary mt-5 w-full sm:mx-auto sm:mt-7 sm:flex sm:w-auto"
         >
           Book a consultation
         </button>
