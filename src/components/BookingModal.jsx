@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
-import { whatsappUrl } from '../data/content'
 import { useBooking } from '../context/BookingContext'
 import { useParlor } from '../context/ParlorContext'
-import { addVisit, prettyVisitDate } from '../lib/visits'
+import { isAdminProfile, readLocalProfile } from '../lib/profile'
+import { addVisit } from '../lib/visits'
+import { sendToGeeta } from '../lib/messages'
 
-const emptyForm = { name: '', date: '', message: '' }
+const emptyForm = { name: '', date: '', time: '', message: '' }
 
 const BookingModal = () => {
   const { open, service, intent, closeBooking } = useBooking()
-  const { profile, visitorId } = useParlor()
+  const { profile, visitorId, ensureProfile } = useParlor()
   const [form, setForm] = useState(emptyForm)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -31,8 +32,22 @@ const BookingModal = () => {
   }, [open, closeBooking])
 
   useEffect(() => {
+    if (!open) return undefined
+    let alive = true
+    if (!readLocalProfile()) {
+      ensureProfile().then((ok) => {
+        if (!alive) return
+        if (!ok) closeBooking()
+      })
+    }
+    return () => {
+      alive = false
+    }
+  }, [open, ensureProfile, closeBooking])
+
+  useEffect(() => {
     if (open) {
-      setForm({ name: profile?.name || '', date: '', message: '' })
+      setForm({ name: profile?.name || '', date: '', time: '', message: '' })
       setBusy(false)
       setError('')
     }
@@ -55,8 +70,9 @@ const BookingModal = () => {
     const data = new FormData(event.target)
     const name = String(data.get('name') || form.name || '').trim()
     const date = String(data.get('date') || form.date || '')
+    const time = String(data.get('time') || form.time || '')
     const message = String(data.get('message') || form.message || '').trim()
-    setForm({ name, date, message })
+    setForm({ name, date, time, message })
 
     if (!name || !date) {
       setError('Add your name and a date.')
@@ -67,7 +83,7 @@ const BookingModal = () => {
       setBusy(true)
       setError('')
       try {
-        await addVisit(visitorId, { name, service, date, message })
+        await addVisit(visitorId, { name, service, date, time, message })
         closeBooking()
       } catch (err) {
         setError(err.message || 'Could not save this plan. Try again.')
@@ -76,18 +92,30 @@ const BookingModal = () => {
       return
     }
 
-    const text = [
-      `Hi Geeta, I want to book ${service} at Geeta Makeovers.`,
-      '',
-      `Name: ${name}`,
-      `Date: ${prettyVisitDate(date)}`,
-      message ? `Message: ${message}` : null,
-    ]
-      .filter((line) => line !== null)
-      .join('\n')
+    if (isAdminProfile(readLocalProfile(), visitorId)) {
+      setError('This desk receives client books.')
+      return
+    }
 
-    window.open(whatsappUrl(text), '_blank', 'noopener,noreferrer')
-    closeBooking()
+    setBusy(true)
+    setError('')
+    try {
+      await addVisit(visitorId, { name, service, date, time, message })
+      await sendToGeeta({
+        visitorId,
+        name,
+        avatar: profile?.avatar,
+        kind: 'book',
+        date,
+        time,
+        service,
+        body: message,
+      })
+      closeBooking()
+    } catch (err) {
+      setError(err.message || 'Could not send to Geeta. Try again.')
+      setBusy(false)
+    }
   }
 
   return (
@@ -124,8 +152,8 @@ const BookingModal = () => {
             </h2>
             <p className={`text-ivory/65 ${planning ? 'mt-0.5 text-[11px]' : 'mt-1 text-sm'}`}>
               {planning
-                ? 'Save a date here. Book on WhatsApp from Planned when you are ready.'
-                : 'Fill this in. We will open WhatsApp with your details.'}
+                ? 'Save a date here. Send it to Geeta from Planned when you are ready.'
+                : 'Geeta sees this on her parlor desk.'}
             </p>
           </div>
           <button
@@ -172,6 +200,20 @@ const BookingModal = () => {
 
           <label className="block">
             <span className={`mb-1 block uppercase tracking-[0.14em] text-ivory/60 ${planning ? 'text-[10px]' : 'text-xs'}`}>
+              Time
+            </span>
+            <input
+              type="time"
+              name="time"
+              value={form.time}
+              onInput={onChange}
+              onChange={onChange}
+              className={`booking-input ${planning ? 'parlor-input' : ''}`}
+            />
+          </label>
+
+          <label className="block">
+            <span className={`mb-1 block uppercase tracking-[0.14em] text-ivory/60 ${planning ? 'text-[10px]' : 'text-xs'}`}>
               Note
             </span>
             <textarea
@@ -187,7 +229,7 @@ const BookingModal = () => {
           {error ? <p className="text-xs text-rose-200">{error}</p> : null}
 
           <button type="submit" className={`btn-primary w-full ${planning ? '!min-h-10 !py-2 !text-xs' : ''}`} disabled={busy}>
-            {planning ? (busy ? 'Saving…' : 'Save plan') : 'Book on WhatsApp'}
+            {planning ? (busy ? 'Saving…' : 'Save plan') : busy ? 'Sending…' : 'Send to Geeta'}
           </button>
         </form>
       </div>

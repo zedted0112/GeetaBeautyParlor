@@ -64,7 +64,7 @@ const HeroHome = () => {
 
         <div className="mt-auto flex w-full flex-col items-center">
           <div className="hero-cta" role="group" aria-label="Quick actions">
-            <button type="button" aria-label="Book on WhatsApp" onClick={() => openBooking('an appointment')}>
+            <button type="button" aria-label="Book with Geeta" onClick={() => openBooking('an appointment')}>
               Book
             </button>
             <span className="hero-cta-rule" aria-hidden="true" />

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { useParlor } from '../context/ParlorContext'
-import { PARLOR_AVATARS, PARLOR_ROLES, hasParlorPin, isParlorPin, isProfileName } from '../lib/profile'
+import { PARLOR_AVATARS, PARLOR_ROLES, hasParlorPin, isAdminProfile, isParlorPin, isProfileName } from '../lib/profile'
 import ParlorAvatar from './ParlorAvatar'
 
 const ParlorSignup = () => {
-  const { profile, signupOpen, startMode, goToSpace, closeSignup, submitProfile, loginProfile, switchProfile } = useParlor()
+  const { profile, visitorId, signupOpen, startMode, goToSpace, closeSignup, submitProfile, loginProfile, switchProfile } = useParlor()
   const navigate = useNavigate()
   const [mode, setMode] = useState('join')
   const [name, setName] = useState('')
@@ -40,9 +40,12 @@ const ParlorSignup = () => {
   if (!signupOpen) return null
 
   const editing = Boolean(profile)
+  const admin = isAdminProfile(profile, visitorId)
   const returning = mode === 'return'
   const pinNeeded = returning || !editing || !hasParlorPin()
-  const canJoin = isProfileName(name) && avatar && role && (!pinNeeded || isParlorPin(pin)) && !busy
+  const canJoin = admin
+    ? isProfileName(name) && avatar && (!pinNeeded || isParlorPin(pin)) && !busy
+    : isProfileName(name) && avatar && role && (!pinNeeded || isParlorPin(pin)) && !busy
   const canReturn = isProfileName(name) && isParlorPin(pin) && !busy
   const canSave = returning ? canReturn : canJoin
 
@@ -61,10 +64,12 @@ const ParlorSignup = () => {
     }
   }
 
-  const title = returning ? 'Welcome back' : editing ? 'Your parlor self' : 'Join the parlor'
+  const title = returning ? 'Welcome back' : admin ? 'Studio desk' : editing ? 'Your parlor self' : 'Join the parlor'
   const copy = returning
     ? 'Name + PIN brings your likes back.'
-    : editing
+    : admin
+      ? 'Clients send looks and bookings to this desk.'
+      : editing
       ? hasParlorPin()
         ? 'Leave PIN blank to keep yours.'
         : 'Add a 4-digit PIN to keep this self.'
@@ -137,6 +142,7 @@ const ParlorSignup = () => {
               autoComplete="username"
               placeholder="Your name"
               maxLength={24}
+              readOnly={admin}
               className="booking-input parlor-input"
             />
           </label>
@@ -164,6 +170,7 @@ const ParlorSignup = () => {
                 </div>
               </fieldset>
 
+              {!admin ? (
               <fieldset>
                 <legend className="mb-1 block text-[10px] uppercase tracking-[0.14em] text-ivory/55">I am a</legend>
                 <div className="grid grid-cols-2 gap-1.5">
@@ -184,6 +191,7 @@ const ParlorSignup = () => {
                   })}
                 </div>
               </fieldset>
+              ) : null}
             </>
           ) : null}
 

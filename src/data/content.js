@@ -133,5 +133,5 @@ export const about = {
 export const seo = {
   title: 'Geeta Makeovers | Bridal & Beauty in Uttarkashi',
   description:
-    'Geeta Makeovers by Geeta Semwal — bridal makeup, hair, facials and beauty in Uttarkashi. Book on WhatsApp.',
+    'Geeta Makeovers by Geeta Semwal — bridal makeup, hair, facials and beauty in Uttarkashi. Book with Geeta.',
 }

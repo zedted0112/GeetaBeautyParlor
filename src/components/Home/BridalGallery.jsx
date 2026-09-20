@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
-import { shareLookUrl } from '../../data/content'
 import { serviceImages } from '../../utils/imageImports'
 import { useBooking } from '../../context/BookingContext'
 import { useParlor } from '../../context/ParlorContext'
+import { isAdminProfile, readLocalProfile } from '../../lib/profile'
+import { getVisitorId } from '../../lib/visitor'
 import { emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
 import GalleryReactions from './GalleryReactions'
+import SendLookSheet from '../SendLookSheet'
+import { holdImage, holdImages } from '../../lib/mediaCache'
 
 export const bridalPhotos = [
   { id: 'studio-7', src: serviceImages.bridal.studio7 },
@@ -39,11 +42,21 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   const [presence, setPresence] = useState([])
   const { openBooking } = useBooking()
   const { ensureProfile, visitorId } = useParlor()
+  const [lookSent, setLookSent] = useState({})
+  const [noteOpen, setNoteOpen] = useState(false)
   const touchX = useRef(null)
   const photo = bridalPhotos[active]
   const photoIdRef = useRef(photo.id)
   photoIdRef.current = photo.id
   const tally = tallies[photo.id] || emptyTally()
+
+  const openSend = async () => {
+    if (lookSent[photo.id] === true) return
+    if (!(await ensureProfile())) return
+    const next = readLocalProfile()
+    if (!next || isAdminProfile(next, getVisitorId() || visitorId)) return
+    setNoteOpen(true)
+  }
 
   const react = async (kind) => {
     if (!(await ensureProfile())) return
@@ -109,6 +122,14 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   }, [photo.id, visitorId, tally.picked])
 
   useEffect(() => {
+    holdImages(bridalPhotos.map((item) => item.src))
+  }, [])
+
+  useEffect(() => {
+    holdImage(photo.src)
+  }, [photo.src])
+
+  useEffect(() => {
     if (!open) return undefined
     const index = startId ? bridalPhotos.findIndex((item) => item.id === startId) : 0
     setActive(index >= 0 ? index : 0)
@@ -148,7 +169,15 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
     touchX.current = null
   }
 
-  if (!open) return null
+  if (!open) {
+    return (
+      <div className="pointer-events-none invisible fixed h-0 w-0 overflow-hidden" aria-hidden="true">
+        {bridalPhotos.map((item) => (
+          <img key={item.id} src={item.src} alt="" decoding="async" />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-labelledby="bridal-gallery-title">
@@ -180,6 +209,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
                 src={photo.src}
                 alt={`Bridal look ${active + 1}`}
                 className="h-full w-full object-contain object-center"
+                decoding="async"
               />
             </div>
             <button
@@ -257,9 +287,9 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
             <button
               type="button"
               className="btn-secondary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
-              onClick={() => window.open(shareLookUrl('look'), '_blank', 'noopener,noreferrer')}
+              onClick={openSend}
             >
-              Share look
+              {lookSent[photo.id] === true ? 'Sent' : 'Send to Geeta'}
             </button>
             <button
               type="button"
@@ -275,6 +305,14 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
         </aside>
       </div>
       </div>
+      <SendLookSheet
+        open={noteOpen}
+        kind="look"
+        refId={photo.id}
+        image={photo.src}
+        onClose={() => setNoteOpen(false)}
+        onSent={() => setLookSent((current) => ({ ...current, [photo.id]: true }))}
+      />
     </div>
   )
 }

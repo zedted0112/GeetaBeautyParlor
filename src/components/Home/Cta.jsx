@@ -18,11 +18,11 @@ const Cta = () => {
           Ready when you are
         </h2>
         <p className="mt-2 max-w-xl text-sm text-white/75 sm:mt-4 sm:text-lg">
-          Message {brand.owner} on WhatsApp or call the studio. We will find a time that fits your day.
+          Send a date to {brand.owner}, or call the studio. We will find a time that fits your day.
         </p>
         <div className="hero-cta mt-5 sm:mt-8" role="group" aria-label="Contact actions">
-          <button type="button" aria-label="Book on WhatsApp" onClick={() => openBooking('an appointment')}>
-            WhatsApp
+          <button type="button" aria-label="Book with Geeta" onClick={() => openBooking('an appointment')}>
+            Book
           </button>
           <span className="hero-cta-rule" aria-hidden="true" />
           <a href={telUrl} aria-label="Call the studio">

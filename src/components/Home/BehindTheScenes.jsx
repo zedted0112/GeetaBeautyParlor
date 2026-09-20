@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { IoVolumeHigh, IoVolumeMute } from 'react-icons/io5'
-import { contact, shareLookUrl } from '../../data/content'
+import { contact } from '../../data/content'
 import { useBooking } from '../../context/BookingContext'
 import { useParlor } from '../../context/ParlorContext'
+import { isAdminProfile, readLocalProfile } from '../../lib/profile'
+import { getVisitorId } from '../../lib/visitor'
 import { emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
 import GalleryReactions from './GalleryReactions'
+import SendLookSheet from '../SendLookSheet'
+import { holdImage, holdImages } from '../../lib/mediaCache'
 
 const reels = contact.instagramReels
 const reelIds = reels.map((item) => item.id)
@@ -21,11 +25,21 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
   const didSwipe = useRef(false)
   const videoRefs = useRef([])
   const { ensureProfile, visitorId } = useParlor()
+  const [lookSent, setLookSent] = useState({})
+  const [noteOpen, setNoteOpen] = useState(false)
   const reel = reels[active]
   const landscape = reel?.layout === 'landscape'
   const reelIdRef = useRef(reel.id)
   reelIdRef.current = reel.id
   const tally = tallies[reel.id] || emptyTally()
+
+  const openSend = async () => {
+    if (lookSent[reel.id] === true) return
+    if (!(await ensureProfile())) return
+    const next = readLocalProfile()
+    if (!next || isAdminProfile(next, getVisitorId() || visitorId)) return
+    setNoteOpen(true)
+  }
 
   const react = async (kind) => {
     if (!(await ensureProfile())) return
@@ -53,6 +67,14 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
       }
     }
   }
+
+  useEffect(() => {
+    holdImages(reels.map((item) => item.poster))
+  }, [])
+
+  useEffect(() => {
+    holdImage(reel?.poster)
+  }, [reel?.poster])
 
   useEffect(() => {
     if (!open) {
@@ -184,7 +206,15 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
     goNext()
   }
 
-  if (!open) return null
+  if (!open) {
+    return (
+      <div className="pointer-events-none invisible fixed h-0 w-0 overflow-hidden" aria-hidden="true">
+        {reels.map((item) => (
+          <img key={item.id} src={item.poster} alt="" decoding="async" />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-labelledby="bts-title">
@@ -376,9 +406,9 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
               <button
                 type="button"
                 className="btn-secondary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
-                onClick={() => window.open(shareLookUrl('reel'), '_blank', 'noopener,noreferrer')}
+                onClick={openSend}
               >
-                Share look
+                {lookSent[reel.id] === true ? 'Sent' : 'Send to Geeta'}
               </button>
               <button
                 type="button"
@@ -394,6 +424,14 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
           </aside>
         </div>
       </div>
+      <SendLookSheet
+        open={noteOpen}
+        kind="reel"
+        refId={reel.id}
+        image={reel.poster}
+        onClose={() => setNoteOpen(false)}
+        onSent={() => setLookSent((current) => ({ ...current, [reel.id]: true }))}
+      />
     </div>
   )
 }

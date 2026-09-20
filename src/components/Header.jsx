@@ -167,7 +167,7 @@ const Header = () => {
               openBooking('an appointment')
             }}
           >
-            Book on WhatsApp
+            Book with Geeta
           </button>
         </nav>
       </div>

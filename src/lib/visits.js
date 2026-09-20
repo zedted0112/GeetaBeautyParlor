@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { brand, whatsappUrl } from '../data/content'
+import { sendToGeeta } from './messages'
 
 const KEY = 'gbp-parlor-visits'
 
@@ -107,6 +107,22 @@ export const prettyVisitDate = (value) => {
   })
 }
 
+export const prettyVisitTime = (value) => {
+  const time = String(value || '').trim()
+  if (!/^\d{2}:\d{2}/.test(time)) return ''
+  const [hour, minute] = time.split(':').map(Number)
+  const date = new Date()
+  date.setHours(hour, minute, 0, 0)
+  return date.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })
+}
+
+export const prettyVisitWhen = (date, time) => {
+  const day = prettyVisitDate(date)
+  const clock = prettyVisitTime(time)
+  if (day && clock) return `${day} · ${clock}`
+  return day || clock
+}
+
 export const addVisit = async (visitorId, draft) => {
   if (!visitorId || visitorId === 'anon') throw new Error('Join the parlor first')
   if (!draft?.date) throw new Error('Pick a date')
@@ -116,6 +132,7 @@ export const addVisit = async (visitorId, draft) => {
     name: draft.name || '',
     service: draft.service || 'a visit',
     date: draft.date,
+    time: draft.time || '',
     message: draft.message || '',
     createdAt: new Date().toISOString(),
   }
@@ -141,17 +158,15 @@ export const adoptVisits = async (fromId, toId) => {
   await Promise.all(next.map((row) => insertRemote(toId, row).catch(() => {})))
 }
 
-export const openVisitBooking = (visit, fallbackName = '') => {
-  const name = visit.name || fallbackName
-  const when = prettyVisitDate(visit.date)
-  const text = [
-    `Hi Geeta, I want to book ${visit.service || 'an appointment'} at ${brand.name}.`,
-    '',
-    name ? `Name: ${name}` : null,
-    when ? `Date: ${when}` : null,
-    visit.message ? `Message: ${visit.message}` : null,
-  ]
-    .filter(Boolean)
-    .join('\n')
-  window.open(whatsappUrl(text), '_blank', 'noopener,noreferrer')
+export const sendVisitToGeeta = async (visit, profile, visitorId) => {
+  await sendToGeeta({
+    visitorId,
+    name: visit.name || profile?.name,
+    avatar: profile?.avatar,
+    kind: 'book',
+    date: visit.date,
+    time: visit.time || '',
+    service: visit.service || 'an appointment',
+    body: visit.message || '',
+  })
 }

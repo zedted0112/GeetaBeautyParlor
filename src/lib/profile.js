@@ -20,6 +20,15 @@ export const PARLOR_ROLES = [
   { id: 'customer', label: 'Customer', hint: "I'm here to look and book" },
 ]
 
+const ALLOWED_ROLES = [...PARLOR_ROLES.map((item) => item.id), 'admin']
+
+export const GEETA_ADMIN_ID = 'geeta-admin'
+
+export const isAdminProfile = (profile, visitorId) =>
+  profile?.role === 'admin' && visitorId === GEETA_ADMIN_ID
+
+export const isGeetaName = (value) => String(value || '').trim().toLowerCase() === 'geeta'
+
 export const parlorAvatar = (id) => PARLOR_AVATARS.find((item) => item.id === id) || PARLOR_AVATARS[0]
 
 const cleanName = (value) => value.trim().replace(/\s+/g, ' ')
@@ -48,7 +57,7 @@ export const readLocalProfile = () => {
     const raw = window.localStorage.getItem(KEY)
     if (!raw) return null
     const next = JSON.parse(raw)
-    if (!next?.name || !next?.avatar || !PARLOR_ROLES.some((role) => role.id === next.role)) return null
+    if (!next?.name || !next?.avatar || !ALLOWED_ROLES.includes(next.role)) return null
     return { name: next.name, avatar: next.avatar, role: next.role }
   } catch {
     return null
@@ -85,7 +94,16 @@ export const saveParlorPin = async (visitorId, pin) => {
 export const saveParlorProfile = async (visitorId, draft) => {
   const name = cleanName(draft.name)
   if (!isProfileName(name)) throw new Error('Enter a short name')
+  if (isGeetaName(name) && visitorId !== GEETA_ADMIN_ID) {
+    throw new Error('Geeta is the studio login. Use I have a PIN.')
+  }
   if (!PARLOR_AVATARS.some((item) => item.id === draft.avatar)) throw new Error('Pick an avatar')
+  if (draft.role === 'admin' || visitorId === GEETA_ADMIN_ID) {
+    const profile = { name: 'Geeta', avatar: draft.avatar || 'bloom', role: 'admin' }
+    writeLocalProfile(profile)
+    if (draft.pin) await saveParlorPin(GEETA_ADMIN_ID, draft.pin)
+    return profile
+  }
   if (!PARLOR_ROLES.some((role) => role.id === draft.role)) throw new Error('Pick client or customer')
 
   const profile = { name, avatar: draft.avatar, role: draft.role }

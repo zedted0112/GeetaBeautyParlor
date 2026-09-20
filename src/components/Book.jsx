@@ -13,7 +13,7 @@ const Book = () => {
       <div className="max-w-md text-center">
         <h1 className="font-display text-3xl text-ivory sm:text-4xl">Book with Geeta</h1>
         <p className="mt-3 text-ivory/70">
-          Fill the form to send your name, date, and message on WhatsApp.
+          Fill the form to send your name, date, and note to Geeta.
         </p>
         <button type="button" className="btn-primary mt-8 w-full sm:w-auto" onClick={() => openBooking('an appointment')}>
           Open booking form

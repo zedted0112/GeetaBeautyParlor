@@ -2,11 +2,13 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { getVisitorId } from '../lib/visitor'
 import {
   clearLocalProfile,
+  isAdminProfile,
   loginParlorProfile,
   readLocalProfile,
   saveParlorProfile,
 } from '../lib/profile'
 import { adoptVisits } from '../lib/visits'
+import { seedGeetaAdmin } from '../lib/messages'
 
 const ParlorContext = createContext(null)
 
@@ -19,8 +21,12 @@ export const ParlorProvider = ({ children }) => {
   const pending = useRef(null)
 
   useEffect(() => {
+    seedGeetaAdmin().catch(() => {})
+  }, [])
+
+  useEffect(() => {
     const local = readLocalProfile()
-    if (!local) return undefined
+    if (!local || isAdminProfile(local, visitorId)) return undefined
     saveParlorProfile(visitorId, local).catch(() => {})
     return undefined
   }, [visitorId])
@@ -76,7 +82,7 @@ export const ParlorProvider = ({ children }) => {
   const loginProfile = useCallback(async (name, pin) => {
     const previousId = getVisitorId()
     const next = await loginParlorProfile(name, pin)
-    await adoptVisits(previousId, next.visitorId)
+    if (!isAdminProfile(next.profile, next.visitorId)) await adoptVisits(previousId, next.visitorId)
     setVisitorIdState(next.visitorId)
     setProfile(next.profile)
     setSignupOpen(false)
@@ -87,6 +93,8 @@ export const ParlorProvider = ({ children }) => {
   const switchProfile = useCallback(() => {
     clearLocalProfile()
     setProfile(null)
+    setGoToSpace(true)
+    setStartMode('return')
   }, [])
 
   const value = useMemo(
