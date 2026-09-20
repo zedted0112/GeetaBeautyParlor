@@ -47,6 +47,17 @@ export const serviceImages = {
     portrait2: new URL('../assets/images/services/bridal/bridal-portrait-2.jpg', import.meta.url).href,
     group1: new URL('../assets/images/services/bridal/bridal-group-1.jpg', import.meta.url).href,
     group2: new URL('../assets/images/services/bridal/bridal-group-2.jpg', import.meta.url).href,
+    studio1: new URL('../assets/images/services/bridal/bridal-studio-1.jpg', import.meta.url).href,
+    studio2: new URL('../assets/images/services/bridal/bridal-studio-2.jpg', import.meta.url).href,
+    studio3: new URL('../assets/images/services/bridal/bridal-studio-3.jpg', import.meta.url).href,
+    studio4: new URL('../assets/images/services/bridal/bridal-studio-4.jpg', import.meta.url).href,
+    studio5: new URL('../assets/images/services/bridal/bridal-studio-5.jpg', import.meta.url).href,
+    studio6: new URL('../assets/images/services/bridal/bridal-studio-6.jpg', import.meta.url).href,
+    studio7: new URL('../assets/images/services/bridal/bridal-studio-7.jpg', import.meta.url).href,
+    studio8: new URL('../assets/images/services/bridal/bridal-studio-8.jpg', import.meta.url).href,
+    studio9: new URL('../assets/images/services/bridal/bridal-studio-9.jpg', import.meta.url).href,
+    studio10: new URL('../assets/images/services/bridal/bridal-studio-10.jpg', import.meta.url).href,
+    studio11: new URL('../assets/images/services/bridal/bridal-studio-11.jpg', import.meta.url).href,
   },
 
   // Makeup Services
