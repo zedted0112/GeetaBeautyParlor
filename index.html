@@ -19,13 +19,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script>
       window.goatcounter = { no_onload: true }
+      if (/\bdesktop=1\b/.test(location.search) || localStorage.getItem('gbp-desktop') === '1') {
+        document.documentElement.classList.add('allow-desktop')
+      }
     </script>
     <script data-goatcounter="https://geetamakeovers.goatcounter.com/count"
             async src="//gc.zgo.at/count.js"></script>
-    <script type="module" crossorigin src="/GeetaBeautyParlor/assets/js/index-CXz1rSZH.js"></script>
+    <script type="module" crossorigin src="/GeetaBeautyParlor/assets/js/index-BsIjAtQE.js"></script>
     <link rel="modulepreload" crossorigin href="/GeetaBeautyParlor/assets/js/vendor-DD48japz.js">
     <link rel="modulepreload" crossorigin href="/GeetaBeautyParlor/assets/js/router-W4Wa2SUC.js">
-    <link rel="stylesheet" crossorigin href="/GeetaBeautyParlor/assets/index-B6heXZdF.css">
+    <link rel="stylesheet" crossorigin href="/GeetaBeautyParlor/assets/index-BsNBoNpF.css">
   </head>
   <body>
     <div id="root"></div>
