@@ -30,13 +30,22 @@ const Header = () => {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (!isMenuOpen) return undefined
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMenuOpen])
+
   const goTo = (id) => {
     scrollToId(id)
     setIsMenuOpen(false)
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#14110f]/95 shadow-sm backdrop-blur-md">
+    <>
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#14110f]/95 pt-[env(safe-area-inset-top)] shadow-sm backdrop-blur-md">
       <a
         href="#home"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2"
@@ -48,16 +57,16 @@ const Header = () => {
         Skip to content
       </a>
 
-      <div className="mx-auto flex h-[96px] w-[min(92%,1200px)] items-center justify-between">
+      <div className="mx-auto flex h-[72px] w-[min(92%,1200px)] items-center justify-between gap-3 md:h-[96px]">
         <Link
           to="/"
           onClick={() => goTo('home')}
-          className="flex items-center"
+          className="flex min-w-0 items-center"
         >
           <img
             src={logoImages.wordmark}
             alt={brand.name}
-            className="h-16 w-auto object-contain sm:h-20 md:h-[84px]"
+            className="h-11 w-auto max-w-[58vw] object-contain sm:h-16 md:h-[84px] md:max-w-none"
           />
         </Link>
 
@@ -76,11 +85,14 @@ const Header = () => {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
-            onClick={() => openBooking('an appointment')}
-            className="hidden rounded-full bg-brand-500 px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-brand-400 sm:inline-flex"
+            onClick={() => {
+              setIsMenuOpen(false)
+              openBooking('an appointment')
+            }}
+            className="inline-flex min-h-10 items-center rounded-full bg-brand-500 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-white transition hover:bg-brand-400 sm:px-5 sm:py-2.5 sm:text-xs"
           >
             Book
           </button>
@@ -98,23 +110,23 @@ const Header = () => {
 
       <div
         className={`overflow-hidden bg-[#14110f] transition-all duration-300 md:hidden ${
-          isMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <nav className="flex flex-col gap-4 px-6 pb-6 pt-2" aria-label="Mobile">
+        <nav className="flex flex-col gap-1 px-6 pb-6 pt-2" aria-label="Mobile">
           {navItems.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => goTo(item.id)}
-              className="text-left text-base font-medium text-ivory"
+              className="min-h-11 text-left text-base font-medium text-ivory"
             >
               {item.label}
             </button>
           ))}
           <button
             type="button"
-            className="btn-primary w-full"
+            className="btn-primary mt-2 w-full"
             onClick={() => {
               setIsMenuOpen(false)
               openBooking('an appointment')
@@ -125,6 +137,15 @@ const Header = () => {
         </nav>
       </div>
     </header>
+    {isMenuOpen && (
+      <button
+        type="button"
+        className="fixed inset-0 z-40 bg-black/55 md:hidden"
+        aria-label="Close menu"
+        onClick={() => setIsMenuOpen(false)}
+      />
+    )}
+    </>
   )
 }
 

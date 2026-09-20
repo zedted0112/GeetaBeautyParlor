@@ -2,7 +2,7 @@ import { brand } from '../data/content'
 
 const Copyright = () => (
   <footer className="bg-[#14100e] text-white/60">
-    <div className="mx-auto flex w-[min(92%,1200px)] flex-col items-center justify-between gap-3 py-6 text-center text-xs tracking-wider sm:flex-row sm:text-left">
+    <div className="mx-auto flex w-[min(92%,1200px)] flex-col items-center justify-between gap-3 py-6 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.5rem))] text-center text-xs tracking-wider sm:flex-row sm:text-left">
       <p>
         Website by <span className="text-white">HimalayanCoder</span>
       </p>

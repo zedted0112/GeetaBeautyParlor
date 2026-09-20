@@ -19,7 +19,7 @@ const HeroHome = () => {
   }, [])
 
   return (
-    <section id="home" className="relative min-h-screen overflow-hidden">
+    <section id="home" className="relative min-h-[100svh] overflow-hidden">
       {slides.map((src, i) => (
         <div
           key={src}
@@ -36,7 +36,7 @@ const HeroHome = () => {
 
       {slides.length > 1 && (
         <>
-          <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+          <div className="absolute bottom-[5.5rem] left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-8">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -68,31 +68,31 @@ const HeroHome = () => {
         </>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-[min(92%,1100px)] flex-col items-center justify-center px-4 pb-20 pt-28 text-center text-white">
-        <p className="section-badge-light mb-6">{brand.locationShort} · 15 years of craft</p>
-        <h1 className="font-display text-5xl font-semibold leading-tight tracking-tight sm:text-6xl lg:text-7xl">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-[min(92%,1100px)] flex-col items-center justify-center px-1 pb-28 pt-[calc(5.5rem+env(safe-area-inset-top))] text-center text-white sm:px-4 sm:pb-20 sm:pt-28">
+        <p className="section-badge-light mb-4 text-[10px] sm:mb-6 sm:text-xs">{brand.locationShort} · 15 years of craft</p>
+        <h1 className="font-display text-[2.35rem] font-semibold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
           {brand.name}
         </h1>
-        <p className="mt-5 max-w-2xl text-lg font-light text-white/90 sm:text-xl">
+        <p className="mt-4 max-w-2xl text-[15px] font-light leading-relaxed text-white/90 sm:mt-5 sm:text-xl">
           {brand.description}
         </p>
 
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
-          <button type="button" className="btn-primary" onClick={() => openBooking('an appointment')}>
+        <div className="mt-7 flex w-full max-w-sm flex-col items-stretch gap-3 sm:mt-8 sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
+          <button type="button" className="btn-primary w-full sm:w-auto" onClick={() => openBooking('an appointment')}>
             Book on WhatsApp
           </button>
-          <button type="button" className="btn-secondary" onClick={() => scrollToId('services')}>
+          <button type="button" className="btn-secondary w-full sm:w-auto" onClick={() => scrollToId('services')}>
             Explore services
           </button>
         </div>
 
-        <div className="mt-14 flex items-center gap-6 text-white/80 sm:gap-10">
+        <div className="mt-10 grid w-full max-w-md grid-cols-3 gap-2 text-white/80 sm:mt-14 sm:flex sm:max-w-none sm:items-center sm:justify-center sm:gap-10">
           {stats.map((item, i) => (
-            <div key={item.label} className="flex items-center gap-6 sm:gap-10">
-              {i > 0 && <div className="h-10 w-px bg-white/25" />}
+            <div key={item.label} className="flex items-center sm:gap-10">
+              {i > 0 && <div className="mr-6 hidden h-10 w-px bg-white/25 sm:block" />}
               <div>
-                <p className="font-display text-2xl text-white sm:text-3xl">{item.value}</p>
-                <p className="text-xs uppercase tracking-wider">{item.label}</p>
+                <p className="font-display text-xl text-white sm:text-3xl">{item.value}</p>
+                <p className="mt-0.5 text-[10px] uppercase leading-tight tracking-wider sm:text-xs">{item.label}</p>
               </div>
             </div>
           ))}

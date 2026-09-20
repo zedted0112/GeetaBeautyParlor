@@ -65,20 +65,21 @@ const BookingModal = () => {
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-md"
+      className="fixed inset-0 z-[90] flex items-end justify-center bg-black/60 p-0 backdrop-blur-md sm:items-center sm:p-4"
       onClick={closeBooking}
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-title"
     >
       <div
-        className="w-full max-w-md rounded-3xl border border-white/25 bg-white/10 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-2xl sm:p-8"
+        className="max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-3xl border border-white/25 bg-white/10 p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-[0_24px_80px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-2xl sm:rounded-3xl sm:p-8 sm:pb-8"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="mb-6 flex items-start justify-between gap-3">
+        <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-white/25 sm:hidden" />
+        <div className="mb-5 flex items-start justify-between gap-3 sm:mb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-brand-200">Book with Geeta</p>
-            <h2 id="booking-title" className="mt-2 font-display text-3xl text-ivory">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-brand-200 sm:text-xs">Book with Geeta</p>
+            <h2 id="booking-title" className="mt-2 font-display text-[1.7rem] leading-tight text-ivory sm:text-3xl">
               Book {service}
             </h2>
             <p className="mt-1 text-sm text-ivory/65">Fill this in. We will open WhatsApp with your details.</p>
@@ -128,7 +129,7 @@ const BookingModal = () => {
               value={form.message}
               onChange={onChange}
               placeholder="Look, occasion, or anything we should know"
-              className="booking-input min-h-[96px] resize-none"
+              className="booking-input min-h-[84px] resize-none sm:min-h-[96px]"
             />
           </label>
 

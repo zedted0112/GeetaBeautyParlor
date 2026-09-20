@@ -36,16 +36,16 @@ const cards = [
 
 const Contact = () => (
   <section id="contact" className="scroll-target bg-ink text-white">
-    <div className="mx-auto w-[min(92%,1200px)] py-20 lg:py-24">
+    <div className="mx-auto w-[min(92%,1200px)] py-14 lg:py-24">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-xl">
           <img
             src={logoImages.wordmark}
             alt={brand.name}
-            className="mb-6 h-20 w-auto object-contain sm:h-24"
+            className="mb-5 h-16 w-auto object-contain sm:mb-6 sm:h-24"
           />
           <h2 className="sr-only">{brand.name}</h2>
-          <p className="mt-4 text-lg leading-relaxed text-white/70">
+          <p className="mt-4 text-base leading-relaxed text-white/70 sm:text-lg">
             {brand.owner} and {brand.assistant} — beauty consultants in {brand.location}.
             Walk in, call, or send a WhatsApp. We will take it from there.
           </p>
@@ -69,7 +69,7 @@ const Contact = () => (
         </div>
       </div>
 
-      <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:gap-4 lg:grid-cols-4">
         {cards.map((card) => {
           const Icon = card.icon
           return (
@@ -80,7 +80,7 @@ const Contact = () => (
               rel={card.external ? 'noreferrer' : undefined}
               title={card.value}
               aria-label={`${card.label}: ${card.value}`}
-              className={`flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-8 text-ivory/90 transition hover:border-brand-400 hover:bg-white/10 ${card.accent || ''}`}
+              className={`flex min-h-[7.5rem] flex-col items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-6 text-ivory/90 transition hover:border-brand-400 hover:bg-white/10 sm:px-4 sm:py-8 ${card.accent || ''}`}
             >
               <Icon className="h-8 w-8" />
               <span className="text-xs uppercase tracking-[0.16em] text-ivory/60">{card.label}</span>

@@ -19,18 +19,18 @@ const Services = () => {
 
   return (
     <section id="services" className="scroll-target bg-sand">
-      <div className="mx-auto w-[min(96%,1360px)] py-20 lg:py-28">
+      <div className="mx-auto w-[min(92%,1360px)] py-14 lg:py-28">
         <div className="mx-auto max-w-2xl text-center">
           <p className="section-badge">What we do</p>
-          <h2 className="mt-5 font-display text-4xl font-semibold text-ivory lg:text-5xl">
+          <h2 className="mt-5 font-display text-3xl font-semibold text-ivory sm:text-4xl lg:text-5xl">
             Services, not a catalogue
           </h2>
-          <p className="mt-4 text-lg text-ivory/70">
+          <p className="mt-4 text-base text-ivory/70 sm:text-lg">
             Choose what you need. We will build the look around your day, your jewellery, and your light.
           </p>
         </div>
 
-        <div className="mt-14 grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <div className="mt-10 grid items-stretch gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
           {services.map((service) => {
             const isBridal = service.id === 'bridal'
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { serviceImages } from '../../utils/imageImports'
 import { useBooking } from '../../context/BookingContext'
@@ -31,6 +31,7 @@ export const bridalPhotos = [
 const BridalGallery = ({ open, onClose }) => {
   const [active, setActive] = useState(0)
   const { openBooking } = useBooking()
+  const touchX = useRef(null)
 
   useEffect(() => {
     if (!open) return undefined
@@ -56,21 +57,39 @@ const BridalGallery = ({ open, onClose }) => {
   const goPrev = () => setActive((index) => (index - 1 + bridalPhotos.length) % bridalPhotos.length)
   const goNext = () => setActive((index) => (index + 1) % bridalPhotos.length)
 
+  const onTouchStart = (event) => {
+    touchX.current = event.changedTouches[0].clientX
+  }
+
+  const onTouchEnd = (event) => {
+    if (touchX.current == null) return
+    const delta = event.changedTouches[0].clientX - touchX.current
+    if (Math.abs(delta) > 40) {
+      if (delta < 0) goNext()
+      else goPrev()
+    }
+    touchX.current = null
+  }
+
   if (!open) return null
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/85 p-3 backdrop-blur-sm sm:p-6"
+      className="fixed inset-0 z-[80] flex items-end justify-center bg-black/85 p-0 backdrop-blur-sm sm:items-center sm:p-3 lg:p-6"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="bridal-gallery-title"
     >
       <div
-        className="relative flex h-[min(94vh,920px)] w-[min(96vw,1280px)] flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#14110f] shadow-2xl lg:flex-row"
+        className="relative flex h-[100dvh] w-full flex-col overflow-hidden border-white/10 bg-[#14110f] shadow-2xl sm:h-[min(94vh,920px)] sm:w-[min(96vw,1280px)] sm:rounded-3xl sm:border lg:flex-row"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="relative flex min-h-0 flex-1 items-center justify-center bg-black">
+        <div
+          className="relative flex min-h-0 max-h-[58dvh] flex-1 items-center justify-center bg-black pt-[env(safe-area-inset-top)] lg:max-h-none"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
           <div className="photo-frame">
             <img
               src={bridalPhotos[active]}
@@ -94,36 +113,46 @@ const BridalGallery = ({ open, onClose }) => {
           >
             →
           </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-3 top-[max(0.75rem,env(safe-area-inset-top))] rounded-full bg-black/55 p-1 text-white lg:hidden"
+            aria-label="Close gallery"
+          >
+            <IoIosCloseCircle className="h-8 w-8" />
+          </button>
         </div>
 
-        <aside className="flex w-full shrink-0 flex-col border-t border-white/10 p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
-          <div className="mb-4 flex items-start justify-between gap-3">
+        <aside className="flex w-full shrink-0 flex-col border-t border-white/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
+          <div className="mb-2 flex items-start justify-between gap-3 sm:mb-3 lg:mb-4">
             <div>
-              <p className="section-badge">Bride shoots</p>
-              <h3 id="bridal-gallery-title" className="mt-3 font-display text-3xl text-ivory">
+              <div className="hidden sm:block">
+                <p className="section-badge">Bride shoots</p>
+              </div>
+              <h3 id="bridal-gallery-title" className="font-display text-lg text-ivory sm:mt-3 sm:text-3xl">
                 Bridal looks
               </h3>
-              <p className="mt-2 text-sm text-ivory/65">
+              <p className="mt-2 hidden text-sm text-ivory/65 lg:block">
                 Every shoot sits in the same frame, so the full look always fits.
               </p>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full p-1 text-ivory/70 transition hover:text-ivory"
+              className="hidden rounded-full p-1 text-ivory/70 transition hover:text-ivory lg:block"
               aria-label="Close gallery"
             >
               <IoIosCloseCircle className="h-9 w-9" />
             </button>
           </div>
 
-          <div className="grid min-h-0 flex-1 grid-cols-4 gap-2 overflow-y-auto sm:grid-cols-5 lg:grid-cols-3">
+          <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-3 lg:overflow-y-auto">
             {bridalPhotos.map((src, index) => (
               <button
                 key={src}
                 type="button"
                 onClick={() => setActive(index)}
-                className={`photo-thumb ${index === active ? 'border-brand-400' : 'border-transparent'}`}
+                className={`photo-thumb h-14 w-11 shrink-0 lg:h-auto lg:w-auto ${index === active ? 'border-brand-400' : 'border-transparent'}`}
                 aria-label={`Show bridal photo ${index + 1}`}
               >
                 <img src={src} alt="" className="h-full w-full object-cover object-[center_20%]" />
@@ -131,13 +160,13 @@ const BridalGallery = ({ open, onClose }) => {
             ))}
           </div>
 
-          <div className="mt-5 flex items-center justify-between gap-3">
-            <p className="text-sm text-ivory/50">
+          <div className="mt-3 flex items-center justify-between gap-3 sm:mt-5">
+            <p className="shrink-0 text-sm text-ivory/50">
               {active + 1} / {bridalPhotos.length}
             </p>
             <button
               type="button"
-              className="btn-primary px-5 py-3"
+              className="btn-primary min-h-10 px-4 py-2 text-xs sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
               onClick={() => {
                 onClose()
                 openBooking('Bridal Makeup')

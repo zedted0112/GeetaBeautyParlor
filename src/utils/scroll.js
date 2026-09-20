@@ -1,4 +1,6 @@
-const HEADER_OFFSET = 96
+function headerOffset() {
+  return window.matchMedia('(min-width: 768px)').matches ? 96 : 76
+}
 
 export function scrollToId(id) {
   if (!id || id === 'home') {
@@ -9,7 +11,7 @@ export function scrollToId(id) {
   const element = document.getElementById(id)
   if (!element) return
 
-  const top = element.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET
+  const top = element.getBoundingClientRect().top + window.scrollY - headerOffset()
   window.scrollTo({ top, behavior: 'smooth' })
 }
 
