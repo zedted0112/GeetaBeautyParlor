@@ -131,6 +131,31 @@
     border-color: rgba(255, 255, 255, 0.25);
     background-color: rgba(0, 0, 0, 0.35);
   }
+
+  .booking-input {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.8rem 1rem;
+    color: #f4ece4;
+    outline: none;
+    color-scheme: dark;
+  }
+
+  .booking-input::placeholder {
+    color: rgba(244, 236, 228, 0.4);
+  }
+
+  .booking-input:focus {
+    border-color: rgba(192, 141, 112, 0.8);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .booking-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.7;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

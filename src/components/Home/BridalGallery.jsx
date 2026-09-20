@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { serviceImages } from '../../utils/imageImports'
-import { whatsappUrl } from '../../data/content'
+import { useBooking } from '../../context/BookingContext'
 
 export const bridalPhotos = [
   serviceImages.bridal.studio7,
@@ -30,6 +30,7 @@ export const bridalPhotos = [
 
 const BridalGallery = ({ open, onClose }) => {
   const [active, setActive] = useState(0)
+  const { openBooking } = useBooking()
 
   useEffect(() => {
     if (!open) return undefined
@@ -134,14 +135,16 @@ const BridalGallery = ({ open, onClose }) => {
             <p className="text-sm text-ivory/50">
               {active + 1} / {bridalPhotos.length}
             </p>
-            <a
-              href={whatsappUrl('Hi Geeta, I want to book Bridal Makeup after seeing the bride shoots.')}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
               className="btn-primary px-5 py-3"
+              onClick={() => {
+                onClose()
+                openBooking('Bridal Makeup')
+              }}
             >
               Book bridal makeup
-            </a>
+            </button>
           </div>
         </aside>
       </div>

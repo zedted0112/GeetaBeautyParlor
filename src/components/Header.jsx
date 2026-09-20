@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom'
 import { FaBars } from 'react-icons/fa'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { logoImages } from '../utils/imageImports'
-import { brand, navItems, whatsappUrl } from '../data/content'
+import { brand, navItems } from '../data/content'
 import { scrollToId } from '../utils/scroll'
+import { useBooking } from '../context/BookingContext'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeId, setActiveId] = useState('home')
+  const { openBooking } = useBooking()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -75,14 +77,13 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href={whatsappUrl()}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
+            onClick={() => openBooking('an appointment')}
             className="hidden rounded-full bg-brand-500 px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-brand-400 sm:inline-flex"
           >
             Book
-          </a>
+          </button>
           <button
             type="button"
             className="rounded-lg p-2 text-ivory md:hidden"
@@ -111,15 +112,16 @@ const Header = () => {
               {item.label}
             </button>
           ))}
-          <a
-            href={whatsappUrl()}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
             className="btn-primary w-full"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => {
+              setIsMenuOpen(false)
+              openBooking('an appointment')
+            }}
           >
             Book on WhatsApp
-          </a>
+          </button>
         </nav>
       </div>
     </header>

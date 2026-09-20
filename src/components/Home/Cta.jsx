@@ -1,7 +1,11 @@
 import { serviceImages } from '../../utils/imageImports'
-import { brand, contact, telUrl, whatsappUrl } from '../../data/content'
+import { brand, contact, telUrl } from '../../data/content'
+import { useBooking } from '../../context/BookingContext'
 
-const Cta = () => (
+const Cta = () => {
+  const { openBooking } = useBooking()
+
+  return (
   <section
     className="relative overflow-hidden bg-cover bg-center"
     style={{ backgroundImage: `url('${serviceImages.makeup.glamour}')` }}
@@ -16,15 +20,16 @@ const Cta = () => (
         Message {brand.owner} on WhatsApp or call the studio. We will find a time that fits your day.
       </p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <a href={whatsappUrl()} target="_blank" rel="noreferrer" className="btn-primary">
+        <button type="button" className="btn-primary" onClick={() => openBooking('an appointment')}>
           WhatsApp {contact.phoneDisplay}
-        </a>
+        </button>
         <a href={telUrl} className="btn-secondary">
           Call the studio
         </a>
       </div>
     </div>
   </section>
-)
+  )
+}
 
 export default Cta

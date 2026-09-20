@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { heroImages } from '../../utils/imageImports'
-import { brand, stats, whatsappUrl } from '../../data/content'
+import { brand, stats } from '../../data/content'
 import { scrollToId } from '../../utils/scroll'
+import { useBooking } from '../../context/BookingContext'
 
 const slides = [heroImages.homeMain, heroImages.homeAlt, heroImages.aboutMain].filter(Boolean)
 
 const HeroHome = () => {
   const [index, setIndex] = useState(0)
+  const { openBooking } = useBooking()
 
   useEffect(() => {
     if (slides.length < 2) return undefined
@@ -76,9 +78,9 @@ const HeroHome = () => {
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
-          <a href={whatsappUrl()} target="_blank" rel="noreferrer" className="btn-primary">
+          <button type="button" className="btn-primary" onClick={() => openBooking('an appointment')}>
             Book on WhatsApp
-          </a>
+          </button>
           <button type="button" className="btn-secondary" onClick={() => scrollToId('services')}>
             Explore services
           </button>

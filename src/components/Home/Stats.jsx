@@ -1,6 +1,10 @@
-import { stats, whatsappUrl } from '../../data/content'
+import { stats } from '../../data/content'
+import { useBooking } from '../../context/BookingContext'
 
-const Stats = () => (
+const Stats = () => {
+  const { openBooking } = useBooking()
+
+  return (
   <section className="bg-ink text-white">
     <div className="mx-auto w-[min(92%,1200px)] py-20 text-center lg:py-24">
       <p className="section-badge-light">Trusted in Uttarkashi</p>
@@ -19,11 +23,12 @@ const Stats = () => (
         ))}
       </div>
 
-      <a href={whatsappUrl()} target="_blank" rel="noreferrer" className="btn-primary mt-12">
+      <button type="button" className="btn-primary mt-12" onClick={() => openBooking('an appointment')}>
         Join our clients
-      </a>
+      </button>
     </div>
   </section>
-)
+  )
+}
 
 export default Stats

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { serviceImages } from '../../utils/imageImports'
-import { services, whatsappUrl } from '../../data/content'
+import { services } from '../../data/content'
 import BridalGallery from './BridalGallery'
+import { useBooking } from '../../context/BookingContext'
 
 const images = {
   bridal: serviceImages.bridal.studio1,
@@ -14,6 +15,7 @@ const images = {
 
 const Services = () => {
   const [bridalOpen, setBridalOpen] = useState(false)
+  const { openBooking } = useBooking()
 
   return (
     <section id="services" className="scroll-target bg-sand">
@@ -57,14 +59,13 @@ const Services = () => {
                       View bride shoots →
                     </button>
                   ) : (
-                    <a
-                      href={whatsappUrl(`Hi Geeta, I want to book ${service.name} at Geeta Makeovers.`)}
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => openBooking(service.name)}
                       className="mt-2.5 inline-flex text-xs font-semibold text-brand-300 transition hover:text-brand-200"
                     >
                       Book this →
-                    </a>
+                    </button>
                   )}
                 </div>
               </article>

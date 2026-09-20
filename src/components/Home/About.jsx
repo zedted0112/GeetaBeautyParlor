@@ -1,7 +1,11 @@
 import { serviceImages } from '../../utils/imageImports'
-import { about, brand, whatsappUrl } from '../../data/content'
+import { about, brand } from '../../data/content'
+import { useBooking } from '../../context/BookingContext'
 
-const About = () => (
+const About = () => {
+  const { openBooking } = useBooking()
+
+  return (
   <section id="about" className="scroll-target bg-cream">
     <div className="mx-auto grid w-[min(92%,1200px)] items-center gap-12 py-20 lg:grid-cols-2 lg:gap-20 lg:py-28">
       <div>
@@ -24,14 +28,13 @@ const About = () => (
           ))}
         </div>
 
-        <a
-          href={whatsappUrl(`Hi ${brand.owner}, I would like to book a consultation at Geeta Makeovers.`)}
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          onClick={() => openBooking('a consultation')}
           className="btn-primary mt-8"
         >
           Book a consultation
-        </a>
+        </button>
       </div>
 
       <div className="relative">
@@ -47,6 +50,7 @@ const About = () => (
       </div>
     </div>
   </section>
-)
+  )
+}
 
 export default About
