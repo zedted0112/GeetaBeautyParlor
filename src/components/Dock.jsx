@@ -5,11 +5,12 @@ import { contact, navItems } from '../data/content'
 import { logoImages } from '../utils/imageImports'
 import { scrollToId } from '../utils/scroll'
 import { useBooking } from '../context/BookingContext'
+import { useGallery } from '../context/GalleryContext'
 
 const TIPS = {
   home: 'The studio',
   about: 'Meet Geeta',
-  services: 'Bridal & glam',
+  services: 'Bridal looks',
   instagram: 'See the looks',
   book: 'Pick a date',
 }
@@ -25,6 +26,7 @@ const Dock = () => {
   const [bounce, setBounce] = useState(null)
   const itemRefs = useRef([])
   const { open, openBooking } = useBooking()
+  const { open: galleryOpen, openGallery } = useGallery()
 
   const items = [
     ...navItems.filter((item) => item.id !== 'contact'),
@@ -50,7 +52,7 @@ const Dock = () => {
     return () => observer.disconnect()
   }, [])
 
-  if (open) return null
+  if (open || galleryOpen) return null
 
   const metricsFor = (index) => {
     if (bounce !== null || mouseX === null) return { scale: 1, y: 0 }
@@ -126,6 +128,7 @@ const Dock = () => {
                   setMouseX(null)
                   bounceIcon(item.index)
                   if (isBook) openBooking('an appointment')
+                  else if (isServices) openGallery()
                   else if (item.href) window.open(item.href, '_blank', 'noopener,noreferrer')
                   else scrollToId(item.id)
                 }}

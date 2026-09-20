@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { serviceImages } from '../../utils/imageImports'
 import { services } from '../../data/content'
-import BridalGallery from './BridalGallery'
 import { useBooking } from '../../context/BookingContext'
+import { useGallery } from '../../context/GalleryContext'
 
 const images = {
   bridal: serviceImages.bridal.studio1,
@@ -44,13 +44,13 @@ const applyPops = (track, values) => {
 }
 
 const Services = () => {
-  const [bridalOpen, setBridalOpen] = useState(false)
   const [active, setActive] = useState(0)
   const trackRef = useRef(null)
   const popsRef = useRef([])
   const draggingRef = useRef(false)
   const rafRef = useRef(0)
   const { openBooking } = useBooking()
+  const { openGallery } = useGallery()
 
   useEffect(() => {
     const track = trackRef.current
@@ -132,7 +132,7 @@ const Services = () => {
           {isBridal ? (
             <button
               type="button"
-              onClick={() => setBridalOpen(true)}
+              onClick={() => openGallery()}
               className="mt-1.5 inline-flex text-[11px] font-semibold text-brand-300 transition hover:text-brand-200 sm:mt-2.5 sm:text-xs"
             >
               <span className="sm:hidden">Gallery →</span>
@@ -188,8 +188,6 @@ const Services = () => {
           {orderedServices.map((service) => renderCard(service))}
         </div>
       </div>
-
-      <BridalGallery open={bridalOpen} onClose={() => setBridalOpen(false)} />
     </section>
   )
 }

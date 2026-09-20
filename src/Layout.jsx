@@ -3,15 +3,30 @@ import Header from './components/Header'
 import Copyright from './components/Copyright'
 import Dock from './components/Dock'
 import BookingModal from './components/BookingModal'
+import BridalGallery from './components/Home/BridalGallery'
 import { BookingProvider } from './context/BookingContext'
+import { GalleryProvider, useGallery } from './context/GalleryContext'
+
+const Shell = () => {
+  const { open, closeGallery } = useGallery()
+
+  return (
+    <>
+      <Header />
+      <Outlet />
+      <Copyright />
+      <Dock />
+      <BookingModal />
+      <BridalGallery open={open} onClose={closeGallery} />
+    </>
+  )
+}
 
 const Layout = () => (
   <BookingProvider>
-    <Header />
-    <Outlet />
-    <Copyright />
-    <Dock />
-    <BookingModal />
+    <GalleryProvider>
+      <Shell />
+    </GalleryProvider>
   </BookingProvider>
 )
 
