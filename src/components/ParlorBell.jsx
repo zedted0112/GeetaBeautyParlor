@@ -6,6 +6,8 @@ import { holdImages } from '../lib/mediaCache'
 import { GEETA_ADMIN_ID } from '../lib/profile'
 import { REACTION_EMOJI, loadLikedReactionFeed, loadReactionFeed, subscribeReactionFeed } from '../lib/reactions'
 import { bridalPhotos } from './Home/BridalGallery'
+import { glamPhotos } from './Home/GlamGallery'
+import { lookGalleryFor } from '../lib/looks'
 import ParlorAvatar from './ParlorAvatar'
 
 const seenKey = (visitorId) => `gbp-parlor-notifs-seen:${visitorId || 'anon'}`
@@ -39,12 +41,15 @@ const ago = (value) => {
   return formatStudioDate(time)
 }
 
-const looksById = Object.fromEntries(bridalPhotos.map((item) => [item.id, item]))
+const looksById = Object.fromEntries([...bridalPhotos, ...glamPhotos].map((item) => [item.id, item]))
 const reelsById = Object.fromEntries(contact.instagramReels.map((item) => [item.id, item]))
 
 const mediaFor = (photoId) => {
   const look = looksById[photoId]
-  if (look) return { src: look.src, label: 'Bridal look', gallery: 'bridal' }
+  if (look) {
+    const gallery = lookGalleryFor(photoId)
+    return { src: look.src, label: gallery === 'glam' ? 'Glam look' : 'Bridal look', gallery }
+  }
   const reel = reelsById[photoId]
   if (reel) return { src: reel.poster, label: 'Reel', gallery: 'bts' }
   return { src: '', label: 'Look', gallery: 'bridal' }

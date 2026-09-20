@@ -9,13 +9,14 @@ const images = {
   bts: contact.instagramReels[0]?.poster,
   hair: serviceImages.hair.main,
   facial: serviceImages.facial.main,
-  spa: serviceImages.spa.main,
+  glam: serviceImages.glam.g001,
   waxing: serviceImages.waxing.main,
 }
 
+const PIN = ['bridal', 'glam']
 const orderedServices = [
-  ...services.filter((service) => service.id === 'bridal'),
-  ...services.filter((service) => service.id !== 'bridal'),
+  ...PIN.map((id) => services.find((service) => service.id === id)).filter(Boolean),
+  ...services.filter((service) => !PIN.includes(service.id)),
 ]
 
 const SNAP = 0.16
@@ -109,6 +110,7 @@ const Services = () => {
   const renderCard = (service, pop = false) => {
     const isBridal = service.id === 'bridal'
     const isBts = service.id === 'bts'
+    const isGlam = service.id === 'glam'
 
     return (
       <article
@@ -146,6 +148,15 @@ const Services = () => {
             >
               <span className="sm:hidden">Gallery →</span>
               <span className="hidden sm:inline">View bride shoots →</span>
+            </button>
+          ) : isGlam ? (
+            <button
+              type="button"
+              onClick={(event) => openGallery(event.currentTarget, 'glam')}
+              className="mt-1.5 inline-flex text-[11px] font-semibold text-brand-300 transition hover:text-brand-200 sm:mt-2.5 sm:text-xs"
+            >
+              <span className="sm:hidden">Gallery →</span>
+              <span className="hidden sm:inline">View glam looks →</span>
             </button>
           ) : isBts ? (
             <button

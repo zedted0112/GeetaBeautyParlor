@@ -5,6 +5,7 @@ import Dock from './components/Dock'
 import BookingModal from './components/BookingModal'
 import BridalGallery, { bridalPhotos } from './components/Home/BridalGallery'
 import BehindTheScenes from './components/Home/BehindTheScenes'
+import GlamGallery, { glamPhotos } from './components/Home/GlamGallery'
 import GoatCounter from './components/GoatCounter'
 import MobileGate from './components/MobileGate'
 import ParlorSignup from './components/ParlorSignup'
@@ -22,6 +23,7 @@ const Shell = () => {
     syncClock()
     holdImages([
       ...bridalPhotos.map((item) => item.src),
+      ...glamPhotos.map((item) => item.src),
       ...contact.instagramReels.map((item) => item.poster),
     ])
   }, [])
@@ -37,6 +39,8 @@ const Shell = () => {
       <ParlorSignup />
       {kind === 'bts' ? (
         <BehindTheScenes open={open} phase={phase} origin={origin} startId={startId} onClose={closeGallery} />
+      ) : kind === 'glam' ? (
+        <GlamGallery open={open} phase={phase} origin={origin} startId={startId} onClose={closeGallery} />
       ) : (
         <BridalGallery open={open} phase={phase} origin={origin} startId={startId} onClose={closeGallery} />
       )}

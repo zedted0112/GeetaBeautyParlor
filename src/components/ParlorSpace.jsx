@@ -12,11 +12,13 @@ import { useParlor } from '../context/ParlorContext'
 import { useBooking } from '../context/BookingContext'
 import { useGallery } from '../context/GalleryContext'
 import { bridalPhotos } from './Home/BridalGallery'
+import { glamPhotos } from './Home/GlamGallery'
+import { lookGalleryFor } from '../lib/looks'
 import ParlorAvatar from './ParlorAvatar'
 import ParlorBell from './ParlorBell'
 import ParlorChat from './ParlorChat'
 
-const looksById = Object.fromEntries(bridalPhotos.map((item) => [item.id, item]))
+const looksById = Object.fromEntries([...bridalPhotos, ...glamPhotos].map((item) => [item.id, item]))
 const reelsById = Object.fromEntries(contact.instagramReels.map((item) => [item.id, item]))
 
 const thumbFor = (row) => {
@@ -276,14 +278,14 @@ const ParlorSpace = () => {
   const onOpenLook = useCallback(
     (el) => {
       if (!chat?.ref_id) return
-      openGallery(el, chat.kind === 'reel' ? 'bts' : 'bridal', chat.ref_id)
+      openGallery(el, chat.kind === 'reel' ? 'bts' : lookGalleryFor(chat.ref_id), chat.ref_id)
     },
     [chat, openGallery]
   )
   const openThreadGallery = useCallback(
     (el, row) => {
       holdImageThumb(row)
-      openGallery(el, row.kind === 'reel' ? 'bts' : 'bridal', row.ref_id)
+      openGallery(el, row.kind === 'reel' ? 'bts' : lookGalleryFor(row.ref_id), row.ref_id)
     },
     [openGallery]
   )
@@ -446,7 +448,7 @@ const ParlorSpace = () => {
     () =>
       votes.flatMap((row) => {
         const look = looksById[row.photo_id]
-        if (look) return [{ ...look, reaction: row.kind, gallery: 'bridal', media: look.src }]
+        if (look) return [{ ...look, reaction: row.kind, gallery: lookGalleryFor(look.id), media: look.src }]
         const reel = reelsById[row.photo_id]
         if (reel) return [{ ...reel, reaction: row.kind, gallery: 'bts', media: reel.poster }]
         return []
@@ -779,7 +781,7 @@ const ParlorSpace = () => {
               {lookRows.length ? (
                 <ThreadList rows={lookRows} variant="looks" peer="Geeta" onOpen={setChat} onGallery={openThreadGallery} />
               ) : (
-                <EmptyNote>Send a bridal look or a reel — both land here.</EmptyNote>
+                <EmptyNote>Send a bridal look, glam look, or a reel — they land here.</EmptyNote>
               )}
               {likedMedia.length ? (
                 <>
@@ -793,7 +795,7 @@ const ParlorSpace = () => {
                         type="button"
                         className={`parlor-look ${item.gallery === 'bts' ? 'is-reel' : ''}`}
                         aria-label={item.gallery === 'bts' ? 'Open liked reel' : 'Open liked look'}
-                        onClick={(event) => openGallery(event.currentTarget, item.gallery === 'bts' ? 'bts' : 'bridal', item.id)}
+                        onClick={(event) => openGallery(event.currentTarget, item.gallery === 'bts' ? 'bts' : lookGalleryFor(item.id), item.id)}
                       >
                         <img src={item.media} alt="" />
                         <span>{REACTION_EMOJI[item.reaction] || ''}</span>

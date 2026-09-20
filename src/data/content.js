@@ -38,6 +38,20 @@ export const contact = {
       poster: new URL('../assets/videos/behind-the-scenes-4.jpg', import.meta.url).href,
     },
     {
+      id: 'behind-the-scenes-5',
+      type: 'video',
+      layout: 'landscape',
+      src: new URL('../assets/videos/behind-the-scenes-5.mp4', import.meta.url).href,
+      poster: new URL('../assets/videos/behind-the-scenes-5.jpg', import.meta.url).href,
+    },
+    {
+      id: 'behind-the-scenes-6',
+      type: 'video',
+      layout: 'landscape',
+      src: new URL('../assets/videos/behind-the-scenes-6.mp4', import.meta.url).href,
+      poster: new URL('../assets/videos/behind-the-scenes-6.jpg', import.meta.url).href,
+    },
+    {
       id: 'behind-the-scenes',
       type: 'video',
       src: new URL('../assets/videos/behind-the-scenes.mp4', import.meta.url).href,
@@ -88,6 +102,12 @@ export const services = [
     image: 'bridal',
   },
   {
+    id: 'glam',
+    name: 'GLAM',
+    blurb: 'Party and event makeup — sharp, lit, and ready for the camera.',
+    image: 'glam',
+  },
+  {
     id: 'bts',
     name: 'Behind the Scenes',
     blurb: 'A look inside the studio — how a bridal look comes together.',
@@ -104,12 +124,6 @@ export const services = [
     name: 'Facials',
     blurb: 'Skin rituals that prep, glow, and calm before a big moment.',
     image: 'facial',
-  },
-  {
-    id: 'spa',
-    name: 'Spa & Care',
-    blurb: 'Hands-on care when you want to slow down and reset.',
-    image: 'spa',
   },
   {
     id: 'waxing',

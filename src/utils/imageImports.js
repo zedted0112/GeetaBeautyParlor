@@ -60,6 +60,13 @@ export const serviceImages = {
     studio9: new URL('../assets/images/services/bridal/bridal-studio-9.jpg', import.meta.url).href,
     studio10: new URL('../assets/images/services/bridal/bridal-studio-10.jpg', import.meta.url).href,
     studio11: new URL('../assets/images/services/bridal/bridal-studio-11.jpg', import.meta.url).href,
+    studio12: new URL('../assets/images/services/bridal/bridal-studio-12.jpg', import.meta.url).href,
+    studio14: new URL('../assets/images/services/bridal/bridal-studio-14.jpg', import.meta.url).href,
+    studio17: new URL('../assets/images/services/bridal/bridal-studio-17.jpg', import.meta.url).href,
+  },
+
+  geeta: {
+    g001: new URL('../assets/images/geeta/geeta-001.jpg', import.meta.url).href,
   },
 
   // Makeup Services
@@ -90,6 +97,18 @@ export const serviceImages = {
   // Spa Services
   spa: {
     main: new URL('../assets/images/services/spa/spa-main.jpg', import.meta.url).href,
+  },
+
+  glam: {
+    g001: new URL('../assets/images/services/glam/001.jpg', import.meta.url).href,
+    g002: new URL('../assets/images/services/glam/002.jpg', import.meta.url).href,
+    g003: new URL('../assets/images/services/glam/003.jpg', import.meta.url).href,
+    g004: new URL('../assets/images/services/glam/004.jpg', import.meta.url).href,
+    g005: new URL('../assets/images/services/glam/005.jpg', import.meta.url).href,
+    g006: new URL('../assets/images/services/glam/006.jpg', import.meta.url).href,
+    g007: new URL('../assets/images/services/glam/007.jpg', import.meta.url).href,
+    g008: new URL('../assets/images/services/glam/008.jpg', import.meta.url).href,
+    g009: new URL('../assets/images/services/glam/009.jpg', import.meta.url).href,
   },
 
   // Waxing Services

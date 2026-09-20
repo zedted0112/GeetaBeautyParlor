@@ -10,36 +10,20 @@ import GalleryReactions from './GalleryReactions'
 import SendLookSheet from '../SendLookSheet'
 import { holdImage, holdImages } from '../../lib/mediaCache'
 
-export const bridalPhotos = [
-  { id: 'studio-7', src: serviceImages.bridal.studio7 },
-  { id: 'studio-8', src: serviceImages.bridal.studio8 },
-  { id: 'studio-9', src: serviceImages.bridal.studio9 },
-  { id: 'studio-10', src: serviceImages.bridal.studio10 },
-  { id: 'studio-11', src: serviceImages.bridal.studio11 },
-  { id: 'studio-1', src: serviceImages.bridal.studio1 },
-  { id: 'studio-2', src: serviceImages.bridal.studio2 },
-  { id: 'studio-3', src: serviceImages.bridal.studio3 },
-  { id: 'studio-4', src: serviceImages.bridal.studio4 },
-  { id: 'studio-5', src: serviceImages.bridal.studio5 },
-  { id: 'studio-6', src: serviceImages.bridal.studio6 },
-  { id: 'portrait-2', src: serviceImages.bridal.portrait2 },
-  { id: 'portrait-1', src: serviceImages.bridal.portrait1 },
-  { id: 'main-1', src: serviceImages.bridal.main1 },
-  { id: 'main-2', src: serviceImages.bridal.main2 },
-  { id: 'main-4', src: serviceImages.bridal.main4 },
-  { id: 'main-5', src: serviceImages.bridal.main5 },
-  { id: 'main-6', src: serviceImages.bridal.main6 },
-  { id: 'main-7', src: serviceImages.bridal.main7 },
-  { id: 'group-1', src: serviceImages.bridal.group1 },
-  { id: 'group-2', src: serviceImages.bridal.group2 },
-  { id: 'main-3', src: serviceImages.bridal.main3 },
-  { id: 'studio-12', src: serviceImages.bridal.studio12 },
-  { id: 'studio-14', src: serviceImages.bridal.studio14 },
-  { id: 'studio-17', src: serviceImages.bridal.studio17 },
+export const glamPhotos = [
+  { id: 'glam-1', src: serviceImages.glam.g001 },
+  { id: 'glam-2', src: serviceImages.glam.g002 },
+  { id: 'glam-3', src: serviceImages.glam.g003 },
+  { id: 'glam-4', src: serviceImages.glam.g004 },
+  { id: 'glam-5', src: serviceImages.glam.g005 },
+  { id: 'glam-6', src: serviceImages.glam.g006 },
+  { id: 'glam-7', src: serviceImages.glam.g007 },
+  { id: 'glam-8', src: serviceImages.glam.g008 },
+  { id: 'glam-9', src: serviceImages.glam.g009 },
 ]
 
-const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) => {
-  const photoIds = useMemo(() => bridalPhotos.map((photo) => photo.id), [])
+const GlamGallery = ({ open, phase = 'in', origin, startId = null, onClose }) => {
+  const photoIds = useMemo(() => glamPhotos.map((photo) => photo.id), [])
   const [active, setActive] = useState(0)
   const [tallies, setTallies] = useState(() => emptyTallies(photoIds))
   const [presence, setPresence] = useState([])
@@ -48,7 +32,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   const [lookSent, setLookSent] = useState({})
   const [noteOpen, setNoteOpen] = useState(false)
   const touchX = useRef(null)
-  const photo = bridalPhotos[active]
+  const photo = glamPhotos[active]
   const photoIdRef = useRef(photo.id)
   photoIdRef.current = photo.id
   const tally = tallies[photo.id] || emptyTally()
@@ -124,7 +108,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   }, [photo.id, visitorId, tally.picked])
 
   useEffect(() => {
-    holdImages(bridalPhotos.map((item) => item.src))
+    holdImages(glamPhotos.map((item) => item.src))
   }, [])
 
   useEffect(() => {
@@ -133,16 +117,16 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
 
   useEffect(() => {
     if (!open) return undefined
-    const index = startId ? bridalPhotos.findIndex((item) => item.id === startId) : 0
+    const index = startId ? glamPhotos.findIndex((item) => item.id === startId) : 0
     setActive(index >= 0 ? index : 0)
 
     const onKey = (event) => {
       if (event.key === 'Escape') onClose()
       if (event.key === 'ArrowRight') {
-        setActive((index) => (index + 1) % bridalPhotos.length)
+        setActive((index) => (index + 1) % glamPhotos.length)
       }
       if (event.key === 'ArrowLeft') {
-        setActive((index) => (index - 1 + bridalPhotos.length) % bridalPhotos.length)
+        setActive((index) => (index - 1 + glamPhotos.length) % glamPhotos.length)
       }
     }
 
@@ -154,8 +138,8 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
     }
   }, [open, onClose, startId])
 
-  const goPrev = () => setActive((index) => (index - 1 + bridalPhotos.length) % bridalPhotos.length)
-  const goNext = () => setActive((index) => (index + 1) % bridalPhotos.length)
+  const goPrev = () => setActive((index) => (index - 1 + glamPhotos.length) % glamPhotos.length)
+  const goNext = () => setActive((index) => (index + 1) % glamPhotos.length)
 
   const onTouchStart = (event) => {
     touchX.current = event.changedTouches[0].clientX
@@ -174,7 +158,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   if (!open) {
     return (
       <div className="pointer-events-none invisible fixed h-0 w-0 overflow-hidden" aria-hidden="true">
-        {bridalPhotos.map((item) => (
+        {glamPhotos.map((item) => (
           <img key={item.id} src={item.src} alt="" decoding="async" />
         ))}
       </div>
@@ -182,7 +166,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   }
 
   return (
-    <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-labelledby="bridal-gallery-title">
+    <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-labelledby="glam-gallery-title">
       <button
         type="button"
         className={`gallery-veil ${phase === 'out' ? 'is-out' : 'is-in'}`}
@@ -209,7 +193,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
             <div className="photo-frame">
               <img
                 src={photo.src}
-                alt={`Bridal look ${active + 1}`}
+                alt={`Glam look ${active + 1}`}
                 className="h-full w-full object-contain object-center"
                 decoding="async"
               />
@@ -246,17 +230,17 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
           <div className="mb-2 flex items-center justify-between gap-3 sm:mb-3 sm:items-start lg:mb-4">
             <div>
               <div className="hidden sm:block">
-                <p className="section-badge">Bride shoots</p>
+                <p className="section-badge">Party looks</p>
               </div>
-              <h3 id="bridal-gallery-title" className="font-display text-base text-ivory sm:mt-3 sm:text-3xl">
-                Bridal looks
+              <h3 id="glam-gallery-title" className="font-display text-base text-ivory sm:mt-3 sm:text-3xl">
+                GLAM
               </h3>
               <p className="mt-2 hidden text-sm text-ivory/65 lg:block">
-                Every shoot sits in the same frame, so the full look always fits.
+                Event makeup in the same frame, so the full look always fits.
               </p>
             </div>
             <p className="shrink-0 text-sm text-ivory/50 sm:hidden">
-              {active + 1} / {bridalPhotos.length}
+              {active + 1} / {glamPhotos.length}
             </p>
             <button
               type="button"
@@ -269,13 +253,13 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
           </div>
 
           <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-3 lg:overflow-y-auto">
-            {bridalPhotos.map((item, index) => (
+            {glamPhotos.map((item, index) => (
               <button
                 key={item.id}
                 type="button"
                 onClick={() => setActive(index)}
                 className={`photo-thumb h-[5.25rem] w-16 shrink-0 sm:h-16 sm:w-12 lg:h-auto lg:w-auto ${index === active ? 'border-brand-400' : 'border-transparent'}`}
-                aria-label={`Show bridal photo ${index + 1}`}
+                aria-label={`Show glam photo ${index + 1}`}
               >
                 <img src={item.src} alt="" className="h-full w-full object-cover object-[center_20%]" />
               </button>
@@ -284,7 +268,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
 
           <div className="mt-3 flex items-center gap-2 sm:mt-5">
             <p className="hidden shrink-0 text-sm text-ivory/50 sm:mr-auto sm:block">
-              {active + 1} / {bridalPhotos.length}
+              {active + 1} / {glamPhotos.length}
             </p>
             <button
               type="button"
@@ -298,10 +282,10 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
               className="btn-primary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
               onClick={() => {
                 onClose()
-                openBooking('Bridal Makeup')
+                openBooking('GLAM')
               }}
             >
-              Book bridal makeup
+              Book this look
             </button>
           </div>
         </aside>
@@ -319,4 +303,4 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
   )
 }
 
-export default BridalGallery
+export default GlamGallery
