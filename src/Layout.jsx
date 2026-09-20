@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Header from './components/Header'
 import Copyright from './components/Copyright'
-import WhatsAppButton from './components/WhatsAppButton'
+import Dock from './components/Dock'
 import BookingModal from './components/BookingModal'
 import { BookingProvider } from './context/BookingContext'
 
@@ -10,7 +10,7 @@ const Layout = () => (
     <Header />
     <Outlet />
     <Copyright />
-    <WhatsAppButton />
+    <Dock />
     <BookingModal />
   </BookingProvider>
 )
