@@ -29,7 +29,7 @@ export const bridalPhotos = [
   serviceImages.bridal.main3,
 ]
 
-const BridalGallery = ({ open, onClose }) => {
+const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
   const [active, setActive] = useState(0)
   const [tallies, setTallies] = useState(() => emptyTallies(bridalPhotos.length))
   const { openBooking } = useBooking()
@@ -93,17 +93,24 @@ const BridalGallery = ({ open, onClose }) => {
   if (!open) return null
 
   return (
-    <div
-      className="fixed inset-0 z-[80] flex items-stretch justify-center bg-black/90 p-0 backdrop-blur-sm sm:items-center sm:p-3 lg:p-6"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="bridal-gallery-title"
-    >
+    <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-labelledby="bridal-gallery-title">
+      <button
+        type="button"
+        className={`gallery-veil ${phase === 'out' ? 'is-out' : 'is-in'}`}
+        aria-label="Close gallery"
+        onClick={onClose}
+      />
       <div
-        className="relative flex h-[100dvh] w-full flex-col overflow-hidden border-white/10 bg-[#14110f] shadow-2xl sm:h-[min(94vh,920px)] sm:w-[min(96vw,1280px)] sm:rounded-3xl sm:border lg:flex-row"
-        onClick={(event) => event.stopPropagation()}
+        className={`gallery-paper pointer-events-none ${phase === 'out' ? 'is-out' : 'is-in'}`}
+        style={{
+          '--ox': `${origin?.x ?? window.innerWidth / 2}px`,
+          '--oy': `${origin?.y ?? window.innerHeight - 36}px`,
+        }}
       >
+        <div
+          className="pointer-events-auto relative flex h-[100dvh] w-full flex-col overflow-hidden border-white/10 bg-[#14110f] shadow-2xl sm:h-[min(94vh,920px)] sm:w-[min(96vw,1280px)] sm:rounded-3xl sm:border lg:flex-row"
+          onClick={(event) => event.stopPropagation()}
+        >
         <div className="relative flex min-h-0 flex-1 flex-col bg-black pt-[env(safe-area-inset-top)]">
           <div
             className="relative min-h-0 flex-1"
@@ -201,6 +208,7 @@ const BridalGallery = ({ open, onClose }) => {
             </button>
           </div>
         </aside>
+      </div>
       </div>
     </div>
   )

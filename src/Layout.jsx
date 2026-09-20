@@ -8,7 +8,7 @@ import { BookingProvider } from './context/BookingContext'
 import { GalleryProvider, useGallery } from './context/GalleryContext'
 
 const Shell = () => {
-  const { open, closeGallery } = useGallery()
+  const { open, phase, origin, closeGallery } = useGallery()
 
   return (
     <>
@@ -17,7 +17,7 @@ const Shell = () => {
       <Copyright />
       <Dock />
       <BookingModal />
-      <BridalGallery open={open} onClose={closeGallery} />
+      <BridalGallery open={open} phase={phase} origin={origin} onClose={closeGallery} />
     </>
   )
 }

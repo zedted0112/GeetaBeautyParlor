@@ -132,7 +132,7 @@ const Services = () => {
           {isBridal ? (
             <button
               type="button"
-              onClick={() => openGallery()}
+              onClick={(event) => openGallery(event.currentTarget)}
               className="mt-1.5 inline-flex text-[11px] font-semibold text-brand-300 transition hover:text-brand-200 sm:mt-2.5 sm:text-xs"
             >
               <span className="sm:hidden">Gallery →</span>
