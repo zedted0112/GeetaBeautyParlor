@@ -5,16 +5,6 @@ const KINDS = [
   { id: 'eyes', emoji: '😍', label: 'Love eyes' },
 ]
 
-const seed = (index) => ({
-  fire: 3 + ((index * 3) % 9),
-  heart: 6 + ((index * 2) % 11),
-  wow: 1 + (index % 5),
-  eyes: 4 + ((index * 5) % 8),
-  picked: null,
-})
-
-export const emptyTallies = (count) => Array.from({ length: count }, (_, index) => seed(index))
-
 const GalleryReactions = ({ tally, onReact }) => (
   <div className="gallery-react shrink-0 px-3 py-2 sm:px-5 sm:py-2.5">
     <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.16em] text-ivory/40">
@@ -28,12 +18,12 @@ const GalleryReactions = ({ tally, onReact }) => (
             key={kind.id}
             type="button"
             aria-pressed={on}
-            aria-label={`${kind.label}, ${tally[kind.id]}`}
+            aria-label={`${kind.label}, ${tally[kind.id] || 0}`}
             className={`gallery-react-btn ${on ? 'is-on' : ''}`}
             onClick={() => onReact(kind.id)}
           >
             <span className="text-base leading-none sm:text-lg">{kind.emoji}</span>
-            <span className="text-[11px] tabular-nums text-ivory/70">{tally[kind.id]}</span>
+            <span className="text-[11px] tabular-nums text-ivory/70">{tally[kind.id] || 0}</span>
           </button>
         )
       })}

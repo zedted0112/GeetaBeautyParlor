@@ -17,6 +17,27 @@ export const contact = {
   address: 'Uttarkashi, Uttarakhand, India',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Uttarkashi+Uttarakhand',
   instagramUrl: 'https://www.instagram.com/geeta__beauty__parlour/',
+  instagramReels: [
+    {
+      id: 'behind-the-scenes-2',
+      type: 'video',
+      layout: 'landscape',
+      src: new URL('../assets/videos/behind-the-scenes-2.mp4', import.meta.url).href,
+      poster: new URL('../assets/videos/behind-the-scenes-2.jpg', import.meta.url).href,
+    },
+    {
+      id: 'behind-the-scenes-3',
+      type: 'video',
+      src: new URL('../assets/videos/behind-the-scenes-3.mp4', import.meta.url).href,
+      poster: new URL('../assets/videos/behind-the-scenes-3.jpg', import.meta.url).href,
+    },
+    {
+      id: 'behind-the-scenes',
+      type: 'video',
+      src: new URL('../assets/videos/behind-the-scenes.mp4', import.meta.url).href,
+      poster: new URL('../assets/videos/behind-the-scenes.jpg', import.meta.url).href,
+    },
+  ],
 }
 
 export const whatsapp = {
@@ -51,9 +72,9 @@ export const services = [
     image: 'bridal',
   },
   {
-    id: 'makeup',
-    name: 'Party & Glam',
-    blurb: 'Evening, festive, and camera-ready makeup tailored to you.',
+    id: 'bts',
+    name: 'Behind the Scenes',
+    blurb: 'A look inside the studio — how a bridal look comes together.',
     image: 'makeup',
   },
   {

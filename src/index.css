@@ -496,9 +496,62 @@
     background: #0a0908;
   }
 
+  .reel-frame {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    overflow: hidden;
+    aspect-ratio: 9 / 16;
+    background: #0a0908;
+  }
+
+  .reel-frame .instagram-media {
+    margin: 0 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    background: #0a0908 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .reel-frame iframe,
+  .reel-frame video {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .reel-frame video {
+    object-fit: cover;
+    background: #0a0908;
+  }
+
+  .reel-frame.is-landscape {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    aspect-ratio: auto;
+    margin: 0;
+  }
+
+  .reel-frame.is-landscape video {
+    object-fit: cover;
+  }
+
   @media (min-width: 1024px) {
     .photo-frame {
       width: auto;
+      max-height: min(78vh, 780px);
+    }
+
+    .reel-frame:not(.is-landscape) {
       max-height: min(78vh, 780px);
     }
   }
@@ -568,7 +621,7 @@
   }
 
   .service-tab > *:not(.service-tab-veil) {
-    opacity: calc(0.45 + 0.55 * var(--pop, 0));
+    opacity: calc(0.78 + 0.22 * var(--pop, 0));
   }
 
   .service-tab-veil {
@@ -585,7 +638,7 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
     backdrop-filter: blur(12px) saturate(160%);
     -webkit-backdrop-filter: blur(12px) saturate(160%);
-    opacity: calc(0.82 * (1 - var(--pop, 0)));
+    opacity: calc(0.28 * (1 - var(--pop, 0)));
   }
 
   .service-photo {
@@ -780,6 +833,7 @@
     will-change: transform, opacity;
   }
 
+
   .gallery-paper.is-out {
     animation: gallery-paper-out 0.56s linear both;
   }
@@ -907,7 +961,8 @@
   }
 
   .service-carousel .service-photo {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 4;
+    max-height: min(38vh, 17rem);
   }
 }
 

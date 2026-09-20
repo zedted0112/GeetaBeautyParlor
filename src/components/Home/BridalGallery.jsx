@@ -1,56 +1,87 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
 import { serviceImages } from '../../utils/imageImports'
 import { useBooking } from '../../context/BookingContext'
-import GalleryReactions, { emptyTallies } from './GalleryReactions'
+import { emptyTally, emptyTallies, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
+import { getVisitorId } from '../../lib/visitor'
+import GalleryReactions from './GalleryReactions'
 
 export const bridalPhotos = [
-  serviceImages.bridal.studio7,
-  serviceImages.bridal.studio8,
-  serviceImages.bridal.studio9,
-  serviceImages.bridal.studio10,
-  serviceImages.bridal.studio11,
-  serviceImages.bridal.studio1,
-  serviceImages.bridal.studio2,
-  serviceImages.bridal.studio3,
-  serviceImages.bridal.studio4,
-  serviceImages.bridal.studio5,
-  serviceImages.bridal.studio6,
-  serviceImages.bridal.portrait2,
-  serviceImages.bridal.portrait1,
-  serviceImages.bridal.main1,
-  serviceImages.bridal.main2,
-  serviceImages.bridal.main4,
-  serviceImages.bridal.main5,
-  serviceImages.bridal.main6,
-  serviceImages.bridal.main7,
-  serviceImages.bridal.group1,
-  serviceImages.bridal.group2,
-  serviceImages.bridal.main3,
+  { id: 'studio-7', src: serviceImages.bridal.studio7 },
+  { id: 'studio-8', src: serviceImages.bridal.studio8 },
+  { id: 'studio-9', src: serviceImages.bridal.studio9 },
+  { id: 'studio-10', src: serviceImages.bridal.studio10 },
+  { id: 'studio-11', src: serviceImages.bridal.studio11 },
+  { id: 'studio-1', src: serviceImages.bridal.studio1 },
+  { id: 'studio-2', src: serviceImages.bridal.studio2 },
+  { id: 'studio-3', src: serviceImages.bridal.studio3 },
+  { id: 'studio-4', src: serviceImages.bridal.studio4 },
+  { id: 'studio-5', src: serviceImages.bridal.studio5 },
+  { id: 'studio-6', src: serviceImages.bridal.studio6 },
+  { id: 'portrait-2', src: serviceImages.bridal.portrait2 },
+  { id: 'portrait-1', src: serviceImages.bridal.portrait1 },
+  { id: 'main-1', src: serviceImages.bridal.main1 },
+  { id: 'main-2', src: serviceImages.bridal.main2 },
+  { id: 'main-4', src: serviceImages.bridal.main4 },
+  { id: 'main-5', src: serviceImages.bridal.main5 },
+  { id: 'main-6', src: serviceImages.bridal.main6 },
+  { id: 'main-7', src: serviceImages.bridal.main7 },
+  { id: 'group-1', src: serviceImages.bridal.group1 },
+  { id: 'group-2', src: serviceImages.bridal.group2 },
+  { id: 'main-3', src: serviceImages.bridal.main3 },
 ]
 
 const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
+  const photoIds = useMemo(() => bridalPhotos.map((photo) => photo.id), [])
   const [active, setActive] = useState(0)
-  const [tallies, setTallies] = useState(() => emptyTallies(bridalPhotos.length))
+  const [tallies, setTallies] = useState(() => emptyTallies(photoIds))
   const { openBooking } = useBooking()
   const touchX = useRef(null)
+  const visitorId = useMemo(() => getVisitorId(), [])
+  const photo = bridalPhotos[active]
+  const tally = tallies[photo.id] || emptyTally()
 
-  const react = (kind) => {
+  const react = async (kind) => {
+    const current = tallies[photo.id] || emptyTally()
+    const previous = current.picked
     setTallies((prev) => {
-      const next = [...prev]
-      const row = { ...next[active] }
+      const row = { ...(prev[photo.id] || emptyTally()) }
       if (row.picked === kind) {
-        row[kind] -= 1
+        row[kind] = Math.max(0, row[kind] - 1)
         row.picked = null
       } else {
-        if (row.picked) row[row.picked] -= 1
+        if (row.picked) row[row.picked] = Math.max(0, row[row.picked] - 1)
         row[kind] += 1
         row.picked = kind
       }
-      next[active] = row
-      return next
+      return { ...prev, [photo.id]: row }
     })
+    try {
+      await saveVote(photo.id, visitorId, kind, previous)
+    } catch {
+      try {
+        setTallies(await loadTallies(photoIds, visitorId))
+      } catch {
+        // keep optimistic counts if the refresh also fails
+      }
+    }
   }
+
+  useEffect(() => {
+    let alive = true
+    loadTallies(photoIds, visitorId)
+      .then((next) => {
+        if (alive) setTallies(next)
+      })
+      .catch(() => {})
+    const stop = subscribeTallies(photoIds, visitorId, (next) => {
+      if (alive) setTallies(next)
+    })
+    return () => {
+      alive = false
+      stop()
+    }
+  }, [photoIds, visitorId])
 
   useEffect(() => {
     if (!open) return undefined
@@ -119,7 +150,7 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
           >
             <div className="photo-frame">
               <img
-                src={bridalPhotos[active]}
+                src={photo.src}
                 alt={`Bridal look ${active + 1}`}
                 className="h-full w-full object-contain object-center"
               />
@@ -149,7 +180,7 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
               <IoIosCloseCircle className="h-8 w-8" />
             </button>
           </div>
-          <GalleryReactions tally={tallies[active]} onReact={react} />
+          <GalleryReactions tally={tally} onReact={react} />
         </div>
 
         <aside className="flex w-full shrink-0 flex-col border-t border-white/10 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 sm:p-5 lg:w-[360px] lg:border-l lg:border-t-0 lg:p-6">
@@ -179,15 +210,15 @@ const BridalGallery = ({ open, phase = 'in', origin, onClose }) => {
           </div>
 
           <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-3 lg:overflow-y-auto">
-            {bridalPhotos.map((src, index) => (
+            {bridalPhotos.map((item, index) => (
               <button
-                key={src}
+                key={item.id}
                 type="button"
                 onClick={() => setActive(index)}
                 className={`photo-thumb h-[5.25rem] w-16 shrink-0 sm:h-16 sm:w-12 lg:h-auto lg:w-auto ${index === active ? 'border-brand-400' : 'border-transparent'}`}
                 aria-label={`Show bridal photo ${index + 1}`}
               >
-                <img src={src} alt="" className="h-full w-full object-cover object-[center_20%]" />
+                <img src={item.src} alt="" className="h-full w-full object-cover object-[center_20%]" />
               </button>
             ))}
           </div>
