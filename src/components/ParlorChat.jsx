@@ -1,21 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { useGallery } from '../context/GalleryContext'
 import { IoIosCloseCircle } from 'react-icons/io'
+import { IoTrash } from 'react-icons/io5'
 import { prettyVisitWhen } from '../lib/visits'
-import { BOOKING_STATUS, decideBooking, loadThread, peekThread, replyOnThread } from '../lib/messages'
+import { BOOKING_STATUS, decideBooking, deleteThread, loadThread, peekThread, replyOnThread, subscribeMessages } from '../lib/messages'
+import { formatStudioTime, studioToday } from '../lib/clock'
 import { holdImage } from '../lib/mediaCache'
 import ParlorAvatar from './ParlorAvatar'
 
 const kindLabel = (kind) => {
   if (kind === 'book') return 'Booking'
   if (kind === 'reel') return 'Reel'
+  if (kind === 'chat') return 'Chat'
   return 'Look'
 }
 
-const bubbleTime = (value) => {
-  if (!value) return ''
-  return new Date(value).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })
-}
+const bubbleTime = (value) => formatStudioTime(value)
 
 const statusClass = (status) => {
   if (status === 'accepted') return 'text-emerald-300'
@@ -31,6 +31,7 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [changing, setChanging] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
   const scroller = useRef(null)
@@ -59,13 +60,14 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
     setBusy(false)
     setError('')
     setChanging(false)
+    setConfirmDelete(false)
     setBooking(current)
     setDate(current?.visit_on || '')
     setTime(current?.visit_time || '')
     setMessages(cached?.length ? cached : current ? [current] : [])
 
     let alive = true
-    loadThread(current, { fresh: !cached })
+    loadThread(current, { fresh: true })
       .then((rows) => {
         if (alive) setMessages(rows.length ? rows : current ? [current] : [])
       })
@@ -83,6 +85,32 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
     return () => {
       alive = false
       window.removeEventListener('keydown', onKey, true)
+    }
+  }, [open, threadId])
+
+  useEffect(() => {
+    if (!open || !threadId) return undefined
+    let alive = true
+    const pull = () => {
+      loadThread(rootRef.current, { fresh: true })
+        .then((rows) => {
+          if (!alive) return
+          setMessages((current) => {
+            if (!rows.length) return current
+            if (current.length === rows.length && current.every((item, index) => item.id === rows[index].id && item.body === rows[index].body && item.status === rows[index].status)) {
+              return current
+            }
+            return rows
+          })
+        })
+        .catch(() => {})
+    }
+    const stop = subscribeMessages(pull)
+    const tick = window.setInterval(pull, 2000)
+    return () => {
+      alive = false
+      stop()
+      window.clearInterval(tick)
     }
   }, [open, threadId])
 
@@ -116,7 +144,7 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
     setBusy(true)
     setError('')
     try {
-      await replyOnThread({
+      const row = await replyOnThread({
         parentId: root.id,
         visitorId,
         name: profile?.name,
@@ -125,6 +153,7 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
         refId: root.ref_id,
       })
       setNote('')
+      setMessages((current) => (current.some((item) => item.id === row.id) ? current : [...current, row]))
       await refresh(booking)
     } catch (err) {
       setError(err.message || 'Could not send reply.')
@@ -162,8 +191,25 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
     }
   }
 
-  const now = new Date()
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const onDelete = async () => {
+    if (busy) return
+    if (!confirmDelete) {
+      setConfirmDelete(true)
+      return
+    }
+    setBusy(true)
+    setError('')
+    try {
+      await deleteThread(root, visitorId)
+      onMutate?.()
+      onClose?.()
+    } catch (err) {
+      setError(err.message || 'Could not delete chat.')
+      setBusy(false)
+    }
+  }
+
+  const today = studioToday()
   const card = booking || root
   const isBook = card.kind === 'book'
   const status = card.status || 'pending'
@@ -185,11 +231,24 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
         <header className="flex shrink-0 items-center gap-2 border-b border-white/10 px-3 py-2.5">
           <ParlorAvatar id={root.from_avatar} size="sm" />
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] uppercase tracking-[0.14em] text-brand-200">{kindLabel(root.kind)}</p>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-brand-200">
+              {root.kind === 'chat' || root.ref_id === '__chat__' ? 'Chat' : kindLabel(root.kind)}
+            </p>
             <h2 id="parlor-chat-title" className="truncate font-display text-lg leading-tight text-ivory">
-              {root.from_name}
+              {admin ? root.from_name : 'Geeta'}
             </h2>
           </div>
+          <button
+            type="button"
+            onClick={onDelete}
+            disabled={busy}
+            className={`rounded-full p-1.5 transition disabled:opacity-50 ${
+              confirmDelete ? 'bg-rose-800/80 text-white' : 'text-ivory/55 hover:text-rose-200'
+            }`}
+            aria-label={confirmDelete ? 'Confirm delete chat' : 'Delete chat'}
+          >
+            <IoTrash className="h-5 w-5" />
+          </button>
           <button
             type="button"
             onClick={onClose}
@@ -199,6 +258,27 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
             <IoIosCloseCircle className="h-7 w-7" />
           </button>
         </header>
+        {confirmDelete ? (
+          <div className="flex shrink-0 items-center gap-2 border-b border-white/10 px-3 py-2">
+            <p className="min-w-0 flex-1 text-[12px] text-ivory/70">Remove this chat from your inbox? They keep it.</p>
+            <button
+              type="button"
+              className="rounded-full px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-ivory/60"
+              disabled={busy}
+              onClick={() => setConfirmDelete(false)}
+            >
+              Keep
+            </button>
+            <button
+              type="button"
+              className="rounded-full bg-rose-800/80 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-white disabled:opacity-50"
+              disabled={busy}
+              onClick={onDelete}
+            >
+              {busy ? '…' : 'Delete'}
+            </button>
+          </div>
+        ) : null}
 
         <div ref={scroller} className="min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-3">
           {image ? (
@@ -223,6 +303,10 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
 
           {messages.map((row) => {
             const mine = row.from_visitor_id === visitorId
+            const text =
+              row.body ||
+              (row.kind === 'book' ? 'Wants this date' : row.kind === 'chat' || row.ref_id === '__chat__' ? '' : 'Wants this look')
+            if (!text) return null
             return (
               <div key={row.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                 <div
@@ -233,7 +317,7 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
                   {!mine ? (
                     <p className="text-[10px] font-semibold uppercase tracking-wide text-brand-200">{row.from_name}</p>
                   ) : null}
-                  <p className="text-[13px] leading-snug">{row.body || (row.kind === 'book' ? 'Wants this date' : 'Wants this look')}</p>
+                  <p className="text-[13px] leading-snug">{text}</p>
                   <p className={`mt-1 text-[10px] ${mine ? 'text-white/70' : 'text-ivory/40'}`}>{bubbleTime(row.created_at)}</p>
                 </div>
               </div>
@@ -306,7 +390,7 @@ const ParlorChat = ({ open, root, image, visitorId, profile, admin, onClose, onO
             value={note}
             onChange={(event) => setNote(event.target.value)}
             maxLength={280}
-            placeholder={admin && isBook ? 'Note with your decision…' : 'Reply…'}
+            placeholder={admin && isBook ? 'Note with your decision…' : root.kind === 'chat' || root.ref_id === '__chat__' ? 'Message…' : 'Reply…'}
             autoComplete="off"
             className="booking-input parlor-input min-h-10 flex-1 !py-2"
           />

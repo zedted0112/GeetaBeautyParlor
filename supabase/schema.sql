@@ -168,7 +168,7 @@ alter table public.parlor_messages
 
 alter table public.parlor_messages
   add constraint parlor_messages_kind_check
-  check (kind in ('book', 'look', 'reel', 'reply'));
+  check (kind in ('book', 'look', 'reel', 'chat', 'reply'));
 
 create index if not exists parlor_messages_parent_idx on public.parlor_messages (parent_id);
 
@@ -177,7 +177,7 @@ drop policy if exists "public insert parlor messages" on public.parlor_messages;
 create policy "public insert parlor messages"
   on public.parlor_messages for insert
   to anon, authenticated
-  with check (kind in ('book', 'look', 'reel', 'reply') and char_length(trim(from_name)) between 2 and 24);
+  with check (kind in ('book', 'look', 'reel', 'chat', 'reply') and char_length(trim(from_name)) between 2 and 24);
 
 
 create table if not exists public.parlor_visits (
@@ -230,7 +230,7 @@ create table if not exists public.parlor_messages (
   from_visitor_id text not null,
   from_name text not null,
   from_avatar text not null default 'lotus',
-  kind text not null check (kind in ('book', 'look', 'reel')),
+  kind text not null check (kind in ('book', 'look', 'reel', 'chat')),
   ref_id text not null default '',
   visit_on date,
   service text not null default '',
@@ -253,7 +253,7 @@ create policy "public read parlor messages"
 create policy "public insert parlor messages"
   on public.parlor_messages for insert
   to anon, authenticated
-  with check (kind in ('book', 'look', 'reel') and char_length(trim(from_name)) between 2 and 24);
+  with check (kind in ('book', 'look', 'reel', 'chat') and char_length(trim(from_name)) between 2 and 24);
 
 grant select, insert on public.parlor_messages to anon, authenticated;
 
@@ -335,7 +335,7 @@ alter table public.parlor_messages
 
 alter table public.parlor_messages
   add constraint parlor_messages_kind_check
-  check (kind in ('book', 'look', 'reel', 'reply'));
+  check (kind in ('book', 'look', 'reel', 'chat', 'reply'));
 
 create index if not exists parlor_messages_parent_idx on public.parlor_messages (parent_id);
 
@@ -344,7 +344,7 @@ drop policy if exists "public insert parlor messages" on public.parlor_messages;
 create policy "public insert parlor messages"
   on public.parlor_messages for insert
   to anon, authenticated
-  with check (kind in ('book', 'look', 'reel', 'reply') and char_length(trim(from_name)) between 2 and 24);
+  with check (kind in ('book', 'look', 'reel', 'chat', 'reply') and char_length(trim(from_name)) between 2 and 24);
 
 alter table public.parlor_messages
   add column if not exists status text not null default 'pending';
@@ -375,6 +375,137 @@ create policy "public update parlor messages"
   on public.parlor_messages for update
   to anon, authenticated
   using (true)
-  with check (kind in ('book', 'look', 'reel', 'reply'));
+  with check (kind in ('book', 'look', 'reel', 'chat', 'reply'));
 
 grant update on public.parlor_messages to anon, authenticated;
+
+alter table public.parlor_messages replica identity full;
+
+do $$
+begin
+  alter publication supabase_realtime add table public.parlor_messages;
+exception
+  when duplicate_object then null;
+end $$;
+
+create or replace function public.parlor_now()
+returns timestamptz
+language sql
+stable
+as $$
+  select now();
+$$;
+
+grant execute on function public.parlor_now() to anon, authenticated;
+
+create or replace function public.parlor_stamp_message()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.created_at := now();
+  return new;
+end;
+$$;
+
+drop trigger if exists parlor_stamp_message on public.parlor_messages;
+create trigger parlor_stamp_message
+before insert on public.parlor_messages
+for each row execute procedure public.parlor_stamp_message();
+
+drop policy if exists "public delete parlor messages" on public.parlor_messages;
+create policy "public delete parlor messages"
+  on public.parlor_messages for delete
+  to anon, authenticated
+  using (true);
+
+grant delete on public.parlor_messages to anon, authenticated;
+
+create or replace function public.parlor_auto_welcome()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+declare
+  already boolean;
+begin
+  if tg_op = 'UPDATE' and coalesce(old.body, '') <> '' then
+    return new;
+  end if;
+  if new.from_visitor_id in ('geeta-admin', 'anon') then
+    return new;
+  end if;
+  if new.kind = 'reply' or new.parent_id is not null then
+    return new;
+  end if;
+  if trim(coalesce(new.body, '')) = '' then
+    return new;
+  end if;
+
+  select exists (
+    select 1
+    from public.parlor_messages m
+    where m.from_visitor_id = 'geeta-admin'
+      and m.body like 'Thank you for reaching out%'
+      and m.parent_id in (
+        select p.id from public.parlor_messages p where p.from_visitor_id = new.from_visitor_id
+      )
+  ) into already;
+
+  if already then
+    return new;
+  end if;
+
+  insert into public.parlor_messages (
+    id, from_visitor_id, from_name, from_avatar, kind, ref_id, body, parent_id, status
+  ) values (
+    gen_random_uuid(),
+    'geeta-admin',
+    'Geeta',
+    'bloom',
+    'reply',
+    coalesce(new.ref_id, ''),
+    'Thank you for reaching out, ' || split_part(trim(new.from_name), ' ', 1) || '. Share your queries or just wanna chit chat?',
+    new.id,
+    ''
+  );
+
+  return new;
+end;
+$$;
+
+drop trigger if exists parlor_auto_welcome on public.parlor_messages;
+create trigger parlor_auto_welcome
+after insert or update of body on public.parlor_messages
+for each row execute procedure public.parlor_auto_welcome();
+
+create table if not exists public.parlor_hidden_chats (
+  thread_id uuid not null,
+  visitor_id text not null,
+  created_at timestamptz not null default now(),
+  primary key (thread_id, visitor_id)
+);
+
+alter table public.parlor_hidden_chats enable row level security;
+
+drop policy if exists "public read hidden chats" on public.parlor_hidden_chats;
+drop policy if exists "public insert hidden chats" on public.parlor_hidden_chats;
+drop policy if exists "public delete hidden chats" on public.parlor_hidden_chats;
+
+create policy "public read hidden chats"
+  on public.parlor_hidden_chats for select
+  to anon, authenticated
+  using (true);
+
+create policy "public insert hidden chats"
+  on public.parlor_hidden_chats for insert
+  to anon, authenticated
+  with check (char_length(trim(visitor_id)) > 0);
+
+create policy "public delete hidden chats"
+  on public.parlor_hidden_chats for delete
+  to anon, authenticated
+  using (true);
+
+grant select, insert, delete on public.parlor_hidden_chats to anon, authenticated;

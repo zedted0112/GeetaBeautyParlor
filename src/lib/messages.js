@@ -43,6 +43,10 @@ const bustList = () => {
   listCache = null
 }
 
+const forgetThread = (id) => {
+  if (id) threadCache.delete(id)
+}
+
 export const peekThread = (id) => (id && threadCache.get(id)) || null
 
 export const rememberThread = (id, rows) => {
@@ -66,6 +70,18 @@ const fetchMessages = async (fresh = false) => {
 
 const isRoot = (row) => row.kind !== 'reply' && !row.parent_id
 
+export const isChatThread = (row) => row?.kind === 'chat' || row?.ref_id === '__chat__'
+
+export const isLiveChatThread = (row) => {
+  if (!isChatThread(row)) return false
+  return Boolean(String(row.body || '').trim() || String(row.lastReply?.body || '').trim())
+}
+
+export const isLookThread = (row) =>
+  (row?.kind === 'look' && row?.ref_id !== '__chat__') || row?.kind === 'reel'
+
+export const isBookThread = (row) => row?.kind === 'book'
+
 const withLastReply = (roots, replies) => {
   const lastByParent = {}
   for (const row of replies || []) {
@@ -78,30 +94,132 @@ const withLastReply = (roots, replies) => {
   return (roots || []).map((row) => ({ ...row, lastReply: lastByParent[row.id] || null }))
 }
 
+const withoutDeviceTime = (row) => {
+  const payload = { ...row }
+  delete payload.created_at
+  return payload
+}
+
+const readInserted = async (id, fallback) => {
+  if (!id) return fallback
+  const { data } = await supabase.from('parlor_messages').select(COLS_FULL).eq('id', id).maybeSingle()
+  return data ? normalize([data])[0] : fallback
+}
+
+const hiddenKey = (visitorId) => `gbp-hidden-chats:${visitorId || 'anon'}`
+
+const readLocalHidden = (visitorId) => {
+  try {
+    const raw = JSON.parse(window.localStorage.getItem(hiddenKey(visitorId)) || '[]')
+    return new Set(Array.isArray(raw) ? raw.filter(Boolean) : [])
+  } catch {
+    return new Set()
+  }
+}
+
+const writeLocalHidden = (visitorId, ids) => {
+  try {
+    window.localStorage.setItem(hiddenKey(visitorId), JSON.stringify([...ids]))
+  } catch {
+    // ignore quota / private mode
+  }
+}
+
+const missingHideTable = (error) =>
+  /schema cache|does not exist|relation|parlor_hidden_chats|PGRST/i.test(error?.message || '')
+
+export const loadHiddenThreadIds = async (visitorId) => {
+  const local = readLocalHidden(visitorId)
+  if (!visitorId) return local
+  const { data, error } = await supabase.from('parlor_hidden_chats').select('thread_id').eq('visitor_id', visitorId)
+  if (error) return local
+  const ids = new Set((data || []).map((row) => row.thread_id).filter(Boolean))
+  writeLocalHidden(visitorId, ids)
+  return ids
+}
+
+export const revealThread = async (threadId) => {
+  if (!threadId) return
+  try {
+    const prefix = 'gbp-hidden-chats:'
+    Object.keys(window.localStorage || {}).forEach((key) => {
+      if (!key.startsWith(prefix)) return
+      const who = key.slice(prefix.length)
+      const ids = readLocalHidden(who)
+      if (ids.delete(threadId)) writeLocalHidden(who, ids)
+    })
+  } catch {
+    // keep going
+  }
+  const { error } = await supabase.from('parlor_hidden_chats').delete().eq('thread_id', threadId)
+  if (error && !missingHideTable(error)) {
+    // inbox can still refresh; hide may linger until SQL is run
+  }
+}
+
 const insertRow = async (row) => {
-  let payload = row
-  let { error } = await supabase.from('parlor_messages').insert(payload)
+  let payload = withoutDeviceTime(row)
+  const write = (next) => supabase.from('parlor_messages').insert(withoutDeviceTime(next)).select().single()
+  let { data, error } = await write(payload)
   if (error && schemaError(error)) {
-    const { status, visit_time, ...rest } = payload
+    const { status, visit_time, created_at, ...rest } = payload
     payload = rest
-    ;({ error } = await supabase.from('parlor_messages').insert(payload))
+    ;({ data, error } = await write(payload))
   }
   if (error) {
     if (schemaError(error)) throw new Error('Replies need a one-time studio update. Run the chat SQL, then send again.')
     throw new Error(error.message || 'Could not send')
   }
+  const saved = await readInserted((data || payload).id, normalize([data || payload])[0])
   bustList()
+  forgetThread(saved.parent_id || saved.id)
+  await revealThread(saved.parent_id || saved.id)
+  return saved
 }
 
 export const seedGeetaAdmin = async () => {
   await supabase.rpc('parlor_seed_geeta')
 }
 
+const WELCOME_PREFIX = 'Thank you for reaching out'
+
+const firstName = (name) => String(name || '').trim().split(/\s+/)[0] || 'there'
+
+const welcomeNote = (name) =>
+  `${WELCOME_PREFIX}, ${firstName(name)}. Share your queries or just wanna chit chat?`
+
+const visitorRootIds = (rows, visitorId) =>
+  new Set(rows.filter((row) => row.from_visitor_id === visitorId && isRoot(row)).map((row) => row.id))
+
+const hasWelcome = (rows, visitorId) => {
+  const roots = visitorRootIds(rows, visitorId)
+  return rows.some(
+    (row) =>
+      row.from_visitor_id === GEETA_ADMIN_ID &&
+      roots.has(row.parent_id) &&
+      String(row.body || '').startsWith(WELCOME_PREFIX)
+  )
+}
+
+export const maybeAutoWelcome = async (root, visitorId, clientName) => {
+  if (!root?.id || !visitorId || visitorId === 'anon' || visitorId === GEETA_ADMIN_ID) return null
+  const rows = await fetchMessages(true)
+  if (hasWelcome(rows, visitorId)) return null
+  return replyOnThread({
+    parentId: root.id,
+    visitorId: GEETA_ADMIN_ID,
+    name: 'Geeta',
+    avatar: 'bloom',
+    body: welcomeNote(clientName || root.from_name),
+    refId: root.ref_id || '',
+  })
+}
+
 export const sendToGeeta = async (payload) => {
   const name = String(payload.name || '').trim()
   if (name.length < 2) throw new Error('Join the parlor first')
   if (String(payload.visitorId || '') === GEETA_ADMIN_ID) throw new Error('This desk receives client notes')
-  await insertRow({
+  const saved = await insertRow({
     id: makeId(),
     from_visitor_id: payload.visitorId || 'anon',
     from_name: name.slice(0, 24),
@@ -115,6 +233,8 @@ export const sendToGeeta = async (payload) => {
     parent_id: null,
     status: payload.kind === 'book' ? 'pending' : '',
   })
+  const welcome = await maybeAutoWelcome(saved, payload.visitorId, name).catch(() => null)
+  return { ...saved, lastReply: welcome || null }
 }
 
 export const replyOnThread = async ({ parentId, visitorId, name, avatar, body, refId = '' }) => {
@@ -123,7 +243,7 @@ export const replyOnThread = async ({ parentId, visitorId, name, avatar, body, r
   const who = String(name || '').trim()
   if (who.length < 2) throw new Error('Join the parlor first')
 
-  await insertRow({
+  const row = {
     id: makeId(),
     from_visitor_id: visitorId || 'anon',
     from_name: who.slice(0, 24),
@@ -132,7 +252,13 @@ export const replyOnThread = async ({ parentId, visitorId, name, avatar, body, r
     ref_id: refId,
     body: note.slice(0, 280),
     parent_id: parentId,
-  })
+  }
+  const saved = await insertRow(row)
+  const cached = threadCache.get(parentId) || []
+  if (!cached.some((item) => item.id === saved.id)) {
+    rememberThread(parentId, [...cached, saved])
+  }
+  return saved
 }
 
 export const decideBooking = async ({ root, visitorId, name, avatar, status, date, time, note }) => {
@@ -188,7 +314,7 @@ export const loadThread = async (root, { fresh = false } = {}) => {
       .or(`id.eq.${root.id},parent_id.eq.${root.id}`)
       .order('created_at', { ascending: true })
     if (!error) {
-      const rows = normalize(data)
+      const rows = normalize(data).sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')))
       return rememberThread(root.id, rows.length ? rows : [root])
     }
     if (!schemaError(error)) return rememberThread(root.id, [root])
@@ -196,18 +322,115 @@ export const loadThread = async (root, { fresh = false } = {}) => {
   return rememberThread(root.id, [root])
 }
 
+export const sendChatToGeeta = async ({ visitorId, name, avatar, body }) => {
+  const note = String(body || '').trim()
+  if (!note) throw new Error('Write a message')
+  const who = String(name || '').trim()
+  if (who.length < 2) throw new Error('Join the parlor first')
+  if (!visitorId || visitorId === 'anon') throw new Error('Join the parlor first')
+  if (visitorId === GEETA_ADMIN_ID) throw new Error('This desk receives client notes')
+
+  const existing = (await loadMyThreads(visitorId, { fresh: true })).find(isChatThread)
+  if (existing) {
+    if (isLiveChatThread(existing)) {
+      const reply = await replyOnThread({
+        parentId: existing.id,
+        visitorId,
+        name: who,
+        avatar,
+        body: note,
+        refId: existing.ref_id,
+      })
+      const welcome = await maybeAutoWelcome(existing, visitorId, who).catch(() => null)
+      return { ...existing, lastReply: welcome || reply }
+    }
+    const { error } = await supabase.from('parlor_messages').update({ body: note }).eq('id', existing.id)
+    if (error) {
+      await replyOnThread({
+        parentId: existing.id,
+        visitorId,
+        name: who,
+        avatar,
+        body: note,
+        refId: existing.ref_id,
+      })
+    } else {
+      bustList()
+      await revealThread(existing.id)
+    }
+    const next = { ...existing, body: note }
+    const welcome = await maybeAutoWelcome(next, visitorId, who).catch(() => null)
+    rememberThread(existing.id, welcome ? [next, welcome] : [next])
+    return { ...next, lastReply: welcome || null }
+  }
+
+  const row = {
+    id: makeId(),
+    from_visitor_id: visitorId,
+    from_name: who.slice(0, 24),
+    from_avatar: avatar || 'lotus',
+    kind: 'chat',
+    ref_id: '',
+    body: note.slice(0, 280),
+    parent_id: null,
+    status: '',
+  }
+  let saved
+  try {
+    saved = await insertRow(row)
+  } catch {
+    saved = await insertRow({ ...row, kind: 'look', ref_id: '__chat__' })
+  }
+  const welcome = await maybeAutoWelcome(saved, visitorId, who).catch(() => null)
+  rememberThread(saved.id, welcome ? [saved, welcome] : [saved])
+  return { ...saved, lastReply: welcome || null }
+}
+
+export const subscribeMessages = (onChange) => {
+  const channel = supabase
+    .channel(`parlor-messages-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'parlor_messages' }, (payload) => {
+      const row = payload.new || payload.old || {}
+      bustList()
+      forgetThread(row.parent_id || row.id)
+      onChange?.(payload)
+    })
+    .subscribe()
+
+  return () => {
+    supabase.removeChannel(channel)
+  }
+}
+
+export const deleteThread = async (root, visitorId) => {
+  if (!root?.id) throw new Error('Missing chat')
+  if (!visitorId) throw new Error('Join the parlor first')
+  const local = readLocalHidden(visitorId)
+  local.add(root.id)
+  writeLocalHidden(visitorId, local)
+  forgetThread(root.id)
+  bustList()
+  const { error } = await supabase.from('parlor_hidden_chats').upsert(
+    { thread_id: root.id, visitor_id: visitorId },
+    { onConflict: 'thread_id,visitor_id' }
+  )
+  if (error && !missingHideTable(error)) {
+    throw new Error(error.message || 'Could not delete chat')
+  }
+}
+
 export const loadGeetaInbox = async ({ fresh = false } = {}) => {
-  const rows = await fetchMessages(fresh)
-  const roots = rows.filter(isRoot)
+  const [rows, hidden] = await Promise.all([fetchMessages(fresh), loadHiddenThreadIds(GEETA_ADMIN_ID)])
+  const roots = rows.filter((row) => isRoot(row) && !hidden.has(row.id))
   const replies = rows.filter((row) => !isRoot(row))
   return withLastReply(roots, replies)
 }
 
 export const loadMyThreads = async (visitorId, { fresh = false } = {}) => {
   if (!visitorId || visitorId === 'anon') return []
-  const rows = await fetchMessages(fresh)
+  const [rows, hidden] = await Promise.all([fetchMessages(fresh), loadHiddenThreadIds(visitorId)])
   const mine = new Set(rows.filter((row) => row.from_visitor_id === visitorId && isRoot(row)).map((row) => row.id))
-  const roots = rows.filter((row) => mine.has(row.id))
+  const roots = rows.filter((row) => mine.has(row.id) && !hidden.has(row.id))
   const replies = rows.filter((row) => mine.has(row.parent_id))
   return withLastReply(roots, replies)
 }

@@ -80,6 +80,48 @@ export const loadVisitorVotes = async (visitorId) => {
   return data || []
 }
 
+export const loadReactionFeed = async ({ excludeVisitorId = '' } = {}) => {
+  const { data: votes, error } = await supabase
+    .from('reaction_votes')
+    .select('photo_id, visitor_id, kind, updated_at')
+    .order('updated_at', { ascending: false })
+    .limit(80)
+  if (error) throw error
+  const rows = (votes || []).filter((row) => row.visitor_id && row.visitor_id !== excludeVisitorId)
+  if (!rows.length) return []
+
+  const ids = [...new Set(rows.map((row) => row.visitor_id))]
+  const { data: profiles } = await supabase.from('parlor_profiles').select('visitor_id, name, avatar').in('visitor_id', ids)
+  const byId = Object.fromEntries((profiles || []).map((row) => [row.visitor_id, row]))
+
+  return rows.map((row) => ({
+    id: `${row.visitor_id}:${row.photo_id}:${row.updated_at || ''}`,
+    photoId: row.photo_id,
+    visitorId: row.visitor_id,
+    kind: row.kind,
+    at: row.updated_at,
+    name: byId[row.visitor_id]?.name || 'Someone',
+    avatar: byId[row.visitor_id]?.avatar || 'lotus',
+  }))
+}
+
+export const subscribeReactionFeed = (onChange, options = {}) => {
+  const channel = supabase
+    .channel(`reaction-feed-${Date.now()}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'reaction_votes' }, async () => {
+      try {
+        onChange(await loadReactionFeed(options))
+      } catch {
+        // keep the last good feed if a refresh fails
+      }
+    })
+    .subscribe()
+
+  return () => {
+    supabase.removeChannel(channel)
+  }
+}
+
 export const loadPresence = async (photoId, visitorId) => {
   const { data: votes, error } = await supabase
     .from('reaction_votes')

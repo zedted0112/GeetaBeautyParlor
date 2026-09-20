@@ -12,12 +12,14 @@ import { BookingProvider } from './context/BookingContext'
 import { GalleryProvider, useGallery } from './context/GalleryContext'
 import { ParlorProvider } from './context/ParlorContext'
 import { contact } from './data/content'
+import { syncClock } from './lib/clock'
 import { holdImages } from './lib/mediaCache'
 
 const Shell = () => {
   const { open, kind, phase, origin, startId, closeGallery } = useGallery()
 
   useEffect(() => {
+    syncClock()
     holdImages([
       ...bridalPhotos.map((item) => item.src),
       ...contact.instagramReels.map((item) => item.poster),

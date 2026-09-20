@@ -73,7 +73,7 @@ const SendLookSheet = ({ open, kind = 'look', refId, image, onClose, onSent }) =
       >
         <div className="mb-3 flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-[9px] uppercase tracking-[0.16em] text-brand-200">Send to Geeta</p>
+            <p className="text-[9px] uppercase tracking-[0.16em] text-brand-200">Send To Studio</p>
             <h2 id="send-look-title" className="mt-0.5 font-display text-xl leading-tight text-ivory">
               Add a note
             </h2>

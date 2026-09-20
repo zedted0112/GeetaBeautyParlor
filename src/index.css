@@ -710,7 +710,8 @@
     display: block;
   }
 
-  .parlor-reels .parlor-look img {
+  .parlor-reels .parlor-look img,
+  .parlor-look.is-reel img {
     aspect-ratio: 9 / 14;
   }
 

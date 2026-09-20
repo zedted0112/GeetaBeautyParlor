@@ -289,7 +289,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
               className="btn-secondary min-h-10 flex-1 px-3 py-2 text-xs sm:flex-none sm:min-h-11 sm:px-5 sm:py-3 sm:text-sm"
               onClick={openSend}
             >
-              {lookSent[photo.id] === true ? 'Sent' : 'Send to Geeta'}
+              {lookSent[photo.id] === true ? 'Sent' : 'Send To Studio'}
             </button>
             <button
               type="button"
