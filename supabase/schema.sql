@@ -2,8 +2,9 @@ create table if not exists public.reaction_votes (
   photo_id text not null,
   visitor_id text not null,
   kind text not null check (kind in ('fire', 'heart', 'wow', 'eyes')),
+  hits integer not null default 1,
   updated_at timestamptz not null default now(),
-  primary key (photo_id, visitor_id)
+  primary key (photo_id, visitor_id, kind)
 );
 
 create index if not exists reaction_votes_photo_idx on public.reaction_votes (photo_id);
@@ -509,3 +510,41 @@ create policy "public delete hidden chats"
   using (true);
 
 grant select, insert, delete on public.parlor_hidden_chats to anon, authenticated;
+
+alter table public.reaction_votes add column if not exists hits integer not null default 1;
+
+do $$
+begin
+  alter table public.reaction_votes drop constraint reaction_votes_pkey;
+exception
+  when undefined_object then null;
+end $$;
+
+do $$
+begin
+  alter table public.reaction_votes add primary key (photo_id, visitor_id, kind);
+exception
+  when invalid_table_definition then null;
+end $$;
+
+create or replace function public.parlor_tap_reaction(p_photo_id text, p_visitor_id text, p_kind text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if p_kind not in ('fire', 'heart', 'wow', 'eyes') then
+    raise exception 'bad kind';
+  end if;
+  if char_length(trim(coalesce(p_photo_id, ''))) = 0 or char_length(trim(coalesce(p_visitor_id, ''))) = 0 then
+    raise exception 'bad vote';
+  end if;
+  insert into public.reaction_votes (photo_id, visitor_id, kind, hits, updated_at)
+  values (p_photo_id, p_visitor_id, p_kind, 1, now())
+  on conflict (photo_id, visitor_id, kind)
+  do update set hits = public.reaction_votes.hits + 1, updated_at = now();
+end;
+$$;
+
+grant execute on function public.parlor_tap_reaction(text, text, text) to anon, authenticated;

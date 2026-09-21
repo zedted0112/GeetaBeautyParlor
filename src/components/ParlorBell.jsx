@@ -185,7 +185,11 @@ const ParlorBell = ({ admin, visitorId, inbox = [], onOpenThread, onOpenLook }) 
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[13px] text-ivory">
                             <span className="font-medium">{item.name}</span>
-                            <span className="text-ivory/70"> reacted {REACTION_EMOJI[item.kind] || ''}</span>
+                            <span className="text-ivory/70">
+                              {' '}
+                              {REACTION_EMOJI[item.kind] || ''} this {media.label.toLowerCase()}
+                              {item.hits > 1 ? ` ${item.hits} times` : ''}
+                            </span>
                           </span>
                           <span className="block text-[11px] text-ivory/45">
                             {media.label} · {ago(item.at)}

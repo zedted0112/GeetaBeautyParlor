@@ -5,7 +5,7 @@ import { useBooking } from '../../context/BookingContext'
 import { useParlor } from '../../context/ParlorContext'
 import { isAdminProfile, readLocalProfile } from '../../lib/profile'
 import { getVisitorId } from '../../lib/visitor'
-import { emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
+import { bumpPresence, bumpTally, emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
 import GalleryReactions from './GalleryReactions'
 import SendLookSheet from '../SendLookSheet'
 import { holdImage, holdImages } from '../../lib/mediaCache'
@@ -62,22 +62,10 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
 
   const react = async (kind) => {
     if (!(await ensureProfile())) return
-    const current = tallies[photo.id] || emptyTally()
-    const previous = current.picked
-    setTallies((prev) => {
-      const row = { ...(prev[photo.id] || emptyTally()) }
-      if (row.picked === kind) {
-        row[kind] = Math.max(0, row[kind] - 1)
-        row.picked = null
-      } else {
-        if (row.picked) row[row.picked] = Math.max(0, row[row.picked] - 1)
-        row[kind] += 1
-        row.picked = kind
-      }
-      return { ...prev, [photo.id]: row }
-    })
+    setTallies((prev) => ({ ...prev, [photo.id]: bumpTally(prev[photo.id] || emptyTally(), kind) }))
+    setPresence((rows) => bumpPresence(rows, kind))
     try {
-      await saveVote(photo.id, visitorId, kind, previous)
+      await saveVote(photo.id, visitorId, kind)
     } catch {
       try {
         setTallies(await loadTallies(photoIds, visitorId))
@@ -121,7 +109,7 @@ const BridalGallery = ({ open, phase = 'in', origin, startId = null, onClose }) 
     return () => {
       alive = false
     }
-  }, [photo.id, visitorId, tally.picked])
+  }, [photo.id, visitorId, tally.fire, tally.heart, tally.wow, tally.eyes])
 
   useEffect(() => {
     holdImages(bridalPhotos.map((item) => item.src))

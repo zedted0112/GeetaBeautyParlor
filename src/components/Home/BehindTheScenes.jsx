@@ -6,7 +6,7 @@ import { useBooking } from '../../context/BookingContext'
 import { useParlor } from '../../context/ParlorContext'
 import { isAdminProfile, readLocalProfile } from '../../lib/profile'
 import { getVisitorId } from '../../lib/visitor'
-import { emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
+import { bumpPresence, bumpTally, emptyTally, emptyTallies, loadPresence, loadTallies, saveVote, subscribeTallies } from '../../lib/reactions'
 import GalleryReactions from './GalleryReactions'
 import SendLookSheet from '../SendLookSheet'
 import { holdImage, holdImages } from '../../lib/mediaCache'
@@ -42,22 +42,10 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
 
   const react = async (kind) => {
     if (!(await ensureProfile())) return
-    const current = tallies[reel.id] || emptyTally()
-    const previous = current.picked
-    setTallies((prev) => {
-      const row = { ...(prev[reel.id] || emptyTally()) }
-      if (row.picked === kind) {
-        row[kind] = Math.max(0, row[kind] - 1)
-        row.picked = null
-      } else {
-        if (row.picked) row[row.picked] = Math.max(0, row[row.picked] - 1)
-        row[kind] += 1
-        row.picked = kind
-      }
-      return { ...prev, [reel.id]: row }
-    })
+    setTallies((prev) => ({ ...prev, [reel.id]: bumpTally(prev[reel.id] || emptyTally(), kind) }))
+    setPresence((rows) => bumpPresence(rows, kind))
     try {
-      await saveVote(reel.id, visitorId, kind, previous)
+      await saveVote(reel.id, visitorId, kind)
     } catch {
       try {
         setTallies(await loadTallies(reelIds, visitorId))
@@ -137,7 +125,7 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
     return () => {
       alive = false
     }
-  }, [open, reel.id, visitorId, tally.picked])
+  }, [open, reel.id, visitorId, tally.fire, tally.heart, tally.wow, tally.eyes])
 
   useEffect(() => {
     videoRefs.current.forEach((el) => {
@@ -318,7 +306,7 @@ const BehindTheScenes = ({ open, phase = 'in', origin, startId = null, onClose }
               <button
                 type="button"
                 onClick={toggleMute}
-                className="absolute left-3 top-[max(0.75rem,env(safe-area-inset-top))] z-20 rounded-full bg-black/55 p-2 text-white"
+                className="absolute bottom-3 right-3 z-20 rounded-full bg-black/55 p-2.5 text-white sm:bottom-4 sm:right-4"
                 aria-label={muted ? 'Unmute reel' : 'Mute reel'}
               >
                 {muted ? <IoVolumeMute className="h-6 w-6" /> : <IoVolumeHigh className="h-6 w-6" />}
